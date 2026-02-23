@@ -167,8 +167,23 @@
     .foot-copy { font-family: var(--fb); font-size: .65rem; color: var(--muted); margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); max-width: 1280px; margin-left: auto; margin-right: auto; }
 
     @media (max-width: 960px) {
-      .gnav-links { display: none; }
-      .gnav, .wrap { padding-left: 20px; padding-right: 20px; }
+      .gnav, .wrap { padding-left: 12px; padding-right: 12px; }
+
+.gnav-links {
+  display: flex;
+  margin-left: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.gnav-links::-webkit-scrollbar { display: none; }
+
+.gnav-links a {
+  padding: 0 10px;
+  font-size: .64rem;
+}
+
+.gnav-cta { display: none; }
       .hero-inner { padding: 60px 20px 52px; }
       .chapnav-inner { padding: 0 20px; }
       .g2, .g3 { grid-template-columns: 1fr; }

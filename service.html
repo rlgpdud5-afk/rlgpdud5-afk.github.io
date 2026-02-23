@@ -110,7 +110,17 @@
     .rv.on{opacity:1;transform:none;}
 
     @media(max-width:960px){
-      nav{padding:0 20px;}.nav-links{display:none;}
+      nav{padding:0 12px;}
+.nav-links{
+  display:flex;
+  margin-left:10px;
+  overflow-x:auto;
+  white-space:nowrap;
+  scrollbar-width:none;
+}
+.nav-links::-webkit-scrollbar{display:none;}
+.nav-links a{padding:0 10px;font-size:.64rem;}
+.nav-cta{display:none;}
       .wrap,.hero-inner{padding-left:20px;padding-right:20px;}
       .hero-inner{flex-direction:column;align-items:flex-start;}
       .hero-mockup{width:100%;margin:40px 0 0;}
