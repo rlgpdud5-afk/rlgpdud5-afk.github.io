@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D-GIG Service — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#F4F2EE;--bg2:#ECEAE5;--bg3:#E4E1DB;
+      --black:#0C0D0E;--ink:#1A1B1D;
+      --mid:rgba(12,13,14,0.55);--muted:rgba(12,13,14,0.35);
+      --border:rgba(12,13,14,0.1);--bhi:rgba(12,13,14,0.18);
+      --fd:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:52px;display:flex;align-items:center;padding:0 32px;background:rgba(244,242,238,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .logo{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .beta{font-size:.5rem;letter-spacing:.12em;color:var(--bg);background:var(--black);padding:2px 6px;font-weight:700;}
+    .nav-links{display:flex;list-style:none;margin-left:36px;}
+    .nav-links a{font-family:var(--fb);font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;padding:0 16px;height:52px;display:flex;align-items:center;border-right:1px solid var(--border);transition:color .15s;}
+    .nav-links li:first-child a{border-left:1px solid var(--border);}
+    .nav-links a:hover,.nav-links a.on{color:var(--black);}
+    .nav-cta{margin-left:auto;font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--bg);padding:10px 22px;text-decoration:none;}
+    .nav-cta:hover{opacity:.8;}
+
+    /* HERO */
+    #hero{min-height:72vh;background:var(--black);padding:52px 0 0;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;}
+    .hero-inner{flex:1;display:flex;align-items:flex-end;max-width:1280px;margin:0 auto;width:100%;padding:88px 40px 64px;position:relative;z-index:2;}
+    .hero-left{flex:1;}
+    .hero-label{font-family:var(--fb);font-size:.65rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(244,242,238,.35);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .hero-label::before{content:'';width:20px;height:1px;background:rgba(244,242,238,.35);display:block;}
+    .hero-h{font-family:var(--fd);font-size:clamp(2.4rem,5vw,5.8rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:.96;letter-spacing:-.01em;margin-bottom:24px;}
+    .hero-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.45);}
+    .hero-sub{font-family:var(--fb);font-size:.97rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:480px;font-weight:300;}
+
+    /* MOCKUP */
+    .hero-mockup{flex-shrink:0;width:320px;margin-left:80px;position:relative;align-self:flex-end;}
+    .mockup-phone{background:#1A1D22;border:1px solid rgba(255,255,255,.1);padding:20px 16px;width:100%;position:relative;}
+    .mockup-status{display:flex;justify-content:space-between;font-family:var(--fd);font-size:.6rem;color:rgba(244,242,238,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06);}
+    .mockup-row{padding:14px 16px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);margin-bottom:8px;}
+    .mockup-row-label{font-family:var(--fb);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(244,242,238,.3);margin-bottom:4px;}
+    .mockup-row-val{font-family:var(--fd);font-size:.95rem;font-weight:600;color:var(--bg);letter-spacing:.02em;}
+    .mockup-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+    .mockup-badge{font-family:var(--fb);font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;background:rgba(255,255,255,.08);color:rgba(244,242,238,.6);}
+    .mockup-badge.hl{background:var(--bg);color:var(--black);}
+    .mockup-score{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+    .score-bar-track{flex:1;height:4px;background:rgba(255,255,255,.08);}
+    .score-bar-fill{height:100%;background:var(--bg);width:92%;}
+    .score-val{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--bg);}
+
+    /* COMMON */
+    .wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
+    .sec{padding:104px 0;border-bottom:1px solid var(--border);}
+    .sec-label{font-family:var(--fb);font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .sec-label::before{content:'';width:20px;height:1px;background:var(--muted);display:block;}
+    .sec-h{font-family:var(--fd);font-size:clamp(2rem,3.8vw,4rem);font-weight:700;text-transform:uppercase;letter-spacing:-.01em;color:var(--black);line-height:1.0;margin-bottom:12px;}
+    .sec-h .it{font-style:italic;font-weight:300;color:var(--mid);}
+    .sec-sub{font-family:var(--fb);font-size:.92rem;color:var(--mid);line-height:1.75;font-weight:300;max-width:600px;margin-bottom:52px;}
+
+    /* TOGGLE */
+    .toggle-wrap{display:flex;border:1px solid var(--border);background:var(--bg2);width:fit-content;margin-bottom:52px;}
+    .toggle-btn{font-family:var(--fb);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:12px 32px;cursor:pointer;background:transparent;border:none;color:var(--muted);transition:all .18s;}
+    .toggle-btn.on{background:var(--black);color:var(--bg);}
+
+    /* FEATURE CARDS */
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);}
+    .feat-card{background:var(--bg);padding:44px 36px;position:relative;transition:background .2s;}
+    .feat-card:hover{background:var(--bg2);}
+    .feat-num{font-family:var(--fd);font-size:4rem;font-weight:700;color:rgba(12,13,14,.05);position:absolute;top:12px;right:16px;line-height:1;}
+    .feat-idx{font-family:var(--fb);font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+    .feat-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:14px;line-height:1.15;letter-spacing:.01em;}
+    .feat-desc{font-family:var(--fb);font-size:.88rem;line-height:1.72;color:var(--mid);font-weight:300;}
+
+    /* STEPS */
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);}
+    .step{padding:44px 32px;border-right:1px solid var(--border);position:relative;}
+    .step:last-child{border-right:none;}
+    .step-num{font-family:var(--fd);font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+    .step-title{font-family:var(--fd);font-size:1.25rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:12px;line-height:1.1;}
+    .step-desc{font-family:var(--fb);font-size:.85rem;line-height:1.7;color:var(--mid);font-weight:300;}
+    .step-arr{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:28px;height:28px;background:var(--black);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.8rem;z-index:2;}
+
+    /* CTA */
+    .cta-box{background:var(--black);padding:96px 72px;position:relative;overflow:hidden;}
+    .cta-ghost{position:absolute;font-family:var(--fd);font-size:28vw;font-weight:700;color:rgba(244,242,238,.025);line-height:1;right:-4%;top:50%;transform:translateY(-50%);pointer-events:none;text-transform:uppercase;user-select:none;}
+    .cta-h{font-family:var(--fd);font-size:clamp(2.2rem,4.5vw,5rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:1.0;max-width:660px;position:relative;z-index:2;margin-bottom:28px;letter-spacing:-.01em;}
+    .cta-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.4);}
+    .cta-sub{font-family:var(--fb);font-size:.97rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:480px;font-weight:300;position:relative;z-index:2;margin-bottom:44px;}
+    .btn-wi{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg);color:var(--black);padding:15px 32px;text-decoration:none;display:inline-block;transition:opacity .16s,transform .14s;position:relative;z-index:2;}
+    .btn-wi:hover{opacity:.88;transform:translateY(-1px);}
+
+    /* FOOTER */
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
+    .foot-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+    .foot-brand{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);}
+    .foot-nav{display:flex;gap:24px;list-style:none;}
+    .foot-nav a{font-family:var(--fb);font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .15s;}
+    .foot-nav a:hover{color:var(--black);}
+    .foot-copy{font-family:var(--fb);font-size:.62rem;color:var(--muted);}
+
+    /* REVEAL */
+    .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+    .rv.on{opacity:1;transform:none;}
+
+    @media(max-width:960px){
+      nav{padding:0 20px;}.nav-links{display:none;}
+      .wrap,.hero-inner{padding-left:20px;padding-right:20px;}
+      .hero-inner{flex-direction:column;align-items:flex-start;}
+      .hero-mockup{width:100%;margin:40px 0 0;}
+      .feat-grid,.steps{grid-template-columns:1fr;}
+      .step{border-right:none;border-bottom:1px solid var(--border);}
+      .step-arr{display:none;}
+      .cta-box{padding:64px 24px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GigCareer <span class="beta">BETA</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html" class="on">D-GIG</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">서비스 사전 신청</a>
+</nav>
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <p class="hero-label">D-GIG Platform — Local Gig × LER × Global Match</p>
+      <h1 class="hero-h">실무 경험이<br>스펙이 되는<br><span class="it">로컬 긱 플랫폼,</span><br>D-GIG</h1>
+      <p class="hero-sub">크몽도, 잡코리아도 해결하지 못한 '포트폴리오 부재'와 '스펙 중심 필터링'의 한계를 넘어섭니다. 로컬에서 쌓은 실무 경험이 글로벌 커리어 자산이 됩니다.</p>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-phone">
+        <div class="mockup-status"><span>D-GIG MVP</span><span>v0.1</span></div>
+        <div class="mockup-row">
+          <div class="mockup-row-label">현재 매칭된 Gig</div>
+          <div class="mockup-row-val">대전 스타트업 · 마케팅 데이터 분석</div>
+        </div>
+        <div class="mockup-row">
+          <div class="mockup-row-label">LER 인증 스킬</div>
+          <div class="mockup-badge-row">
+            <span class="mockup-badge hl">Data Analysis</span>
+            <span class="mockup-badge hl">Figma</span>
+            <span class="mockup-badge">Copywriting</span>
+            <span class="mockup-badge">Notion</span>
+          </div>
+        </div>
+        <div class="mockup-row">
+          <div class="mockup-row-label">LER 신뢰 점수</div>
+          <div class="mockup-score">
+            <div class="score-bar-track"><div class="score-bar-fill"></div></div>
+            <div class="score-val">92</div>
+          </div>
+        </div>
+        <div class="mockup-row" style="margin-bottom:0;">
+          <div class="mockup-row-label">매칭 추천 포지션</div>
+          <div class="mockup-row-val" style="font-size:.82rem;">서울 핀테크 스타트업 · 원격 계약직</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TARGET VIEW TOGGLE -->
+<section class="sec" style="background:var(--bg);">
+  <div class="wrap">
+    <p class="sec-label rv">02 — Platform Features</p>
+    <h2 class="sec-h rv">누구를 위한 <span class="it">플랫폼</span>인가.</h2>
+    <p class="sec-sub rv">D-GIG는 구직자(청년)와 구인자(기업) 양측 모두에게 기존 플랫폼이 해결하지 못했던 문제를 해결합니다.</p>
+
+    <div class="toggle-wrap rv" id="toggleWrap">
+      <button class="toggle-btn on" id="btnYouth" onclick="switchView('youth')">For Youth — 청년</button>
+      <button class="toggle-btn" id="btnBiz" onclick="switchView('biz')">For Business — 기업</button>
+    </div>
+
+    <!-- YOUTH VIEW -->
+    <div id="viewYouth" class="feat-grid rv">
+      <div class="feat-card">
+        <span class="feat-num">01</span>
+        <div class="feat-idx">[ 01 ] — 탐색 및 매칭</div>
+        <div class="feat-title">로컬 Gig<br>탐색 & 매칭</div>
+        <p class="feat-desc">지역 내 숨어 있는 단기 실무 프로젝트를 조건별로 탐색하고 매칭합니다. 업종·기간·보상 조건을 필터링해 나에게 맞는 첫 Gig를 찾아보세요.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">02</span>
+        <div class="feat-idx">[ 02 ] — LER 인증</div>
+        <div class="feat-title">LER 인증<br>배지 획득</div>
+        <p class="feat-desc">업무 수행 후 블록체인/데이터 기반의 LER(학습·고용 기록) 인증 배지가 발급됩니다. 프로젝트 결과물, 평가, 스킬 레벨이 모두 기록으로 남습니다.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">03</span>
+        <div class="feat-idx">[ 03 ] — 포트폴리오</div>
+        <div class="feat-title">글로벌 포트폴리오<br>자동 완성</div>
+        <p class="feat-desc">누적된 LER 데이터를 기반으로 글로벌·수도권 원격 근무용 포트폴리오가 자동으로 완성됩니다. 이력서 한 줄이 아닌, 검증된 데이터로 지원하세요.</p>
+      </div>
+    </div>
+
+    <!-- BIZ VIEW (hidden) -->
+    <div id="viewBiz" class="feat-grid rv" style="display:none;">
+      <div class="feat-card">
+        <span class="feat-num">01</span>
+        <div class="feat-idx">[ 01 ] — LER 기반 검색</div>
+        <div class="feat-title">실무 데이터<br>기반 인재 검색</div>
+        <p class="feat-desc">학력·자격증이 아닌 '실제 수행한 유사 프로젝트(LER)' 데이터를 기반으로 인재를 검색합니다. 채용 전 검증이 끝난 인재만 만납니다.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">02</span>
+        <div class="feat-idx">[ 02 ] — 유연한 조달</div>
+        <div class="feat-title">로컬 인재<br>유연 조달</div>
+        <p class="feat-desc">검증된 로컬 인재를 필요한 기간만큼 유연하게 조달합니다. 정규직 부담 없이 단기·프로젝트 단위 채용으로 비용을 최적화하세요.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">03</span>
+        <div class="feat-idx">[ 03 ] — 리스크 제로화</div>
+        <div class="feat-title">채용 리스크<br>제로화</div>
+        <p class="feat-desc">긱 워커의 이전 평가 및 업무 완수율 데이터를 통해 채용 리스크를 최소화합니다. LER 신뢰 점수 기반의 객관적 검증 시스템을 제공합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO USE -->
+<section class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">03 — How to Use</p>
+    <h2 class="sec-h rv">D-GIG <span class="it">이용 방법</span></h2>
+    <p class="sec-sub rv">4단계의 간단한 과정으로 첫 번째 LER을 기록하세요.</p>
+
+    <div class="steps rv">
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <div class="step-title">프로필 등록</div>
+        <p class="step-desc">기술 스택, 관심 분야, 가용 시간을 입력해 D-GIG 프로필을 생성합니다. 처음이어도 괜찮습니다.</p>
+        <div class="step-arr">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <div class="step-title">조건 맞춤형 긱 매칭</div>
+        <p class="step-desc">AI 매칭 알고리즘이 나의 스킬과 관심사에 맞는 로컬 Gig를 추천합니다. 업종·기간·보상 조건 필터링 가능.</p>
+        <div class="step-arr">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <div class="step-title">스마트 계약 & 업무 수행</div>
+        <p class="step-desc">스마트 계약 기반의 투명한 계약 후 업무를 수행합니다. 진행 상황과 결과물이 모두 플랫폼에 기록됩니다.</p>
+        <div class="step-arr">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 04</div>
+        <div class="step-title">정산 및 LER 기록</div>
+        <p class="step-desc">프로젝트 완료 후 즉시 정산되며, 검증된 LER 인증 배지가 자동 발급됩니다. 내 커리어 자산이 하나씩 쌓입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="cta-box rv">
+      <div class="cta-ghost">LER</div>
+      <h2 class="cta-h">지금 바로 D-GIG MVP에서<br>당신의 첫 <span class="it">LER을 기록하세요.</span></h2>
+      <p class="cta-sub">포트폴리오가 없어도 됩니다. 첫 번째 로컬 Gig가 당신의 커리어 자산의 시작이 됩니다.</p>
+      <a href="contact.html" class="btn-wi">D-GIG 시작하기 →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">GigCareer <span class="beta">BETA</span></div>
+    <ul class="foot-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="service.html">D-GIG</a></li>
+      <li><a href="insights.html">Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <span class="foot-copy">© 2025 GigCareer Inc.</span>
+  </div>
+</footer>
+
+<script>
+  // Toggle
+  window.switchView = function(view) {
+    document.getElementById('viewYouth').style.display = view === 'youth' ? 'grid' : 'none';
+    document.getElementById('viewBiz').style.display   = view === 'biz'   ? 'grid' : 'none';
+    document.getElementById('btnYouth').classList.toggle('on', view === 'youth');
+    document.getElementById('btnBiz').classList.toggle('on', view === 'biz');
+  };
+
+  // Reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 90);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

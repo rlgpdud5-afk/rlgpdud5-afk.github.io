@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insights — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg:       #F4F2EE;
+      --bg2:      #ECEAE5;
+      --bg3:      #E4E1DB;
+      --black:    #0C0D0E;
+      --ink:      #1A1B1D;
+      --mid:      rgba(12,13,14,0.55);
+      --muted:    rgba(12,13,14,0.35);
+      --border:   rgba(12,13,14,0.1);
+      --bhi:      rgba(12,13,14,0.18);
+      --fd:       'Barlow Condensed', sans-serif;
+      --fb:       'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--fb); font-weight: 400; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* ── GLOBAL NAV ── */
+    .gnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 600;
+      height: 52px; display: flex; align-items: center;
+      padding: 0 32px;
+      background: rgba(244,242,238,0.95); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .gnav-logo { font-family: var(--fb); font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--black); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .beta { font-family: var(--fb); font-size: .5rem; letter-spacing: .12em; color: var(--bg); background: var(--black); padding: 2px 6px; font-weight: 700; }
+    .gnav-links { display: flex; list-style: none; margin-left: 36px; }
+    .gnav-links a { font-family: var(--fb); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--mid); text-decoration: none; padding: 0 16px; height: 52px; display: flex; align-items: center; border-right: 1px solid var(--border); transition: color .15s; }
+    .gnav-links li:first-child a { border-left: 1px solid var(--border); }
+    .gnav-links a:hover, .gnav-links a.active-nav { color: var(--black); }
+    .gnav-cta { margin-left: auto; font-family: var(--fb); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; background: var(--black); color: var(--bg); padding: 10px 22px; text-decoration: none; }
+    .gnav-cta:hover { opacity: .8; }
+
+    /* ── STICKY CHAPTER NAV ── */
+    #chapnav {
+      position: sticky; top: 52px; z-index: 500;
+      background: rgba(244,242,238,0.97); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; overflow-x: auto;
+    }
+    .chapnav-inner { display: flex; max-width: 1280px; margin: 0 auto; padding: 0 32px; width: 100%; }
+    .cn-btn {
+      font-family: var(--fb); font-size: .68rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      padding: 0 20px; height: 44px;
+      display: flex; align-items: center; gap: 8px;
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      transition: color .15s, background .15s;
+      position: relative;
+    }
+    .cn-btn:first-child { border-left: 1px solid var(--border); }
+    .cn-btn:hover { color: var(--black); background: var(--bg2); }
+    .cn-btn.active { color: var(--black); }
+    .cn-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--black); }
+    .cn-num { font-family: 'Barlow Condensed', monospace; font-size: .6rem; color: var(--muted); }
+
+    /* ── HERO ── */
+    #hero {
+      padding: 52px 0 0;
+      background: var(--black);
+      position: relative; overflow: hidden;
+    }
+    .hero-inner { max-width: 1280px; margin: 0 auto; padding: 80px 40px 72px; position: relative; z-index: 2; }
+    .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,.03) 1px, transparent 1px); background-size: 64px 64px; }
+    .hero-label { font-family: var(--fb); font-size: .65rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: rgba(244,242,238,.38); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .hero-label::before { content: ''; width: 20px; height: 1px; background: rgba(244,242,238,.38); display: block; }
+    .hero-h { font-family: var(--fd); font-size: clamp(2.6rem,5.5vw,6.2rem); font-weight: 700; text-transform: uppercase; color: var(--bg); line-height: .95; letter-spacing: -.01em; margin-bottom: 24px; }
+    .hero-h .dim { font-weight: 300; font-style: italic; color: rgba(244,242,238,.45); }
+    .hero-sub { font-family: var(--fb); font-size: 1rem; line-height: 1.78; color: rgba(244,242,238,.55); max-width: 640px; font-weight: 300; }
+
+    /* ── WRAP / SEC ── */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+    .sec { padding: 96px 0; border-bottom: 1px solid var(--border); scroll-margin-top: 96px; }
+    .sec-label { font-family: var(--fb); font-size: .62rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--muted); display: block; }
+    .sec-h { font-family: var(--fd); font-size: clamp(2rem,3.8vw,4rem); font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; color: var(--black); line-height: 1.0; margin-bottom: 12px; }
+    .sec-h .it { font-style: italic; font-weight: 300; color: var(--mid); }
+    .sec-sub { font-family: var(--fb); font-size: .9rem; color: var(--mid); line-height: 1.7; font-weight: 300; max-width: 640px; margin-bottom: 56px; }
+
+    /* ── CARD ── */
+    .card { background: var(--bg); border: 1px solid var(--border); padding: 40px; position: relative; transition: border-color .2s; }
+    .card:hover { border-color: var(--bhi); }
+    .card-dark { background: var(--black); border: 1px solid rgba(255,255,255,.08); padding: 40px; }
+    .card-title { font-family: var(--fd); font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; color: var(--black); margin-bottom: 6px; }
+    .card-title-light { font-family: var(--fd); font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; color: var(--bg); margin-bottom: 6px; }
+    .card-sub { font-family: var(--fb); font-size: .72rem; color: var(--muted); letter-spacing: .06em; margin-bottom: 28px; }
+    .card-sub-light { font-family: var(--fb); font-size: .72rem; color: rgba(244,242,238,.38); letter-spacing: .06em; margin-bottom: 28px; }
+
+    /* chart containers */
+    .ch { position: relative; width: 100%; height: 280px; }
+    .ch-sm { position: relative; width: 100%; height: 220px; }
+    .ch-lg { position: relative; width: 100%; height: 360px; }
+
+    /* ── GRID LAYOUTS ── */
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); border: 1px solid var(--border); }
+    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; background: var(--border); border: 1px solid var(--border); }
+    .g2 > *, .g3 > * { background: var(--bg); }
+
+    /* ── BIG STAT ── */
+    .bigstat { font-family: var(--fd); font-size: clamp(3.5rem,7vw,6.5rem); font-weight: 700; color: var(--black); line-height: .95; letter-spacing: -.02em; margin-bottom: 8px; }
+    .bigstat-label { font-family: var(--fb); font-size: .65rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .bigstat-desc { font-family: var(--fb); font-size: .88rem; line-height: 1.72; color: var(--mid); font-weight: 300; }
+
+    /* ── TABS ── */
+    .tab-row { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+    .tab-btn { font-family: var(--fb); font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 12px 20px; cursor: pointer; background: none; border: none; border-bottom: 2px solid transparent; transition: color .15s; margin-bottom: -1px; }
+    .tab-btn:hover { color: var(--black); }
+    .tab-btn.on { color: var(--black); border-bottom-color: var(--black); }
+
+    /* ── PLATFORM FAIL CARDS ── */
+    .pfail { background: var(--bg); padding: 36px 32px; border: 1px solid var(--border); border-top: 3px solid var(--black); transition: background .2s; }
+    .pfail:hover { background: var(--bg2); }
+    .pfail-icon { font-family: var(--fd); font-size: 2rem; font-weight: 700; color: var(--muted); margin-bottom: 16px; letter-spacing: .02em; }
+    .pfail-title { font-family: var(--fd); font-size: 1.15rem; font-weight: 700; text-transform: uppercase; color: var(--black); margin-bottom: 16px; }
+    .pfail-item { display: flex; gap: 10px; margin-bottom: 12px; }
+    .pfail-dot { width: 3px; background: var(--border); flex-shrink: 0; margin-top: 4px; border-radius: 2px; }
+    .pfail-text { font-family: var(--fb); font-size: .82rem; line-height: 1.65; color: var(--mid); font-weight: 300; }
+    .pfail-text strong { color: var(--black); font-weight: 600; }
+
+    /* ── CASHFLOW ── */
+    .cf-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+    .cf-row:last-child { border-bottom: none; }
+    .cf-name { font-family: var(--fb); font-size: .85rem; font-weight: 500; color: var(--ink); }
+    .cf-badge { font-family: var(--fb); font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; }
+    .cf-bad { background: rgba(12,13,14,.06); color: var(--muted); }
+    .cf-good { background: rgba(12,13,14,.92); color: var(--bg); }
+    .cf-conclusion { font-family: var(--fb); font-size: .8rem; line-height: 1.65; font-weight: 300; padding: 20px; background: var(--bg2); border-top: 1px solid var(--border); margin-top: 4px; }
+
+    /* ── LEGEND DOTS ── */
+    .legend-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .ld { display: flex; align-items: center; gap: 7px; font-family: var(--fb); font-size: .72rem; color: var(--mid); }
+    .ld-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── ARCHITECTURE FLOW ── */
+    .arch { display: grid; grid-template-columns: 1fr 48px 1fr 48px 1fr; align-items: center; margin-top: 52px; }
+    .arch-step { padding: 40px 32px; border: 1px solid var(--border); background: var(--bg); position: relative; min-height: 240px; display: flex; flex-direction: column; transition: background .2s; }
+    .arch-step:hover { background: var(--bg2); }
+    .arch-ghost { font-family: var(--fd); font-size: 4rem; font-weight: 700; color: rgba(12,13,14,.05); position: absolute; top: 12px; right: 16px; line-height: 1; }
+    .arch-badge { font-family: var(--fb); font-size: .58rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--bg); background: var(--black); padding: 3px 9px; display: inline-block; margin-bottom: 16px; }
+    .arch-title { font-family: var(--fd); font-size: 1.5rem; font-weight: 700; text-transform: uppercase; color: var(--black); margin-bottom: 12px; line-height: 1.1; }
+    .arch-desc { font-family: var(--fb); font-size: .82rem; line-height: 1.7; color: var(--mid); font-weight: 300; margin-top: auto; }
+    .arch-arr { display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--muted); }
+
+    /* ── REVEAL ── */
+    .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .rv.on { opacity: 1; transform: none; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 52px 40px; }
+    .foot-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; flex-wrap: wrap; }
+    .foot-brand { font-family: var(--fb); font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--black); }
+    .foot-src { font-family: var(--fb); font-size: .7rem; line-height: 1.8; color: var(--muted); max-width: 560px; font-weight: 300; }
+    .foot-src strong { color: var(--ink); font-weight: 500; }
+    .foot-copy { font-family: var(--fb); font-size: .65rem; color: var(--muted); margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); max-width: 1280px; margin-left: auto; margin-right: auto; }
+
+    @media (max-width: 960px) {
+      .gnav-links { display: none; }
+      .gnav, .wrap { padding-left: 20px; padding-right: 20px; }
+      .hero-inner { padding: 60px 20px 52px; }
+      .chapnav-inner { padding: 0 20px; }
+      .g2, .g3 { grid-template-columns: 1fr; }
+      .arch { grid-template-columns: 1fr; }
+      .arch-arr { display: none; }
+      .sec { padding: 64px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GLOBAL NAV -->
+<nav class="gnav">
+  <a href="index.html" class="gnav-logo">GigCareer <span class="beta">BETA</span></a>
+  <ul class="gnav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html">D-GIG</a></li>
+    <li><a href="insights.html" class="active-nav">Insights</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="#" class="gnav-cta">서비스 사전 신청</a>
+</nav>
+
+<!-- CHAPTER NAV -->
+<div id="chapnav">
+  <div class="chapnav-inner">
+    <a href="#sec1" class="cn-btn active" data-sec="sec1"><span class="cn-num">01</span> 유출 현황</a>
+    <a href="#sec2" class="cn-btn" data-sec="sec2"><span class="cn-num">02</span> 미스매치 / 한계</a>
+    <a href="#sec3" class="cn-btn" data-sec="sec3"><span class="cn-num">03</span> AI 파급효과</a>
+    <a href="#sec4" class="cn-btn" data-sec="sec4"><span class="cn-num">04</span> 자금 흐름</a>
+    <a href="#sec5" class="cn-btn" data-sec="sec5"><span class="cn-num">05</span> LER 해결책</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <p class="hero-label">GigCareer Research — 2026</p>
+    <h1 class="hero-h">
+      대한민국 청년 인구 유출과<br>
+      <span class="dim">대전 노동시장 미스매치</span><br>
+      심층 분석
+    </h1>
+    <p class="hero-sub">
+      본 보고서는 자연적 인구 감소가 아닌 <strong style="color:rgba(244,242,238,.85)">공간적 이동, 노동시장 이중구조, 기술 진보(AI)</strong>가 교차하는 복합 위기를 다룹니다. 대전광역시의 미시적 데이터를 통해 기존 플랫폼의 실패 원인을 규명하고, 비정형 경험의 자산화(LER)를 통한 새로운 생태계를 제안합니다.
+    </p>
+  </div>
+</header>
+
+<!-- ── SEC 1: 유출 현황 ── -->
+<section id="sec1" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">01 — 거시적 현황</p>
+    <h2 class="sec-h rv">청년 유출의 <span class="it">역설</span></h2>
+    <p class="sec-sub rv">인구 이동의 근본 원인과 대전의 '진학 유입-취업 유출' 깔때기 구조</p>
+
+    <div class="g2 rv">
+      <!-- 이동 사유 차트 -->
+      <div class="card">
+        <div class="card-title">2024년 전국 인구 이동 현황 및 사유</div>
+        <div class="card-sub">전체 이동률 12.3% (628만명) — 20대(23.9%), 30대(21.0%) 주도</div>
+        <div class="ch">
+          <canvas id="migrationChart"></canvas>
+        </div>
+        <p style="font-size:.72rem;color:var(--muted);margin-top:12px;font-family:var(--fb);line-height:1.6;">서울/대전 등 주요 대도시의 순유출 사유 1위는 '주택'이나, '직업'이 결합된 복합 이동임.</p>
+      </div>
+
+      <!-- 유출 도넛 차트 (다크 카드) -->
+      <div class="card-dark">
+        <div class="card-title-light">대전 소재 대학 졸업자 취업 유출 (2020)</div>
+        <div class="card-sub-light">총 대졸자 (취업대상) 15,094명</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+          <div class="ch-sm">
+            <canvas id="outflowChart"></canvas>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="padding:16px 20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);">
+              <div style="font-family:var(--fb);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(244,242,238,.4);margin-bottom:6px;">대전 지역 내 취업</div>
+              <div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--bg);line-height:1;">42.1%</div>
+              <div style="font-family:var(--fb);font-size:.75rem;color:rgba(244,242,238,.4);">약 6,354명</div>
+            </div>
+            <div style="padding:16px 20px;background:rgba(220,50,50,.12);border:1px solid rgba(220,50,50,.25);">
+              <div style="font-family:var(--fb);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(220,130,130,.7);margin-bottom:6px;">타 지역 유출</div>
+              <div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:#F87171;line-height:1;">57.9%</div>
+              <div style="font-family:var(--fb);font-size:.75rem;color:rgba(248,113,113,.6);">약 8,740명</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SEC 2: 미스매치 / 한계 ── -->
+<section id="sec2" class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">02 — 객관적 미스매치</p>
+    <h2 class="sec-h rv">구조적 실패의 <span class="it">원인</span></h2>
+    <p class="sec-sub rv">단순 일자리 부족이 아닌 수요-공급의 불일치 및 기존 HR 플랫폼의 구조적 실패</p>
+
+    <!-- 미스매치 차트 -->
+    <div class="card rv" style="margin-bottom:2px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:28px;">
+        <div>
+          <div class="card-title">대전 지역 구인-구직 미스매치 (워크넷 DB)</div>
+          <div class="card-sub" style="margin-bottom:0;">계열별 수요-공급 불균형 분석</div>
+        </div>
+        <div class="tab-row" style="border:1px solid var(--border);margin:0;background:var(--bg);">
+          <button class="tab-btn on" id="tb-vol" onclick="switchMismatch('volume')">절대량 비교</button>
+          <button class="tab-btn" id="tb-rat" onclick="switchMismatch('ratio')">구인 배수</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:32px;align-items:center;">
+        <div class="ch">
+          <canvas id="mismatchChart"></canvas>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="padding:20px;background:var(--bg2);border-left:3px solid var(--black);">
+            <div style="font-family:var(--fd);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:6px;">인문/사회계열 초과공급 심각</div>
+            <p style="font-family:var(--fb);font-size:.8rem;line-height:1.65;color:var(--mid);font-weight:300;">구인(9,749명) 대비 구직(27,888명)으로 1자리당 <strong style="color:var(--black);">2.86명</strong>의 과열 경쟁.</p>
+          </div>
+          <div style="padding:20px;background:var(--bg2);border-left:3px solid var(--bhi);">
+            <div style="font-family:var(--fd);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:6px;">눈높이 격차</div>
+            <p style="font-family:var(--fb);font-size:.8rem;line-height:1.65;color:var(--mid);font-weight:300;">청년은 '임금·성장·조직문화'를 원하나, 지역 중소기업은 이를 제공하지 못함.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 플랫폼 실패 3카드 -->
+    <div class="g3 rv" style="margin-top:2px;">
+      <div class="pfail">
+        <div class="pfail-icon">KM.</div>
+        <div class="pfail-title">거대 긱 플랫폼 (크몽, 숨고)</div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>포트폴리오 부재:</strong> 지방 청년/대학생은 초기 진입 시 증명할 레퍼런스가 없어 수주 불가능.</p></div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>단가 경쟁:</strong> 글로벌/수도권 경력자와의 극심한 저가 경쟁으로 밀려남.</p></div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>로컬 소속감 X:</strong> 철저히 파편화된 업무로 지역 정주성에 기여하지 않음.</p></div>
+      </div>
+      <div class="pfail">
+        <div class="pfail-icon">JK.</div>
+        <div class="pfail-title">전통 채용 포털 (잡코리아, 사람인)</div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>스펙 중심 매칭:</strong> 실무 역량이 아닌 학벌/자격증 위주 필터링으로 지역 인재 소외.</p></div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>정보 비대칭:</strong> 지역 중소기업의 실제 조직문화·성장성 데이터 부족.</p></div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>결과:</strong> 구조적 미스매치를 방치한 채 단순 중개에 머무름.</p></div>
+      </div>
+      <div class="pfail">
+        <div class="pfail-icon">B2G.</div>
+        <div class="pfail-title">정부 매칭/지원금 사업</div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>단기 알바화:</strong> 실질적 커리어 성장 없는 단순 행정 보조 일자리 양산.</p></div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>부정 수급/일회성:</strong> '청년일자리도약장려금' 지원금 단절 시 고용 유지 실패.</p></div>
+        <div class="pfail-item"><div class="pfail-dot"></div><p class="pfail-text"><strong>역량 강화 실패:</strong> 근본적 스킬 갭을 좁히지 못함.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SEC 3: AI 파급효과 ── -->
+<section id="sec3" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">03 — AI 파급효과</p>
+    <h2 class="sec-h rv">직무 소멸과 <span class="it">역량 전환</span></h2>
+
+    <div class="card-dark rv">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+        <div>
+          <div class="card-title-light" style="font-size:1.35rem;margin-bottom:16px;">주니어가 경험을 쌓던 자리가 사라지고 있습니다.</div>
+          <p style="font-family:var(--fb);font-size:.9rem;line-height:1.78;color:rgba(244,242,238,.55);font-weight:300;margin-bottom:28px;">생성형 AI의 보급으로 기업이 신입/주니어에게 요구하는 핵심 역량이 <strong style="color:rgba(244,242,238,.85);">'실행력'에서 'AI 툴 활용 및 비정형 문제 정의 능력'</strong>으로 급격히 이동하고 있습니다.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="padding:18px 20px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);">
+              <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;text-transform:uppercase;color:#F87171;margin-bottom:6px;">소멸하는 역량</div>
+              <p style="font-family:var(--fb);font-size:.82rem;color:rgba(244,242,238,.45);font-weight:300;line-height:1.6;">단순 지식 노동 · 기초 코딩 · 텍스트 요약/번역 · 기본 행정 보조</p>
+            </div>
+            <div style="padding:18px 20px;background:rgba(22,184,90,.1);border:1px solid rgba(22,184,90,.2);">
+              <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;text-transform:uppercase;color:#4ADE80;margin-bottom:6px;">급부상하는 역량</div>
+              <p style="font-family:var(--fb);font-size:.82rem;color:rgba(244,242,238,.45);font-weight:300;line-height:1.6;">AI 워크플로우 설계 · 도메인 특화 프롬프팅 · 복합 문제 해결 및 소통</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--fb);font-size:.68rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(244,242,238,.3);margin-bottom:16px;">AI 도입에 따른 주니어 업무 요구도 변화 예측</div>
+          <div class="legend-row">
+            <div class="ld"><div class="ld-dot" style="background:#F87171;"></div><span style="color:rgba(244,242,238,.55);">단순 실행형 직무</span></div>
+            <div class="ld"><div class="ld-dot" style="background:#4ADE80;"></div><span style="color:rgba(244,242,238,.55);">AI 문제해결 역량</span></div>
+          </div>
+          <div class="ch">
+            <canvas id="aiChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SEC 4: 자금 흐름 ── -->
+<section id="sec4" class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">04 — 생태계 현금 흐름</p>
+    <h2 class="sec-h rv">누가, 어디에 <span class="it">돈을 쓰는가</span></h2>
+    <p class="sec-sub rv">문제 해결을 위해 예산이 투입되는 방식과 새로운 지불 의향(WTP)의 방향</p>
+
+    <div class="g2 rv">
+      <!-- B2G -->
+      <div class="card" style="border-top:3px solid rgba(220,50,50,.6);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:8px;">
+          <div class="card-title">B2G (정부/지자체) 예산</div>
+          <span style="font-family:var(--fb);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(220,50,50,.7);background:rgba(220,50,50,.08);border:1px solid rgba(220,50,50,.2);padding:4px 10px;">비효율 발생 구간</span>
+        </div>
+        <div class="cf-row"><span class="cf-name">지방소멸대응기금 / 인프라</span><span class="cf-badge cf-bad">건물/하드웨어 편중</span></div>
+        <div class="cf-row"><span class="cf-name">청년일자리도약장려금</span><span class="cf-badge cf-bad">임금 보전 — 단기 효과</span></div>
+        <div class="cf-row"><span class="cf-name">창업 지원금</span><span class="cf-badge cf-bad">생존율 저조 / 소수 편중</span></div>
+        <div class="cf-row"><span class="cf-name">지역 대학 산학협력</span><span class="cf-badge cf-bad">성과 연계 미흡</span></div>
+        <p class="cf-conclusion" style="color:rgba(220,50,50,.7);">막대한 공공 예산이 투입되나, 청년의 '실무 역량 자산화'나 기업의 '채용 리스크 감소'라는 본질적 문제를 해결하지 못해 현금이 증발함.</p>
+      </div>
+
+      <!-- B2B -->
+      <div class="card" style="border-top:3px solid var(--black);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:8px;">
+          <div class="card-title">B2B (수도권/글로벌 기업) 예산</div>
+          <span style="font-family:var(--fb);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--black);padding:4px 10px;">새로운 WTP 방향</span>
+        </div>
+        <div class="cf-row"><span class="cf-name">스킬 검증 및 평가 비용</span><span class="cf-badge cf-good">WTP 상승 ↑</span></div>
+        <div class="cf-row"><span class="cf-name">로컬 프로젝트 외주 (Gig)</span><span class="cf-badge cf-good">WTP 상승 ↑</span></div>
+        <div class="cf-row"><span class="cf-name">LER 기반 채용 플랫폼 구독</span><span class="cf-badge cf-good">WTP 상승 ↑</span></div>
+        <div class="cf-row"><span class="cf-name">전통적 헤드헌팅 수수료</span><span class="cf-badge cf-bad">정체/하락 ↓</span></div>
+        <p class="cf-conclusion">기업은 이력서 밖의 '실무 데이터'를 확보하고 검증하는 데 기꺼이 지불할 의향이 있음. Skills-based Hiring 트렌드의 핵심 동인.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SEC 5: LER 해결책 ── -->
+<section id="sec5" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">05 — 미래 전략</p>
+    <h2 class="sec-h rv">비정형 경험의 자산화, <span class="it">LER</span></h2>
+    <p class="sec-sub rv">로컬에서의 단기 프로젝트(Gig)를 학습·고용 기록(LER)으로 자산화하여 글로벌 커리어와 연결하는 생태계</p>
+
+    <!-- WTP 산점도 -->
+    <div class="card rv" style="margin-bottom:2px;">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:40px;align-items:center;">
+        <div>
+          <div class="card-title">스킬 기반 채용과 지불 의향</div>
+          <div class="card-sub">실무 역량 검증 신뢰도 vs 기업 WTP</div>
+          <p style="font-family:var(--fb);font-size:.85rem;line-height:1.72;color:var(--mid);font-weight:300;margin-bottom:20px;">글로벌 채용 시장은 학위/자격증 중심에서 <strong style="color:var(--black);">'검증된 실무 프로젝트 경험'</strong>으로 이동했습니다. 기업은 불확실성을 줄여주는 LER 데이터에 가장 높은 프리미엄을 부여합니다.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="ld"><div class="ld-dot" style="background:var(--bg3);border:1px solid var(--border);"></div>학위/스펙: 검증 비용 높고 실무 연관성 낮음</div>
+            <div class="ld"><div class="ld-dot" style="background:var(--black);"></div><strong style="color:var(--black);">D-GIG LER: 즉각적 실무 투입 여부 확인 가능</strong></div>
+          </div>
+        </div>
+        <div class="ch-lg"><canvas id="wtpPlot"></canvas></div>
+      </div>
+    </div>
+
+    <!-- D-GIG 아키텍처 -->
+    <div class="rv" style="margin-top:48px;">
+      <div style="font-family:var(--fd);font-size:1.4rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;color:var(--black);margin-bottom:32px;text-align:center;">D-GIG 솔루션 아키텍처</div>
+      <div class="arch">
+        <div class="arch-step">
+          <span class="arch-ghost">01</span>
+          <div class="arch-badge">Local Gig</div>
+          <div class="arch-title">로컬 실무 프로젝트</div>
+          <p class="arch-desc">지역 기업/대학의 단기 실무 프로젝트를 수행하며 진짜 경험을 쌓습니다. 단순 아르바이트가 아닌 실제 비즈니스 문제를 해결합니다.</p>
+        </div>
+        <div class="arch-arr">→</div>
+        <div class="arch-step">
+          <span class="arch-ghost">02</span>
+          <div class="arch-badge">LER Data</div>
+          <div class="arch-title">경험의 자산화</div>
+          <p class="arch-desc">과정 및 결과의 데이터화. 스킬 인증 및 검증된 학습·고용 기록(LER)이 자동으로 생성·저장됩니다.</p>
+        </div>
+        <div class="arch-arr">→</div>
+        <div class="arch-step">
+          <span class="arch-ghost">03</span>
+          <div class="arch-badge">Global Match</div>
+          <div class="arch-title">글로벌 커리어 연계</div>
+          <p class="arch-desc">수도권/글로벌 원격근무 스킬 기반 채용과 연결됩니다. 지역에 머물면서 글로벌 커리어를 시작할 수 있습니다.</p>
+        </div>
+      </div>
+      <p style="text-align:center;font-family:var(--fb);font-size:.88rem;color:var(--mid);font-weight:300;line-height:1.75;max-width:640px;margin:28px auto 0;">이 과정은 청년들에게 <strong style="color:var(--black);">"성장 기회와 인정 욕구"</strong>를 로컬 커뮤니티 내에서 충족시켜주며, 맹목적인 서울행 욕망을 대체할 수 있는 심리·사회적 동인이 됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div>
+      <div class="foot-brand">GigCareer</div>
+      <div style="font-family:var(--fb);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px;">Insights Report — 2026</div>
+    </div>
+    <div class="foot-src">
+      <strong>데이터 출처 및 참고 문헌</strong><br>
+      통계청 인구이동통계 (2024) · 고등교육기관 졸업자 취업통계 (2020) · 워크넷 대전 구인구직 DB (2022) · WEF Future of Jobs Report (2026) · Skills-first Hiring, OECD Reports
+    </div>
+  </div>
+  <p class="foot-copy">© 2026 GigCareer Inc. All rights reserved. — Opportunity beyond Seoul.</p>
+</footer>
+
+<script>
+  // ── 공통 차트 설정 ──
+  Chart.defaults.font.family = "'Barlow', sans-serif";
+  Chart.defaults.color = 'rgba(12,13,14,0.45)';
+
+  const palette = {
+    black: '#0C0D0E',
+    mid:   'rgba(12,13,14,0.45)',
+    bg2:   '#ECEAE5',
+    bg3:   '#E4E1DB',
+    border:'rgba(12,13,14,0.1)',
+    red:   '#F87171',
+    green: '#4ADE80'
+  };
+
+  const tt = {
+    backgroundColor: 'rgba(12,13,14,0.92)',
+    titleColor: '#EEECEA',
+    bodyColor: 'rgba(238,236,234,.7)',
+    padding: 12,
+    cornerRadius: 0,
+    titleFont: { size: 12, weight: '700', family: "'Barlow Condensed', sans-serif" },
+    bodyFont:  { size: 12, family: "'Barlow', sans-serif" }
+  };
+
+  // ── Chart 1: 인구 이동 사유 ──
+  new Chart(document.getElementById('migrationChart'), {
+    type: 'bar',
+    data: {
+      labels: ['주택 (Housing)', '가족 (Family)', '직업 (Job)', '기타 (교육, 교통 등)'],
+      datasets: [{
+        data: [34.5, 24.7, 21.7, 19.1],
+        backgroundColor: [palette.black, palette.bg3, palette.bg3, palette.bg3],
+        borderRadius: 0
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { ...tt, callbacks: { label: c => ` ${c.raw}%` } } },
+      scales: {
+        x: { beginAtZero: true, max: 40, grid: { color: palette.border }, ticks: { font: { size: 11 } } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // ── Chart 2: 유출 도넛 ──
+  new Chart(document.getElementById('outflowChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['대전 내 취업 (42.1%)', '타 지역 유출 (57.9%)'],
+      datasets: [{ data: [42.1, 57.9], backgroundColor: ['rgba(238,236,234,.2)', '#F87171'], borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...tt, callbacks: { label: c => ` ${c.raw}%` } }
+      }
+    }
+  });
+
+  // ── Chart 3: 미스매치 ──
+  let mismatchInst = null;
+  const mismatchData = {
+    volume: {
+      labels: ['인문/사회계열', '공학계열'],
+      datasets: [
+        { label: '구인 인원 (수요)', data: [9749, 4000], backgroundColor: palette.bg3, borderRadius: 0 },
+        { label: '구직 인원 (공급)', data: [27888, 9512], backgroundColor: palette.black, borderRadius: 0 }
+      ],
+      yTitle: '인원 수 (명)'
+    },
+    ratio: {
+      labels: ['인문/사회계열', '공학계열'],
+      datasets: [{ label: '구인배수 (구직/구인)', data: [2.86, 2.38], backgroundColor: palette.black, borderRadius: 0 }],
+      yTitle: '경쟁 비율 (배수)'
+    }
+  };
+
+  function renderMismatch(type) {
+    const d = mismatchData[type];
+    if (mismatchInst) mismatchInst.destroy();
+    mismatchInst = new Chart(document.getElementById('mismatchChart'), {
+      type: 'bar',
+      data: { labels: d.labels, datasets: d.datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { tooltip: tt, legend: { labels: { font: { size: 11 }, boxWidth: 12, padding: 16 } } },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: d.yTitle, font: { size: 11 } }, grid: { color: palette.border } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  window.switchMismatch = function(type) {
+    document.getElementById('tb-vol').classList.toggle('on', type === 'volume');
+    document.getElementById('tb-rat').classList.toggle('on', type === 'ratio');
+    renderMismatch(type);
+  };
+
+  renderMismatch('volume');
+
+  // ── Chart 4: AI 파급효과 ──
+  new Chart(document.getElementById('aiChart'), {
+    type: 'line',
+    data: {
+      labels: ['2023', '2024', '2025', '2026', '2027(E)'],
+      datasets: [
+        { label: '단순 실행형 주니어 직무', data: [100, 85, 60, 40, 25], borderColor: palette.red, backgroundColor: 'transparent', tension: 0.3, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: palette.red },
+        { label: 'AI 문제해결/설계 역량', data: [30, 45, 65, 85, 100], borderColor: palette.green, backgroundColor: 'transparent', tension: 0.3, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: palette.green }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...tt, backgroundColor: 'rgba(12,13,14,.92)' }
+      },
+      scales: {
+        y: { grid: { color: 'rgba(255,255,255,.08)' }, ticks: { color: 'rgba(244,242,238,.35)' } },
+        x: { grid: { display: false }, ticks: { color: 'rgba(244,242,238,.35)' } }
+      }
+    }
+  });
+
+  // ── WTP 버블 차트 (Chart.js bubble) ──
+  const wtpLabels = ['이력서 자기소개', '단순 학위', '일반 자격증', '단기 인턴십', 'D-GIG 검증 프로젝트 (LER)'];
+  const wtpColors = ['#ECEAE5', '#D4D0C8', '#B8B4A8', '#6B6760', '#0C0D0E'];
+  const wtpBorder = ['rgba(12,13,14,.3)','rgba(12,13,14,.3)','rgba(12,13,14,.3)','rgba(12,13,14,.3)','rgba(12,13,14,0)'];
+  const wtpPoints = [
+    { x: 1, y: 20, r: 8 },
+    { x: 2, y: 35, r: 11 },
+    { x: 3, y: 50, r: 14 },
+    { x: 4, y: 85, r: 20 },
+    { x: 5, y: 95, r: 28 }
+  ];
+
+  new Chart(document.getElementById('wtpPlot'), {
+    type: 'bubble',
+    data: {
+      datasets: wtpPoints.map((p, i) => ({
+        label: wtpLabels[i],
+        data: [p],
+        backgroundColor: wtpColors[i],
+        borderColor: wtpBorder[i],
+        borderWidth: 1.5
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tt,
+          callbacks: {
+            label: ctx => ` ${wtpLabels[ctx.datasetIndex]}  WTP: ${ctx.raw.y}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 0, max: 6,
+          title: { display: true, text: '실무 역량 검증 신뢰도  (Low → High)', font: { size: 11 } },
+          grid: { color: palette.border },
+          ticks: { stepSize: 1, callback: v => v === 0 ? '' : v }
+        },
+        y: {
+          min: 0, max: 110,
+          title: { display: true, text: '기업 지불 의향 WTP / 채용 우선순위', font: { size: 11 } },
+          grid: { color: palette.border }
+        }
+      }
+    },
+    plugins: [{
+      id: 'bubbleLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((ds, i) => {
+          const meta = chart.getDatasetMeta(i);
+          if (!meta.hidden && meta.data.length) {
+            const pt = meta.data[0];
+            ctx.save();
+            ctx.font = "500 11px 'Barlow Condensed', sans-serif";
+            ctx.fillStyle = 'rgba(12,13,14,.55)';
+            ctx.textAlign = 'center';
+            ctx.fillText(wtpLabels[i], pt.x, pt.y - wtpPoints[i].r - 6);
+            ctx.restore();
+          }
+        });
+      }
+    }]
+  });
+
+  // ── 스크롤 reveal ──
+  const rv = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 100);
+      rv.unobserve(e.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rv').forEach(el => rv.observe(el));
+
+  // ── 챕터 nav 스크롤스파이 ──
+  const secs = ['sec1','sec2','sec3','sec4','sec5'];
+  const cnBtns = document.querySelectorAll('.cn-btn');
+
+  const spyObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        cnBtns.forEach(b => b.classList.remove('active'));
+        const active = document.querySelector(`.cn-btn[data-sec="${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  secs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) spyObs.observe(el);
+  });
+</script>
+</body>
+</html>

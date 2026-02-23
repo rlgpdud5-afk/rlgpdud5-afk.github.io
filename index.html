@@ -1,630 +1,935 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대한민국 청년 인구 유출과 대전 노동시장 미스매치 심층 분석</title>
-    
-    <!-- Required Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigCareer — Opportunity beyond Seoul</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #F4F2EE;
+      --bg2:       #ECEAE5;
+      --bg3:       #E4E1DB;
+      --black:     #0C0D0E;
+      --ink:       #1A1B1D;
+      --mid:       rgba(12,13,14,0.55);
+      --muted:     rgba(12,13,14,0.35);
+      --border:    rgba(12,13,14,0.1);
+      --border-hi: rgba(12,13,14,0.2);
+      --accent:    #0C0D0E;
+      --green:     #16B85A;
+      --f-display: 'Barlow Condensed', sans-serif;
+      --f-body:    'Barlow', sans-serif;
+    }
 
-    <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #F8FAFC; color: #0F172A; }
-        
-        /* STRICT CHART CONTAINER STYLING */
-        .chart-container { 
-            position: relative; 
-            width: 100%; 
-            max-width: 100%; 
-            margin-left: auto; 
-            margin-right: auto; 
-            height: 350px; 
-            max-height: 400px; 
-        }
-        @media (min-width: 768px) { 
-            .chart-container { height: 400px; } 
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      font-weight: 400;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        /* Custom Scrollbar for heavy content */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 52px;
+      display: flex; align-items: center;
+      padding: 0 32px;
+      background: rgba(244,242,238,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
 
-        /* UI Enhancements */
-        .glass-header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #E2E8F0; }
-        .data-card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.2s; }
-        .data-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        .tab-btn.active { border-bottom: 2px solid #2563EB; color: #2563EB; font-weight: 700; }
-        
-        /* HTML Diagram Elements */
-        .flow-arrow { display: flex; align-items: center; justify-content: center; color: #CBD5E1; font-size: 1.5rem; font-weight: bold; }
-    </style>
+    .logo {
+      font-family: var(--f-body);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
 
-    <!-- Chosen Palette: Vibrant Professional (Primary: Blue #2563EB, Secondary: Indigo #4F46E5, Accent: Amber #F59E0B, Alert: Rose #E11D48, Backgrounds: Slate #F8FAFC) -->
-    
-    <!-- Application Structure Plan: 
-         To handle the immense amount of detailed data requested, the SPA uses a "Dashboard & Deep Dive" architecture.
-         - Navigation: Sticky top bar for jumping between 5 core thematic chapters.
-         - Sec 1 (Macro & Paradox): High-level stats, migration reasons, and the Daejeon retention vs outflow paradox.
-         - Sec 2 (Mismatch & Platform Failure): Interactive tabs showing specific Worknet data, Radar charts for expectation gaps, and a structured grid analyzing why Kmong/JobKorea fail.
-         - Sec 3 (AI Shock): Line charts and qualitative text detailing the destruction of entry-level jobs and shift to problem-solving.
-         - Sec 4 (Cash Flow): Visual breakdown of B2G (inefficient) vs B2B (skills-based) spending.
-         - Sec 5 (D-GIG & LER): Plotly scatter plot showing 'Willingness to Pay' for verified skills, culminating in the solution architecture.
-         This structure allows users to scroll linearly for the story, or use interactions (tabs/buttons) to drill into specific dense data points without UI clutter.
-    -->
-    
-    <!-- Visualization & Content Choices: 
-         - Migration Reasons -> Goal: Compare -> Horizontal Bar Chart (Chart.js) -> Easy to read categorical percentages.
-         - Daejeon Retention -> Goal: Inform -> Doughnut Chart (Chart.js) -> Highlights the 57.9% outflow visually.
-         - Supply/Demand by Major -> Goal: Compare -> Grouped Bar Chart (Chart.js) -> Best for comparing two metrics (jobs vs seekers) side-by-side across categories.
-         - Expectation Gap -> Goal: Compare -> Radar Chart (Chart.js) -> Multi-variable assessment of Youth vs SME reality.
-         - Platform Failures -> Goal: Organize -> CSS Grid Cards -> Text-heavy analysis needs clean layout, not charts.
-         - AI Job Impact -> Goal: Change -> Line Chart (Chart.js) -> Shows trends over time for Execution vs Strategy roles.
-         - Willingness to Pay -> Goal: Relationships -> Scatter Plot (Plotly WebGL) -> Shows correlation between Trust/Verification and Market Value (Salary/Hiring priority).
-         CONFIRMING NO SVG OR MERMAID USED. All diagrams use HTML/Tailwind styling.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    .beta-tag {
+      font-family: var(--f-body);
+      font-size: .5rem;
+      letter-spacing: .12em;
+      color: var(--bg);
+      background: var(--black);
+      padding: 2px 6px;
+      font-weight: 700;
+    }
+
+    .nav-links { display: flex; list-style: none; margin-left: 36px; }
+    .nav-links a {
+      font-family: var(--f-body);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      padding: 0 16px;
+      height: 52px;
+      display: flex; align-items: center;
+      border-right: 1px solid var(--border);
+      transition: color .16s;
+    }
+    .nav-links li:first-child a { border-left: 1px solid var(--border); }
+    .nav-links a:hover { color: var(--black); }
+
+    .nav-cta {
+      margin-left: auto;
+      font-family: var(--f-body);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--black);
+      color: var(--bg);
+      padding: 10px 22px;
+      text-decoration: none;
+      transition: opacity .16s;
+    }
+    .nav-cta:hover { opacity: .8; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      padding: 52px 0 0;
+      position: relative; overflow: hidden;
+      background: var(--bg);
+    }
+
+    .hero-inner {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      max-width: 1280px; margin: 0 auto; width: 100%;
+      padding: 80px 40px 0;
+      position: relative; z-index: 2;
+    }
+
+    /* subtle grid */
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(ellipse 100% 90% at 50% 0%, black 0%, transparent 80%);
+      opacity: .5;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--f-body);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+      opacity: 0; animation: fu .7s ease .15s forwards;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--muted); }
+
+    h1 {
+      font-family: var(--f-display);
+      font-size: clamp(5rem, 11vw, 13rem);
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: -.01em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0; animation: fu .9s ease .28s forwards;
+    }
+
+    h1 .italic {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    .hero-sub {
+      max-width: 540px;
+      margin-top: 36px;
+      font-family: var(--f-body);
+      font-size: 1rem;
+      line-height: 1.78;
+      color: var(--mid);
+      font-weight: 300;
+      opacity: 0; animation: fu .9s ease .46s forwards;
+    }
+
+    .hero-btns {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-top: 44px;
+      opacity: 0; animation: fu .9s ease .62s forwards;
+    }
+
+    .btn-fill {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: var(--black); color: var(--bg);
+      padding: 14px 28px;
+      text-decoration: none; display: inline-block;
+      transition: opacity .16s, transform .14s;
+    }
+    .btn-fill:hover { opacity: .8; transform: translateY(-1px); }
+
+    .btn-line {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: transparent; color: var(--mid);
+      padding: 13px 28px;
+      text-decoration: none; display: inline-block;
+      border: 1px solid var(--border-hi);
+      transition: border-color .16s, color .16s;
+    }
+    .btn-line:hover { border-color: var(--black); color: var(--black); }
+
+    /* hero bottom stat bar */
+    .hero-stats {
+      max-width: 1280px; margin: 0 auto; width: 100%;
+      padding: 0 40px;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      margin-top: 80px;
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 2;
+      opacity: 0; animation: fi .9s ease 1.05s forwards;
+    }
+
+    .hs {
+      padding: 28px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .hs:last-child { border-right: none; }
+
+    .hs-val {
+      font-family: var(--f-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1;
+      letter-spacing: -.01em;
+      margin-bottom: 6px;
+    }
+
+    .hs-lbl {
+      font-family: var(--f-body);
+      font-size: .62rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── SECTION COMMON ── */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+    .sec { padding: 120px 0; border-bottom: 1px solid var(--border); }
+
+    .sec-label {
+      font-family: var(--f-body);
+      font-size: .62rem; font-weight: 600;
+      letter-spacing: .28em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--muted); display: block; }
+
+    .sec-h {
+      font-family: var(--f-display);
+      font-size: clamp(2.6rem, 4.5vw, 5.2rem);
+      font-weight: 700;
+      line-height: 1.0;
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      color: var(--black);
+      margin-bottom: 24px;
+    }
+    .sec-h .italic { font-style: italic; font-weight: 300; color: var(--mid); }
+
+    .sec-body {
+      font-family: var(--f-body);
+      font-size: .97rem; line-height: 1.82;
+      color: var(--mid); max-width: 580px;
+      font-weight: 300;
+    }
+
+    /* REVEAL */
+    .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .rv.on { opacity: 1; transform: none; }
+
+    /* ── S2 PARADOX ── */
+    #paradox { background: var(--bg); }
+
+    .paradox-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 64px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .pdata {
+      background: var(--bg);
+      padding: 52px 44px;
+      position: relative;
+    }
+
+    .pdata-num {
+      font-family: var(--f-display);
+      font-size: clamp(4.5rem,8vw,8.5rem);
+      font-weight: 700;
+      color: var(--black);
+      line-height: .95;
+      letter-spacing: -.02em;
+      margin-bottom: 12px;
+    }
+
+    .pdata-unit {
+      font-family: var(--f-body);
+      font-size: .65rem; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pdata-desc {
+      font-family: var(--f-body);
+      font-size: .9rem; line-height: 1.72;
+      color: var(--mid); font-weight: 300;
+    }
+
+    .paradox-full {
+      background: var(--bg2);
+      padding: 48px 44px;
+      border: none;
+      grid-column: span 2;
+    }
+    .paradox-full .sec-body { max-width: 100%; font-size: 1.05rem; }
+
+    /* ── S3 SHIFT ── */
+    #shift { background: var(--bg2); }
+
+    .shift-quote {
+      font-family: var(--f-display);
+      font-size: clamp(1.4rem, 2.8vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.45;
+      color: var(--mid);
+      max-width: 900px;
+      margin-top: 52px;
+      letter-spacing: -.005em;
+    }
+
+    .shift-quote .dy {
+      color: rgba(12,13,14,.18);
+      text-decoration: line-through;
+      text-decoration-color: rgba(12,13,14,.15);
+      font-weight: 300;
+    }
+    .shift-quote .ri {
+      color: var(--black);
+      font-weight: 700;
+    }
+
+    .shift-facts {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--border);
+      background: var(--border);
+      margin-top: 64px;
+      gap: 1px;
+    }
+
+    .sf {
+      background: var(--bg2);
+      padding: 40px 36px;
+      transition: background .2s;
+    }
+    .sf:hover { background: var(--bg3); }
+
+    .sf-idx {
+      font-family: var(--f-body);
+      font-size: .6rem; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .sf-title {
+      font-family: var(--f-display);
+      font-size: 1.25rem; font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .01em;
+      color: var(--black);
+      margin-bottom: 12px; line-height: 1.2;
+    }
+
+    .sf-desc {
+      font-family: var(--f-body);
+      font-size: .85rem; line-height: 1.72;
+      color: var(--mid); font-weight: 300;
+    }
+
+    /* ── S4 SOLUTION ── */
+    #solution { background: var(--bg); }
+
+    .sol-steps {
+      display: grid;
+      grid-template-columns: 1fr 36px 1fr 36px 1fr;
+      align-items: center;
+      margin-top: 64px;
+    }
+
+    .sol-step {
+      padding: 44px 36px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      min-height: 300px;
+      display: flex; flex-direction: column;
+      transition: background .2s, border-color .2s;
+    }
+    .sol-step:hover { background: var(--bg2); border-color: var(--border-hi); }
+
+    .sol-arr {
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--f-body);
+      font-size: 1rem; color: var(--muted);
+    }
+
+    .sol-badge {
+      font-family: var(--f-body);
+      font-size: .58rem; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--bg); background: var(--black);
+      padding: 3px 9px;
+      display: inline-block; margin-bottom: 20px;
+    }
+
+    .sol-ghost {
+      font-family: var(--f-display);
+      font-size: 4rem; font-weight: 700;
+      color: rgba(12,13,14,.05);
+      position: absolute; top: 14px; right: 20px;
+      line-height: 1; letter-spacing: -.02em;
+    }
+
+    .sol-title {
+      font-family: var(--f-display);
+      font-size: 1.7rem; font-weight: 700;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 14px; line-height: 1.1;
+      letter-spacing: -.01em;
+    }
+
+    .sol-desc {
+      font-family: var(--f-body);
+      font-size: .85rem; line-height: 1.75;
+      color: var(--mid); font-weight: 300;
+      margin-top: auto;
+    }
+
+    /* terminal */
+    .terminal {
+      margin-top: 52px;
+      background: var(--black);
+      padding: 28px 32px;
+      max-width: 700px;
+    }
+    .t-bar { display: flex; gap: 7px; margin-bottom: 20px; }
+    .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .t-line {
+      font-family: 'Barlow Condensed', monospace;
+      font-size: .8rem; line-height: 2;
+      color: rgba(244,242,238,.4);
+      letter-spacing: .02em;
+    }
+    .t-line .g { color: #16B85A; }
+    .t-line .w { color: var(--bg); }
+    .t-line .cursor::after { content: '█'; animation: blink 1.1s step-end infinite; color: #16B85A; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── S5 VALUE ── */
+    #value { background: var(--bg2); }
+
+    .val-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 64px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .vc {
+      background: var(--bg2);
+      padding: 60px 52px;
+      position: relative;
+      transition: background .2s;
+    }
+    .vc:hover { background: var(--bg3); }
+
+    .vc-tag {
+      font-family: var(--f-body);
+      font-size: .6rem; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .vc-tag::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .vc-title {
+      font-family: var(--f-display);
+      font-size: 2rem; font-weight: 700;
+      text-transform: uppercase;
+      color: var(--black);
+      line-height: 1.1; margin-bottom: 20px;
+      letter-spacing: -.01em;
+    }
+    .vc-title .italic { font-style: italic; font-weight: 300; }
+
+    .vc-body {
+      font-family: var(--f-body);
+      font-size: .92rem; line-height: 1.8;
+      color: var(--mid); font-weight: 300;
+    }
+    .vc-body strong { color: var(--black); font-weight: 600; }
+
+    /* ── S6 CTA ── */
+    #cta-sec { background: var(--bg); border-bottom: none; }
+
+    .cta-box {
+      position: relative;
+      padding: 104px 72px;
+      background: var(--black);
+      overflow: hidden;
+    }
+
+    .cta-ghost {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 30vw; font-weight: 700;
+      color: rgba(244,242,238,.03);
+      line-height: 1; right: -4%; top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: -.04em;
+      user-select: none;
+    }
+
+    .cta-h {
+      font-family: var(--f-display);
+      font-size: clamp(2.4rem, 5vw, 5.6rem);
+      font-weight: 700; text-transform: uppercase;
+      color: var(--bg);
+      line-height: 1.0; max-width: 680px;
+      position: relative; z-index: 2;
+      margin-bottom: 28px;
+      letter-spacing: -.01em;
+    }
+    .cta-h .italic { font-style: italic; font-weight: 300; color: rgba(244,242,238,.5); }
+
+    .cta-sub {
+      font-family: var(--f-body);
+      font-size: .97rem; line-height: 1.78;
+      color: rgba(244,242,238,.55);
+      max-width: 480px; font-weight: 300;
+      position: relative; z-index: 2;
+      margin-bottom: 48px;
+    }
+
+    .cta-btns { display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 2; }
+
+    .btn-fill-inv {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: var(--bg); color: var(--black);
+      padding: 14px 28px;
+      text-decoration: none; display: inline-block;
+      transition: opacity .16s, transform .14s;
+    }
+    .btn-fill-inv:hover { opacity: .85; transform: translateY(-1px); }
+
+    .btn-line-inv {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: transparent; color: rgba(244,242,238,.5);
+      padding: 13px 28px;
+      text-decoration: none; display: inline-block;
+      border: 1px solid rgba(244,242,238,.2);
+      transition: border-color .16s, color .16s;
+    }
+    .btn-line-inv:hover { border-color: rgba(244,242,238,.5); color: var(--bg); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 56px 40px;
+    }
+
+    .footer-grid {
+      max-width: 1280px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      gap: 48px; align-items: start;
+    }
+
+    .f-brand {
+      font-family: var(--f-body);
+      font-size: .82rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--black);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .f-tagline {
+      font-family: var(--f-body);
+      font-size: .62rem; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); margin-top: 8px;
+    }
+
+    .f-info {
+      font-family: var(--f-body);
+      font-size: .7rem; line-height: 1.9;
+      color: var(--muted); letter-spacing: .02em;
+    }
+
+    .f-nav { display: flex; flex-direction: column; gap: 10px; list-style: none; }
+    .f-nav a {
+      font-family: var(--f-body);
+      font-size: .68rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color .16s;
+    }
+    .f-nav a:hover { color: var(--black); }
+
+    .f-bottom {
+      max-width: 1280px; margin: 36px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .f-copy {
+      font-family: var(--f-body);
+      font-size: .62rem; color: var(--muted);
+      letter-spacing: .06em;
+    }
+
+    .f-links { display: flex; gap: 24px; list-style: none; }
+    .f-links a {
+      font-family: var(--f-body);
+      font-size: .62rem; color: var(--muted);
+      text-decoration: none; letter-spacing: .06em;
+      transition: color .16s;
+    }
+    .f-links a:hover { color: var(--black); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fu { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    @keyframes fi { from{opacity:0} to{opacity:1} }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero-inner, .wrap { padding-left: 20px; padding-right: 20px; }
+      .hero-stats { padding: 0 20px; grid-template-columns: 1fr 1fr; }
+      .hs:nth-child(2) { border-right: none; }
+      .sec { padding: 80px 0; }
+      h1 { font-size: clamp(3.5rem, 13vw, 7rem); }
+      .paradox-grid { grid-template-columns: 1fr; }
+      .paradox-full { grid-column: span 1; }
+      .shift-facts { grid-template-columns: 1fr; }
+      .sol-steps { grid-template-columns: 1fr; }
+      .sol-arr { display: none; }
+      .val-split { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .cta-box { padding: 64px 24px; }
+      .vc { padding: 44px 28px; }
+    }
+  </style>
 </head>
-<body class="antialiased relative" data-spy="scroll" data-target="#navbar">
+<body>
 
-    <!-- Navigation -->
-    <nav id="navbar" class="glass-header sticky top-0 z-50 w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <span class="text-2xl">📊</span>
-                    <span class="font-black text-xl tracking-tight text-slate-800">INSIGHTDAEJEON<span class="text-blue-600">2026</span></span>
-                </div>
-                <div class="hidden md:flex space-x-6 overflow-x-auto">
-                    <a href="#sec-overview" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition">1. 유출 현황</a>
-                    <a href="#sec-mismatch" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition">2. 미스매치/한계</a>
-                    <a href="#sec-ai" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition">3. AI 파급효과</a>
-                    <a href="#sec-cashflow" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition">4. 자금 흐름(Cash Flow)</a>
-                    <a href="#sec-ler" class="text-sm font-bold text-slate-500 hover:text-blue-600 transition">5. LER/해결책</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">GigCareer <span class="beta-tag">BETA</span></a>
+  <ul class="nav-links">
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html">D-GIG</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="#cta-sec" class="nav-cta">서비스 사전 신청</a>
+</nav>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
 
-        <!-- Header Block -->
-        <header class="text-center max-w-4xl mx-auto py-12">
-            <h1 class="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-6">
-                대한민국 청년 인구 유출과<br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">AI 시대 노동시장의 구조적 변환</span>
-            </h1>
-            <p class="text-lg text-slate-600 leading-relaxed text-justify md:text-center">
-                본 보고서는 자연적 인구 감소가 아닌 <strong>공간적 이동, 노동시장 이중구조, 기술 진보(AI)</strong>가 교차하는 복합 위기를 다룹니다. 전국 단위 통계의 맹점을 넘어, <strong>'대전광역시'</strong>의 미시적 데이터(워크넷, 취업통계)를 통해 기존 구인구직 플랫폼 및 B2G 사업의 실패 원인을 규명하고, 비정형 경험의 자산화(LER)를 통한 새로운 생태계를 제안합니다.
-            </p>
-        </header>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">GigCareer × D-GIG Platform — 대전·충청권</p>
+    <h1>
+      Opportunity<br>
+      beyond<br>
+      <span class="italic">Seoul.</span>
+    </h1>
+    <p class="hero-sub">
+      물리적 거리가 기회의 한계가 되지 않도록.<br>
+      지역의 잠재력과 청년의 역량을 데이터로 증명하는<br>새로운 생태계를 엽니다.
+    </p>
+    <div class="hero-btns">
+      <a href="#solution" class="btn-fill">D-GIG 서비스 알아보기</a>
+      <a href="#paradox" class="btn-line">인구 유출 심층 리포트 보기 →</a>
+    </div>
+  </div>
 
-        <!-- SECTION 1: OVERVIEW -->
-        <section id="sec-overview" class="scroll-mt-20">
-            <div class="mb-8 border-l-4 border-blue-600 pl-4">
-                <h2 class="text-2xl font-bold text-slate-800">1. 거시적 현황: 청년 유출의 역설</h2>
-                <p class="text-slate-500 mt-1">인구 이동의 근본 원인과 대전의 '진학 유입-취업 유출' 깔때기 구조</p>
-            </div>
+  <div class="hero-stats">
+    <div class="hs">
+      <div class="hs-val" data-count="57.9" data-suffix="%">—</div>
+      <div class="hs-lbl">대전 대졸자 타 지역 유출률</div>
+    </div>
+    <div class="hs">
+      <div class="hs-val" data-count="2.86" data-suffix="명">—</div>
+      <div class="hs-lbl">인문·사회계열 일자리당 경쟁자</div>
+    </div>
+    <div class="hs">
+      <div class="hs-val">LER</div>
+      <div class="hs-lbl">학습·고용 기록 자산화</div>
+    </div>
+    <div class="hs">
+      <div class="hs-val">3-Step</div>
+      <div class="hs-lbl">Local → Data → Global</div>
+    </div>
+  </div>
+</section>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Macro Migration -->
-                <div class="data-card p-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">2024년 전국 인구 이동 현황 및 사유</h3>
-                    <div class="flex items-end gap-4 mb-4">
-                        <div class="text-4xl font-black text-blue-600">12.3%</div>
-                        <div class="text-sm text-slate-500 pb-1">전체 인구이동률 (628만명)<br>20대(23.9%), 30대(21.0%) 주도</div>
-                    </div>
-                    <div class="chart-container h-64">
-                        <canvas id="migrationReasonChart"></canvas>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-2">* 분석: 서울/대전 등 주요 대도시의 순유출 사유 1위는 '주택'이나, '직업'이 결합된 복합 이동임.</p>
-                </div>
+<!-- S2 PARADOX -->
+<section id="paradox" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">02 — The Paradox</p>
+    <h2 class="sec-h rv">인프라는 충분하지만,<br>기회는 <span class="italic">엇갈리고</span> 있습니다.</h2>
 
-                <!-- Daejeon Paradox -->
-                <div class="data-card p-6 bg-slate-900 text-white">
-                    <h3 class="text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2">대전 소재 대학 졸업자 취업 유출 (2020)</h3>
-                    <div class="flex flex-col md:flex-row gap-6 items-center">
-                        <div class="w-full md:w-1/2 chart-container h-64">
-                            <canvas id="daejeonOutflowChart"></canvas>
-                        </div>
-                        <div class="w-full md:w-1/2 space-y-4">
-                            <div class="bg-slate-800 p-4 rounded-lg">
-                                <div class="text-sm text-slate-400">총 대졸자 (취업대상)</div>
-                                <div class="text-2xl font-bold">15,094 <span class="text-sm font-normal">명</span></div>
-                            </div>
-                            <div class="bg-rose-900/30 border border-rose-800 p-4 rounded-lg">
-                                <div class="text-sm text-rose-300">타 지역 유출 (57.9%)</div>
-                                <div class="text-2xl font-bold text-rose-400">8,740 <span class="text-sm font-normal">명</span></div>
-                                <p class="text-xs text-rose-200 mt-1">교육 인프라는 우수하나, 초기 경력 단계의 정착으로 연결되지 않는 구조적 손실 발생.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <div class="paradox-grid">
+      <div class="pdata rv">
+        <div class="pdata-num"><span data-count="57.9" data-suffix="%">—</span></div>
+        <div class="pdata-unit">대전 대졸자 타 지역 유출률</div>
+        <p class="pdata-desc">충분한 연구 인프라와 대학 자원에도 불구하고, 청년 인재의 절반 이상이 초기 경력 단계에서 수도권으로 이탈합니다. 지역 생태계는 인재 배출 기지로만 기능합니다.</p>
+      </div>
+      <div class="pdata rv">
+        <div class="pdata-num"><span data-count="2.86" data-suffix="명">—</span></div>
+        <div class="pdata-unit">인문·사회계열 일자리 1개당 경쟁자 수</div>
+        <p class="pdata-desc">이공계(구인배수 1.08)와 달리 인문·사회계열 구직자는 극심한 초과공급 상태에 놓여 있습니다. 미스매치는 학과가 아닌 구조적 시스템의 문제입니다.</p>
+      </div>
+      <div class="paradox-full rv">
+        <p class="sec-body">청년들은 성장할 수 있는 일자리를 원하고, 지역 기업은 실무에 투입할 인재를 찾지 못합니다. 단순한 '매칭' 플랫폼으로는 이 구조적 미스매치를 해결할 수 없습니다. 문제의 핵심은 <strong style="color:var(--black); font-weight:600;">검증 시스템의 부재</strong>입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- SECTION 2: MISMATCH & PLATFORMS -->
-        <section id="sec-mismatch" class="scroll-mt-20">
-            <div class="mb-8 border-l-4 border-indigo-600 pl-4">
-                <h2 class="text-2xl font-bold text-slate-800">2. 객관적 미스매치와 기존 대안의 한계</h2>
-                <p class="text-slate-500 mt-1">단순 일자리 부족이 아닌 수요-공급의 불일치 및 기존 HR 플랫폼의 구조적 실패 원인</p>
-            </div>
+<!-- S3 SHIFT -->
+<section id="shift" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">03 — The Shift</p>
+    <h2 class="sec-h rv">AI 시대, '이력서'보다<br>'실무 경험'이 <span class="italic">생존의 기준</span>입니다.</h2>
 
-            <!-- Detailed Mismatch Data -->
-            <div class="data-card p-6 mb-8">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">대전 지역 구인-구직 미스매치 (워크넷 DB)</h3>
-                    <div class="flex gap-2 mt-4 md:mt-0">
-                        <button onclick="switchTab('mismatch', 'volume')" id="tab-volume" class="tab-btn active px-4 py-1 text-sm transition">절대량 비교</button>
-                        <button onclick="switchTab('mismatch', 'ratio')" id="tab-ratio" class="tab-btn px-4 py-1 text-sm text-slate-400 transition">구인 배수</button>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                    <div class="lg:col-span-2 chart-container" id="mismatchChartWrapper">
-                        <canvas id="mismatchChart"></canvas>
-                    </div>
-                    <div class="lg:col-span-1 space-y-4">
-                        <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
-                            <strong class="text-indigo-800 text-sm block mb-1">인문/사회계열 초과공급 심각</strong>
-                            <p class="text-xs text-slate-600">구인(9,749명) 대비 구직(27,888명)으로 1자리당 2.86명의 과열 경쟁. 고학력 화이트칼라 수요를 지역 산업이 흡수하지 못함.</p>
-                        </div>
-                        <div class="p-4 bg-amber-50 border border-amber-100 rounded-lg">
-                            <strong class="text-amber-800 text-sm block mb-1">눈높이 격차 (Expectation Gap)</strong>
-                            <p class="text-xs text-slate-600">청년은 '임금, 성장 가능성, 조직문화'를 원하나, 지역 중소기업은 이를 제공하지 못해 일자리가 있어도 가지 않는 현상 발생.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="shift-quote rv">
+      <span class="dy">단순 행정 보조</span>,&nbsp;
+      <span class="dy">기초 자료 조사</span>,&nbsp;
+      <span class="dy">반복 데이터 입력</span>은 AI가 대체합니다.<br>
+      이제 시장이 요구하는 것은&nbsp;
+      <span class="ri">비정형 문제 해결 경험</span>,&nbsp;
+      <span class="ri">검증된 실무 데이터</span>,&nbsp;
+      <span class="ri">LER 포트폴리오</span>입니다.
+    </div>
 
-            <!-- Why existing tools fail -->
-            <h3 class="text-lg font-bold text-slate-800 mb-4 px-2">기존 플랫폼 및 정책 대체재의 실패 원인</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="data-card p-6 border-t-4 border-slate-700">
-                    <div class="text-2xl mb-2">🛒</div>
-                    <h4 class="font-bold text-slate-800 mb-2">거대 긱 플랫폼 (크몽, 숨고)</h4>
-                    <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                        <li><strong>포트폴리오 부재:</strong> 지방 청년/대학생은 초기 진입 시 증명할 레퍼런스가 없어 수주 불가능.</li>
-                        <li><strong>단가 경쟁:</strong> 글로벌/수도권 경력자와의 극심한 저가 경쟁으로 밀려남.</li>
-                        <li><strong>로컬 소속감 X:</strong> 철저히 파편화된 업무로 지역 정주성에 기여하지 않음.</li>
-                    </ul>
-                </div>
-                <div class="data-card p-6 border-t-4 border-blue-600">
-                    <div class="text-2xl mb-2">🏢</div>
-                    <h4 class="font-bold text-slate-800 mb-2">전통 채용 포털 (잡코리아, 사람인)</h4>
-                    <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                        <li><strong>스펙 중심 매칭:</strong> 실무 역량이 아닌 학벌/자격증 위주 필터링으로 지역 인재 소외.</li>
-                        <li><strong>정보 비대칭:</strong> 지역 중소기업의 '실제 조직문화'나 '성장성'에 대한 데이터 부족.</li>
-                        <li><strong>결과:</strong> 구조적 미스매치를 방치한 채 단순 중개에 머무름.</li>
-                    </ul>
-                </div>
-                <div class="data-card p-6 border-t-4 border-rose-600">
-                    <div class="text-2xl mb-2">🏛️</div>
-                    <h4 class="font-bold text-slate-800 mb-2">B2G 정부 매칭/지원금 사업</h4>
-                    <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                        <li><strong>단기 알바화:</strong> 실질적 커리어 성장이 없는 단순 행정 보조 일자리 양산.</li>
-                        <li><strong>부정 수급/일회성:</strong> '청년일자리도약장려금' 등 지원금 단절 시 고용 유지 실패.</li>
-                        <li><strong>근본적 역량 강화 실패:</strong> 스킬 갭을 좁히지 못함.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+    <div class="shift-facts rv">
+      <div class="sf">
+        <div class="sf-idx">[ 01 ]</div>
+        <div class="sf-title">주니어 직무의 소멸</div>
+        <p class="sf-desc">생성형 AI의 도입으로 기초 행정, 단순 지식 노동 등 주니어가 경험을 쌓던 직무가 빠르게 소멸하고 있습니다. 실무를 배우며 성장하던 사수-신입 시스템이 붕괴했습니다.</p>
+      </div>
+      <div class="sf">
+        <div class="sf-idx">[ 02 ]</div>
+        <div class="sf-title">스펙 → 증명의 시대</div>
+        <p class="sf-desc">학위와 자격증으로는 채용 리스크를 낮출 수 없습니다. 기업은 텍스트로 된 이력서가 아닌, 실제 문제를 해결해 본 데이터를 요구합니다.</p>
+      </div>
+      <div class="sf">
+        <div class="sf-idx">[ 03 ]</div>
+        <div class="sf-title">지역 청년의 이중 불평등</div>
+        <p class="sf-desc">기회의 부재와 검증 시스템의 공백. 지역 청년들은 경험을 쌓을 로컬 생태계조차 없이 수도권 인재들과 동일 선상에서 경쟁합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- SECTION 3: AI IMPACT -->
-        <section id="sec-ai" class="scroll-mt-20">
-            <div class="data-card p-8 bg-gradient-to-br from-slate-900 to-indigo-900 text-white overflow-hidden relative">
-                <!-- BG Decoration -->
-                <div class="absolute -right-20 -top-20 w-64 h-64 bg-rose-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+<!-- S4 SOLUTION -->
+<section id="solution" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">04 — The Solution</p>
+    <h2 class="sec-h rv">로컬에서의 경험을<br><span class="italic">글로벌 커리어</span>로 자산화하다.</h2>
+    <p class="sec-body rv">D-GIG는 지역 기업과 청년을 연결하는 로컬 긱 플랫폼입니다. 크몽이나 잡코리아가 해결하지 못한 '포트폴리오 부재'와 '스펙 중심 필터링'의 한계를 넘어섭니다.</p>
 
-                <div class="mb-8 border-l-4 border-amber-400 pl-4 relative z-10">
-                    <h2 class="text-2xl font-bold text-white">3. AI 시대의 주니어 직무 소멸</h2>
-                    <p class="text-slate-300 mt-1">경험 생태계의 붕괴: 사수가 신입을 가르치는 시스템의 종말</p>
-                </div>
+    <div class="sol-steps rv">
+      <div class="sol-step">
+        <span class="sol-ghost">01</span>
+        <div class="sol-badge">Local Gig</div>
+        <div class="sol-title">로컬 긱 매칭</div>
+        <p class="sol-desc">지역 기업 및 대학의 단기 실무 프로젝트를 수행하며 진짜 경험을 쌓습니다. 실제 비즈니스 문제를 해결한 결과물이 만들어집니다.</p>
+      </div>
+      <div class="sol-arr">→</div>
+      <div class="sol-step">
+        <span class="sol-ghost">02</span>
+        <div class="sol-badge">LER Data</div>
+        <div class="sol-title">경험의 자산화</div>
+        <p class="sol-desc">프로젝트 수행 과정과 결과가 신뢰할 수 있는 학습·고용 기록(LER) 데이터로 저장됩니다. 스킬을 수치화하고 검증된 포트폴리오가 자동 생성됩니다.</p>
+      </div>
+      <div class="sol-arr">→</div>
+      <div class="sol-step">
+        <span class="sol-ghost">03</span>
+        <div class="sol-badge">Global Match</div>
+        <div class="sol-title">글로벌 연계</div>
+        <p class="sol-desc">검증된 실무 데이터를 바탕으로 수도권 및 글로벌 기업의 스킬 기반 채용과 연결됩니다. 지역에 머물면서 글로벌 커리어를 시작할 수 있습니다.</p>
+      </div>
+    </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
-                    <div>
-                        <p class="text-slate-300 mb-6 leading-relaxed text-sm">
-                            생성형 AI의 보급(WEF 2026 보고서 등)으로 기업들이 신입/주니어에게 요구하는 핵심 역량이 <strong>'실행력(자료조사, 초안작성)'에서 'AI 툴 활용 및 비정형 문제 정의 능력'</strong>으로 급격히 이동하고 있습니다. 과거 일하면서 배우던 '진짜 실무' 경험의 기회가 로컬 청년들에게서 가장 먼저 사라지고 있습니다.
-                        </p>
-                        
-                        <div class="space-y-4">
-                            <div class="bg-white/10 p-4 rounded border border-white/20 flex gap-4">
-                                <div class="text-rose-400 font-bold text-xl">📉</div>
-                                <div>
-                                    <h4 class="font-bold text-white text-sm">소멸하는 역량 (대체재)</h4>
-                                    <p class="text-xs text-slate-400">단순 지식 노동, 기초 코딩, 텍스트 요약/번역, 기본 행정 보조</p>
-                                </div>
-                            </div>
-                            <div class="bg-white/10 p-4 rounded border border-white/20 flex gap-4">
-                                <div class="text-emerald-400 font-bold text-xl">📈</div>
-                                <div>
-                                    <h4 class="font-bold text-white text-sm">급부상하는 역량 (필수재)</h4>
-                                    <p class="text-xs text-slate-400">AI 워크플로우 설계, 도메인 특화 프롬프팅, 복합 문제 해결 및 소통</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-                        <h3 class="text-sm font-bold text-center text-slate-200 mb-2">AI 도입에 따른 주니어 업무 요구도 변화 예측</h3>
-                        <div class="chart-container">
-                            <canvas id="aiImpactChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <div class="terminal rv">
+      <div class="t-bar">
+        <div class="t-dot" style="background:#FF5F57"></div>
+        <div class="t-dot" style="background:#FFBD2E"></div>
+        <div class="t-dot" style="background:#28C840"></div>
+      </div>
+      <div class="t-line"><span class="g">$</span> ler-verify --candidate <span class="w">kim_daejeon_001</span></div>
+      <div class="t-line"><span class="g">✔</span> Project: <span class="w">대전 스타트업 마케팅 데이터 분석 (4주)</span></div>
+      <div class="t-line"><span class="g">✔</span> Skills verified: <span class="w">Data Analysis · Figma · Copywriting</span></div>
+      <div class="t-line"><span class="g">✔</span> Outcome score: <span class="w">92 / 100</span></div>
+      <div class="t-line"><span class="g">→</span> Match: <span class="w">서울 핀테크 스타트업 (원격 계약직) </span><span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
 
-        <!-- SECTION 4: CASH FLOW -->
-        <section id="sec-cashflow" class="scroll-mt-20">
-            <div class="mb-8 border-l-4 border-emerald-600 pl-4">
-                <h2 class="text-2xl font-bold text-slate-800">4. 생태계 현금 흐름 (Cash Flow) 분석</h2>
-                <p class="text-slate-500 mt-1">문제 해결을 위해 '누가, 어디에' 돈을 쓰고 있으며 지불 의향(WTP)은 어디로 향하는가?</p>
-            </div>
+<!-- S5 VALUE -->
+<section id="value" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">05 — Value Proposition</p>
+    <h2 class="sec-h rv">누구를 위한<br><span class="italic">플랫폼</span>인가.</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- B2G Flow -->
-                <div class="data-card p-6 border-t-4 border-rose-500">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-slate-800">B2G (정부/지자체) 예산</h3>
-                        <span class="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded">비효율 발생 구간</span>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded">
-                            <span class="text-sm font-bold text-slate-700">지방소멸대응기금 / 인프라</span>
-                            <span class="text-xs text-slate-500">건물/하드웨어 편중</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded">
-                            <span class="text-sm font-bold text-slate-700">청년일자리도약장려금</span>
-                            <span class="text-xs text-slate-500">임금 보전 (단기 효과)</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded">
-                            <span class="text-sm font-bold text-slate-700">창업 지원금</span>
-                            <span class="text-xs text-slate-500">생존율 저조 / 소수 편중</span>
-                        </div>
-                    </div>
-                    <p class="text-xs text-rose-600 mt-4 font-medium">결론: 막대한 공공 예산이 투입되나, 청년의 '실무 역량 자산화'나 기업의 '채용 리스크 감소'라는 본질적 문제를 해결하지 못해 현금이 증발함.</p>
-                </div>
+    <div class="val-split">
+      <div class="vc rv">
+        <div class="vc-tag">For Youth — 청년</div>
+        <div class="vc-title">첫 커리어의 시작,<br>D-GIG에서 <span class="italic">증명하세요.</span></div>
+        <p class="vc-body">포트폴리오가 없는 초기 진입자도 로컬 프로젝트를 통해 <strong>확실한 실무 레퍼런스</strong>를 구축할 수 있습니다. 이력서 한 줄이 아닌, 검증된 LER 데이터로 글로벌 채용 시장의 문을 여세요. 수도권으로 이주하지 않아도 세계와 연결됩니다.</p>
+      </div>
+      <div class="vc rv">
+        <div class="vc-tag">For Business — 기업</div>
+        <div class="vc-title">학위보다 확실한<br><span class="italic">실무 데이터</span>로 채용하세요.</div>
+        <p class="vc-body">채용 실패 리스크를 줄이고, 즉시 투입 가능한 인재를 <strong>LER 기반으로 매칭</strong>받으세요. 실무 역량 검증 신뢰도 상승은 채용 비용 절감과 온보딩 성공률 향상으로 직결됩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-                <!-- B2B Flow -->
-                <div class="data-card p-6 border-t-4 border-emerald-500">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-slate-800">B2B (수도권/글로벌 기업) 예산</h3>
-                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded">새로운 지불 의향(WTP)</span>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-3 bg-emerald-50 rounded border border-emerald-100">
-                            <span class="text-sm font-bold text-emerald-800">스킬 검증 및 평가 비용</span>
-                            <span class="text-xs text-emerald-600 font-bold">WTP 상승 ⬆️</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-emerald-50 rounded border border-emerald-100">
-                            <span class="text-sm font-bold text-emerald-800">로컬 프로젝트 외주 (Gig)</span>
-                            <span class="text-xs text-emerald-600 font-bold">WTP 상승 ⬆️</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded">
-                            <span class="text-sm font-bold text-slate-700">전통적 헤드헌팅 수수료</span>
-                            <span class="text-xs text-slate-500">정체/하락 ⬇️</span>
-                        </div>
-                    </div>
-                    <p class="text-xs text-emerald-700 mt-4 font-medium">결론: 기업은 이력서 밖의 '실무 데이터'를 확보하고 검증하는 데 기꺼이 돈을 지불할 의향이 있음. (Skills-based Hiring 트렌드)</p>
-                </div>
-            </div>
-        </section>
+<!-- S6 CTA -->
+<section id="cta-sec" class="sec">
+  <div class="wrap">
+    <div class="cta-box rv">
+      <div class="cta-ghost">GIG</div>
+      <h2 class="cta-h">지역의 가치를<br>재발견하는 여정에<br><span class="italic">함께하세요.</span></h2>
+      <p class="cta-sub">D-GIG 플랫폼 도입, 지자체 협력, B2B 제휴 문의를 받고 있습니다. 대전·충청 지역 노동시장 심층 분석 리포트도 무료로 받아보실 수 있습니다.</p>
+      <div class="cta-btns">
+        <a href="mailto:contact@gigcareer.kr" class="btn-fill-inv">D-GIG 파트너십 문의하기</a>
+        <a href="#paradox" class="btn-line-inv">노동시장 분석 리포트 →</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- SECTION 5: LER & CONCLUSION -->
-        <section id="sec-ler" class="scroll-mt-20">
-            <div class="mb-8 text-center max-w-3xl mx-auto">
-                <h2 class="text-3xl font-black text-slate-900 mb-4">5. 미래 전략: 비정형 경험의 자산화 (LER)</h2>
-                <p class="text-slate-600">
-                    공간적 독립성을 획득한 청년들을 지역에 남게 하는 것은 물리적 제약이 아닙니다. <br>로컬에서의 단기 프로젝트(Gig)를 <strong>학습·고용 기록(LER)</strong>으로 자산화하여 글로벌 커리어와 연결하는 생태계가 필요합니다.
-                </p>
-            </div>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="f-brand">GigCareer <span class="beta-tag">BETA</span></div>
+      <div class="f-tagline">Opportunity beyond Seoul.</div>
+    </div>
+    <div class="f-info">
+      (주)GigCareer &nbsp;|&nbsp; 대전광역시 유성구 [상세 주소]<br>
+      대표자: 김트리 &nbsp;|&nbsp; 사업자등록번호: 000-00-00000<br>
+      이메일: contact@gigcareer.kr
+    </div>
+    <ul class="f-nav">
+      <li><a href="#">About Us</a></li>
+      <li><a href="#solution">D-GIG</a></li>
+      <li><a href="#paradox">Insights</a></li>
+      <li><a href="#cta-sec">Contact</a></li>
+    </ul>
+  </div>
+  <div class="f-bottom">
+    <span class="f-copy">© 2025 GigCareer Inc. All rights reserved.</span>
+    <ul class="f-links">
+      <li><a href="#">이용약관</a></li>
+      <li><a href="#">개인정보처리방침</a></li>
+    </ul>
+  </div>
+</footer>
 
-            <!-- Plotly WTP Chart -->
-            <div class="data-card p-8 mb-12">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                    <div class="lg:col-span-1">
-                        <h3 class="text-xl font-bold text-slate-800 mb-2">스킬 기반 채용과 지불 의향</h3>
-                        <p class="text-sm text-slate-600 mb-4">
-                            글로벌 채용 시장은 학위/자격증 중심에서 <strong>'검증된 실무 프로젝트 경험'</strong>으로 이동했습니다. 기업은 불확실성을 줄여주는 LER(Learning and Employment Record) 데이터에 가장 높은 프리미엄을 부여합니다.
-                        </p>
-                        <div class="p-4 bg-slate-50 rounded-lg text-xs text-slate-600 space-y-2">
-                            <p><span class="inline-block w-3 h-3 bg-slate-300 rounded-full mr-2"></span> <strong>학위/스펙:</strong> 검증 비용은 높으나 실무 연관성 신뢰도가 낮음.</p>
-                            <p><span class="inline-block w-3 h-3 bg-blue-600 rounded-full mr-2"></span> <strong>D-GIG LER:</strong> 로컬 프로젝트 수행 결과 데이터. 즉각적 실무 투입 여부 확인 가능.</p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2">
-                        <div class="chart-container" id="wtpScatterPlot"></div>
-                    </div>
-                </div>
-            </div>
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 100);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
-            <!-- Solution Flow (HTML Diagram - NO SVG) -->
-            <h3 class="text-xl font-bold text-center text-slate-800 mb-6">D-GIG 솔루션 아키텍처</h3>
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-center bg-white p-8 rounded-2xl border border-slate-200 shadow-inner">
-                
-                <!-- Step 1 -->
-                <div class="flex-1 w-full bg-slate-50 border border-slate-200 p-6 rounded-xl text-center relative">
-                    <div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-2xl font-black mb-3">1</div>
-                    <h4 class="font-bold text-slate-800 mb-1">Local Gig</h4>
-                    <p class="text-xs text-slate-500">지역 기업/대학의<br>단기 실무 프로젝트 수행</p>
-                </div>
+  // Count-up
+  function countUp(el, to, suffix, dur) {
+    const isF = String(to).includes('.');
+    const t0 = performance.now();
+    (function step(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = (isF ? (ease * to).toFixed(1) : Math.round(ease * to)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
 
-                <div class="flow-arrow rotate-90 md:rotate-0">➔</div>
+  const cObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const to = parseFloat(e.target.dataset.count);
+      const sx = e.target.dataset.suffix || '';
+      countUp(e.target, to, sx, 1800);
+      cObs.unobserve(e.target);
+    });
+  }, { threshold: 0.5 });
 
-                <!-- Step 2 -->
-                <div class="flex-1 w-full bg-slate-50 border border-slate-200 p-6 rounded-xl text-center relative border-b-4 border-indigo-500">
-                    <div class="w-12 h-12 mx-auto bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-full text-2xl font-black mb-3">2</div>
-                    <h4 class="font-bold text-slate-800 mb-1">LER Data</h4>
-                    <p class="text-xs text-slate-500">과정 및 결과의 데이터화<br>(스킬 인증 및 자산화)</p>
-                </div>
-
-                <div class="flow-arrow rotate-90 md:rotate-0">➔</div>
-
-                <!-- Step 3 -->
-                <div class="flex-1 w-full bg-slate-50 border border-slate-200 p-6 rounded-xl text-center relative">
-                    <div class="w-12 h-12 mx-auto bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-full text-2xl font-black mb-3">3</div>
-                    <h4 class="font-bold text-slate-800 mb-1">Global Match</h4>
-                    <p class="text-xs text-slate-500">수도권/글로벌 원격근무<br>스킬 기반 채용 연계</p>
-                </div>
-
-            </div>
-            <p class="text-center text-sm text-slate-500 mt-6 max-w-2xl mx-auto">
-                이러한 과정은 청년들에게 <strong>"성장 기회와 인정 욕구"</strong>를 로컬 커뮤니티 내에서 충족시켜주며, 결과적으로 맹목적인 서울행 욕망을 대체할 수 있는 심리·사회적 동인이 됩니다.
-            </p>
-
-        </section>
-
-    </main>
-
-    <footer class="bg-slate-900 text-slate-400 py-10 mt-20 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
-            <p class="font-bold text-white mb-2">데이터 출처 및 참고 문헌</p>
-            <p class="mb-4">통계청 인구이동통계 (2024), 고등교육기관 졸업자 취업통계 (2020), 워크넷 대전 구인구직 DB (2022), WEF Future of Jobs Report (2026 E), Skills-first approach OEDC reports.</p>
-            <p>© 2026 Daejeon Youth Outflow & Labor Market Analysis SPA.</p>
-        </div>
-    </footer>
-
-    <!-- Application Logic -->
-    <script>
-        // --- Shared Chart Config ---
-        const fontConfig = { family: "'Noto Sans KR', sans-serif" };
-        
-        // Multi-line Label Wrapper (Required 16-char logic)
-        function formatLabel(label) {
-            if (typeof label !== 'string') return label;
-            if (label.length <= 16) return label;
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = words[0];
-            for (let i = 1; i < words.length; i++) {
-                if ((currentLine + " " + words[i]).length <= 16) {
-                    currentLine += " " + words[i];
-                } else {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                }
-            }
-            lines.push(currentLine);
-            return lines;
-        }
-
-        // Standard Tooltip config for Chart.js
-        const standardTooltip = {
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            titleFont: { size: 13, family: fontConfig.family },
-            bodyFont: { size: 14, family: fontConfig.family },
-            padding: 12,
-            cornerRadius: 8,
-            callbacks: {
-                title: function(tooltipItems) {
-                    const item = tooltipItems[0];
-                    let label = item.chart.data.labels[item.dataIndex];
-                    return Array.isArray(label) ? label.join(' ') : label;
-                }
-            }
-        };
-
-        // --- Chart 1: Migration Reasons (Horizontal Bar) ---
-        const initMigrationChart = () => {
-            const ctx = document.getElementById('migrationReasonChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['주택 (Housing)', '가족 (Family)', '직업 (Job)', '기타 (교육, 교통 등)'].map(formatLabel),
-                    datasets: [{
-                        label: '전입 사유 비율 (%)',
-                        data: [34.5, 24.7, 21.7, 19.1],
-                        backgroundColor: ['#2563EB', '#94A3B8', '#F59E0B', '#E2E8F0'],
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: standardTooltip },
-                    scales: { 
-                        x: { beginAtZero: true, max: 40, grid: { color: '#F1F5F9' } },
-                        y: { grid: { display: false }, ticks: { font: fontConfig } }
-                    }
-                }
-            });
-        };
-
-        // --- Chart 2: Daejeon Outflow (Doughnut) ---
-        const initOutflowChart = () => {
-            const ctx = document.getElementById('daejeonOutflowChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['대전 지역 내 취업 (잔존)', '타 지역으로 유출'].map(formatLabel),
-                    datasets: [{
-                        data: [42.1, 57.9],
-                        backgroundColor: ['#334155', '#E11D48'],
-                        borderWidth: 0, hoverOffset: 8
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '65%',
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { font: fontConfig, padding: 20 } },
-                        tooltip: { ...standardTooltip, callbacks: { ...standardTooltip.callbacks, label: (item) => ` ${item.parsed}% (약 ${item.parsed === 42.1 ? '6,354' : '8,740'}명)` } }
-                    }
-                }
-            });
-        };
-
-        // --- Chart 3: Mismatch Data Management (Tabs & Chart) ---
-        let mismatchChartInstance = null;
-        const mismatchData = {
-            volume: {
-                labels: ['인문/사회', '공학'],
-                datasets: [
-                    { label: '구인 인원 (수요)', data: [9749, 4000], backgroundColor: '#94A3B8', borderRadius: 4 },
-                    { label: '구직 인원 (공급)', data: [27888, 9512], backgroundColor: '#2563EB', borderRadius: 4 }
-                ],
-                yAxis: '인원 수 (명)'
-            },
-            ratio: {
-                labels: ['인문/사회', '공학'],
-                datasets: [
-                    { label: '구인배수 (구직/구인 비율)', data: [2.86, 2.38], backgroundColor: '#F59E0B', borderRadius: 4 }
-                ],
-                yAxis: '경쟁 비율 (배수)'
-            }
-        };
-
-        const renderMismatchChart = (type) => {
-            const ctx = document.getElementById('mismatchChart').getContext('2d');
-            if(mismatchChartInstance) mismatchChartInstance.destroy();
-
-            const dataToUse = mismatchData[type];
-            mismatchChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: dataToUse.labels.map(formatLabel),
-                    datasets: dataToUse.datasets
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { tooltip: standardTooltip, legend: { position: 'top', labels: {font: fontConfig} } },
-                    scales: {
-                        y: { beginAtZero: true, title: { display: true, text: dataToUse.yAxis, font: fontConfig }, grid: { color: '#F1F5F9' } },
-                        x: { grid: { display: false }, ticks: { font: fontConfig } }
-                    }
-                }
-            });
-        };
-
-        window.switchTab = function(section, type) {
-            if(section === 'mismatch') {
-                document.getElementById('tab-volume').classList.remove('active', 'text-slate-400');
-                document.getElementById('tab-ratio').classList.remove('active', 'text-slate-400');
-                
-                if(type === 'volume') {
-                    document.getElementById('tab-volume').classList.add('active');
-                    document.getElementById('tab-ratio').classList.add('text-slate-400');
-                } else {
-                    document.getElementById('tab-ratio').classList.add('active');
-                    document.getElementById('tab-volume').classList.add('text-slate-400');
-                }
-                renderMismatchChart(type);
-            }
-        };
-
-        // --- Chart 4: AI Impact (Line) ---
-        const initAIChart = () => {
-            const ctx = document.getElementById('aiImpactChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['2023', '2024', '2025', '2026', '2027(E)'],
-                    datasets: [
-                        { label: '단순 실행형 주니어 직무', data: [100, 85, 60, 40, 25], borderColor: '#F43F5E', backgroundColor: '#F43F5E', tension: 0.3, borderWidth: 3 },
-                        { label: 'AI 문제해결/설계 역량', data: [30, 45, 65, 85, 100], borderColor: '#10B981', backgroundColor: '#10B981', tension: 0.3, borderWidth: 3 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { labels: { color: '#CBD5E1', font: fontConfig } },
-                        tooltip: { ...standardTooltip, backgroundColor: 'rgba(255,255,255,0.9)', titleColor: '#000', bodyColor: '#000' }
-                    },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94A3B8' } },
-                        x: { grid: { display: false }, ticks: { color: '#94A3B8' } }
-                    }
-                }
-            });
-        };
-
-        // --- Chart 5: Willingness to Pay (Plotly ScatterGL) ---
-        const initPlotlyScatter = () => {
-            // Data points reflecting the report's logic on LER vs Degrees
-            const trace1 = {
-                x: [1, 2, 3, 4, 5], // Verification Difficulty / Trust Reliability
-                y: [20, 35, 50, 85, 95], // B2B Willingness to Pay (WTP) Index
-                text: ['이력서 자기소개', '단순 학위', '일반 자격증', '단기 인턴십', 'D-GIG 검증 프로젝트(LER)'],
-                mode: 'markers+text',
-                textposition: 'top center',
-                textfont: { family: 'Noto Sans KR', size: 11, color: '#64748B' },
-                marker: {
-                    size: [15, 20, 25, 35, 50],
-                    color: ['#CBD5E1', '#94A3B8', '#64748B', '#3B82F6', '#2563EB'],
-                    opacity: 0.9,
-                    line: { width: 2, color: '#fff' }
-                },
-                type: 'scattergl' // Mandatory for Performance/Canvas rendering, avoids SVG
-            };
-
-            const layout = {
-                title: false,
-                xaxis: { title: '실무 역량 검증 신뢰도 (Low -> High)', showgrid: true, gridcolor: '#F1F5F9', zeroline: false },
-                yaxis: { title: '기업 지불 의향 (WTP / 채용 우선순위)', showgrid: true, gridcolor: '#F1F5F9', zeroline: false },
-                margin: { t: 20, b: 40, l: 50, r: 20 },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                hovermode: 'closest',
-                font: { family: 'Noto Sans KR' }
-            };
-
-            const config = { responsive: true, displayModeBar: false };
-            Plotly.newPlot('wtpScatterPlot', [trace1], layout, config);
-        };
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initMigrationChart();
-            initOutflowChart();
-            renderMismatchChart('volume'); // Init mismatch tab
-            initAIChart();
-            initPlotlyScatter();
-
-            // Simple active state for navbar (scrollspy basic)
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('#navbar a');
-            
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    if (scrollY >= sectionTop - 100) {
-                        current = section.getAttribute('id');
-                    }
-                });
-
-                navLinks.forEach(link => {
-                    link.classList.remove('text-blue-600');
-                    if (link.getAttribute('href').includes(current) && current !== '') {
-                        link.classList.add('text-blue-600');
-                    }
-                });
-            });
-        });
-    </script>
+  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+</script>
 </body>
 </html>

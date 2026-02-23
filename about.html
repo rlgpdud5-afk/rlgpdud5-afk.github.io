@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F4F2EE;--bg2:#ECEAE5;--bg3:#E4E1DB;--black:#0C0D0E;--ink:#1A1B1D;--mid:rgba(12,13,14,0.55);--muted:rgba(12,13,14,0.35);--border:rgba(12,13,14,0.1);--bhi:rgba(12,13,14,0.18);--fd:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:52px;display:flex;align-items:center;padding:0 32px;background:rgba(244,242,238,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .logo{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .beta{font-size:.5rem;letter-spacing:.12em;color:var(--bg);background:var(--black);padding:2px 6px;font-weight:700;}
+    .nav-links{display:flex;list-style:none;margin-left:36px;}
+    .nav-links a{font-family:var(--fb);font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;padding:0 16px;height:52px;display:flex;align-items:center;border-right:1px solid var(--border);transition:color .15s;}
+    .nav-links li:first-child a{border-left:1px solid var(--border);}
+    .nav-links a:hover,.nav-links a.on{color:var(--black);}
+    .nav-cta{margin-left:auto;font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--bg);padding:10px 22px;text-decoration:none;}
+    .nav-cta:hover{opacity:.8;}
+
+    /* HERO */
+    #hero{background:var(--black);padding:52px 0 0;min-height:68vh;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;}
+    .hero-inner{flex:1;display:flex;align-items:flex-end;max-width:1280px;margin:0 auto;width:100%;padding:80px 40px 64px;position:relative;z-index:2;}
+    .hero-label{font-family:var(--fb);font-size:.65rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(244,242,238,.35);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .hero-label::before{content:'';width:20px;height:1px;background:rgba(244,242,238,.35);display:block;}
+    .hero-h{font-family:var(--fd);font-size:clamp(2.4rem,5.5vw,6.5rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:.96;letter-spacing:-.01em;margin-bottom:24px;}
+    .hero-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.4);}
+    .hero-sub{font-family:var(--fb);font-size:1rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:520px;font-weight:300;}
+
+    /* COMMON */
+    .wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
+    .sec{padding:104px 0;border-bottom:1px solid var(--border);}
+    .sec-label{font-family:var(--fb);font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .sec-label::before{content:'';width:20px;height:1px;background:var(--muted);display:block;}
+    .sec-h{font-family:var(--fd);font-size:clamp(2rem,3.8vw,4rem);font-weight:700;text-transform:uppercase;letter-spacing:-.01em;color:var(--black);line-height:1.0;margin-bottom:12px;}
+    .sec-h .it{font-style:italic;font-weight:300;color:var(--mid);}
+    .sec-sub{font-family:var(--fb);font-size:.92rem;color:var(--mid);line-height:1.75;font-weight:300;max-width:600px;margin-bottom:52px;}
+
+    /* MISSION/VISION */
+    .mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);}
+    .mv-card{background:var(--bg);padding:56px 48px;position:relative;transition:background .2s;}
+    .mv-card:hover{background:var(--bg2);}
+    .mv-tag{font-family:var(--fb);font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+    .mv-tag::after{content:'';flex:1;height:1px;background:var(--border);}
+    .mv-title{font-family:var(--fd);font-size:2rem;font-weight:700;text-transform:uppercase;color:var(--black);line-height:1.05;margin-bottom:20px;letter-spacing:-.01em;}
+    .mv-title .it{font-style:italic;font-weight:300;}
+    .mv-body{font-family:var(--fb);font-size:.95rem;line-height:1.8;color:var(--mid);font-weight:300;}
+    .mv-body strong{color:var(--black);font-weight:600;}
+
+    /* STORY */
+    .story-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+    .story-pull{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.8rem);font-weight:700;text-transform:uppercase;color:var(--black);line-height:1.05;letter-spacing:-.01em;margin-bottom:32px;}
+    .story-pull .it{font-style:italic;font-weight:300;color:var(--mid);}
+    .story-body{font-family:var(--fb);font-size:.97rem;line-height:1.85;color:var(--mid);font-weight:300;}
+    .story-body p{margin-bottom:20px;}
+    .story-body strong{color:var(--black);font-weight:600;}
+    .story-side{display:flex;flex-direction:column;gap:2px;}
+    .story-stat{background:var(--bg2);border:1px solid var(--border);padding:36px 32px;}
+    .story-stat-num{font-family:var(--fd);font-size:3.2rem;font-weight:700;color:var(--black);line-height:1;letter-spacing:-.02em;margin-bottom:6px;}
+    .story-stat-label{font-family:var(--fb);font-size:.65rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .story-stat-desc{font-family:var(--fb);font-size:.82rem;line-height:1.65;color:var(--mid);font-weight:300;}
+
+    /* VALUES */
+    .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);}
+    .val{background:var(--bg2);padding:44px 36px;transition:background .2s;}
+    .val:hover{background:var(--bg3);}
+    .val-idx{font-family:var(--fb);font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+    .val-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:14px;line-height:1.1;}
+    .val-desc{font-family:var(--fb);font-size:.88rem;line-height:1.72;color:var(--mid);font-weight:300;}
+
+    /* LOCATION */
+    .loc-layout{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);}
+    .loc-card{background:var(--bg);padding:52px 44px;}
+    .loc-title{font-family:var(--fd);font-size:1.2rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:6px;letter-spacing:.01em;}
+    .loc-sub{font-family:var(--fb);font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+    .loc-info{display:flex;flex-direction:column;gap:14px;}
+    .loc-row{display:flex;gap:14px;}
+    .loc-key{font-family:var(--fb);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);width:80px;flex-shrink:0;padding-top:2px;}
+    .loc-val{font-family:var(--fb);font-size:.9rem;color:var(--ink);line-height:1.6;font-weight:300;}
+    .map-placeholder{background:var(--bg3);border:1px solid var(--border);height:100%;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;}
+    .map-ph-label{font-family:var(--fd);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;}
+    .map-ph-sub{font-family:var(--fb);font-size:.78rem;color:var(--muted);font-weight:300;text-align:center;line-height:1.6;}
+    .map-ph-coord{font-family:var(--fd);font-size:.75rem;color:var(--muted);letter-spacing:.06em;margin-top:8px;}
+
+    /* CTA strip */
+    .cta-strip{background:var(--black);padding:72px 40px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+    .cta-strip-h{font-family:var(--fd);font-size:clamp(1.6rem,3vw,3rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:1.05;letter-spacing:-.01em;}
+    .cta-strip-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.4);}
+    .btn-wi{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg);color:var(--black);padding:15px 32px;text-decoration:none;display:inline-block;white-space:nowrap;transition:opacity .16s,transform .14s;}
+    .btn-wi:hover{opacity:.88;transform:translateY(-1px);}
+
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
+    .foot-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+    .foot-brand{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);}
+    .foot-nav{display:flex;gap:24px;list-style:none;}
+    .foot-nav a{font-family:var(--fb);font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .15s;}
+    .foot-nav a:hover{color:var(--black);}
+    .foot-copy{font-family:var(--fb);font-size:.62rem;color:var(--muted);}
+
+    .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+    .rv.on{opacity:1;transform:none;}
+
+    @media(max-width:960px){
+      nav{padding:0 20px;}.nav-links{display:none;}
+      .wrap,.hero-inner{padding-left:20px;padding-right:20px;}
+      .mv-grid,.story-layout,.values-grid,.loc-layout{grid-template-columns:1fr;}
+      .sec{padding:72px 0;}
+      .cta-strip{padding:52px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GigCareer <span class="beta">BETA</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html" class="on">About Us</a></li>
+    <li><a href="service.html">D-GIG</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">서비스 사전 신청</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <p class="hero-label">(주)GigCareer — 대전광역시 · 2024 설립</p>
+      <h1 class="hero-h">
+        Opportunity<br>
+        beyond <span class="it">Seoul.</span><br>
+        우리는 지역의<br>가치를 재발견합니다.
+      </h1>
+      <p class="hero-sub">지방 소멸과 청년 일자리 미스매치 문제를 데이터와 기술로 해결합니다. 누구나 자신이 머무는 곳에서 최고의 글로벌 커리어를 쌓을 수 있는 생태계를 만들어갑니다.</p>
+    </div>
+  </div>
+</header>
+
+<!-- MISSION & VISION -->
+<section class="sec" style="background:var(--bg);">
+  <div class="wrap">
+    <p class="sec-label rv">01 — Mission & Vision</p>
+    <h2 class="sec-h rv">우리가 <span class="it">존재하는 이유</span></h2>
+    <div class="mv-grid rv">
+      <div class="mv-card">
+        <div class="mv-tag">Mission — 미션</div>
+        <div class="mv-title">데이터와 기술로<br><span class="it">미스매치를 해결한다.</span></div>
+        <p class="mv-body">지방 소멸과 청년 일자리 미스매치 문제를 <strong>데이터와 기술로 해결</strong>합니다. 단순한 일자리 중개가 아닌, 구조적 문제의 근본 원인인 '검증 시스템의 부재'를 LER 기술로 채웁니다.</p>
+      </div>
+      <div class="mv-card">
+        <div class="mv-tag">Vision — 비전</div>
+        <div class="mv-title">머무는 곳에서<br><span class="it">글로벌 커리어를.</span></div>
+        <p class="mv-body">누구나 <strong>자신이 머무는 곳에서 최고의 글로벌 커리어</strong>를 쌓을 수 있는 생태계를 구축합니다. 물리적 거리가 기회의 한계가 되지 않는 세상을 만듭니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE STORY -->
+<section class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">02 — The Story</p>
+    <h2 class="sec-h rv">왜 <span class="it">시작했는가</span></h2>
+    <div class="story-layout">
+      <div class="rv">
+        <div class="story-pull">자산화의 사다리,<br><span class="it">LER을 만들다.</span></div>
+        <div class="story-body">
+          <p>대전에서 공부하고, 대전에서 성장하고 싶었던 청년들이 있습니다. 그들은 열심히 공부했고, 역량도 있었습니다. 그러나 이를 증명할 방법이 없었습니다.</p>
+          <p>크몽에서는 레퍼런스가 없어 일을 받지 못했고, 잡코리아에서는 지방 출신이라는 이유로 필터링됐습니다. 청년일자리 사업에 참여했지만 이력서 한 줄도 남지 않았습니다.</p>
+          <p>GigCareer는 이 문제를 해결하기 위해 설립됐습니다. <strong>단순한 일자리 중개가 아닌, 청년들이 로컬에서 주도적으로 경험을 쌓고 성장할 수 있는 '자산화의 사다리(LER)'</strong>를 제공하기 위해서입니다.</p>
+          <p>로컬에서 쌓은 모든 경험은 데이터가 되고, 그 데이터는 글로벌 커리어로 이어집니다. 우리는 그 연결고리를 만듭니다.</p>
+        </div>
+      </div>
+      <div class="story-side rv">
+        <div class="story-stat">
+          <div class="story-stat-num">2024</div>
+          <div class="story-stat-label">설립 연도</div>
+          <p class="story-stat-desc">대전광역시를 거점으로, 지역 청년 일자리 문제 해결을 목표로 창업.</p>
+        </div>
+        <div class="story-stat">
+          <div class="story-stat-num">D-GIG</div>
+          <div class="story-stat-label">핵심 플랫폼</div>
+          <p class="story-stat-desc">Local Gig × LER Data × Global Match 3단계 생태계. MVP 개발 진행 중.</p>
+        </div>
+        <div class="story-stat">
+          <div class="story-stat-num">LER</div>
+          <div class="story-stat-label">핵심 기술 철학</div>
+          <p class="story-stat-desc">Learning & Employment Record. 비정형 경험을 검증 가능한 커리어 자산으로 전환.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE VALUES -->
+<section class="sec" style="background:var(--bg);">
+  <div class="wrap">
+    <p class="sec-label rv">03 — Core Values</p>
+    <h2 class="sec-h rv">우리가 믿는 <span class="it">원칙들</span></h2>
+    <div class="values-grid rv">
+      <div class="val">
+        <div class="val-idx">[ 01 ]</div>
+        <div class="val-title">데이터로 증명한다</div>
+        <p class="val-desc">주장이 아닌 데이터로 말합니다. 모든 실무 경험은 측정되고 기록되며, 그 기록이 신뢰의 근거가 됩니다.</p>
+      </div>
+      <div class="val">
+        <div class="val-idx">[ 02 ]</div>
+        <div class="val-title">로컬에서 시작한다</div>
+        <p class="val-desc">글로벌을 꿈꾸되, 로컬에서 시작합니다. 지역의 문제를 해결하는 과정이 곧 글로벌 커리어의 출발점입니다.</p>
+      </div>
+      <div class="val">
+        <div class="val-idx">[ 03 ]</div>
+        <div class="val-title">구조를 바꾼다</div>
+        <p class="val-desc">증상이 아닌 구조를 바꿉니다. 일회성 지원이 아닌, 지속 가능한 생태계를 설계합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">04 — Location</p>
+    <h2 class="sec-h rv">대전에서 <span class="it">시작합니다</span></h2>
+    <div class="loc-layout rv">
+      <div class="loc-card">
+        <div class="loc-title">본사 & 오시는 길</div>
+        <div class="loc-sub">GigCareer HQ — Daejeon, Korea</div>
+        <div class="loc-info">
+          <div class="loc-row"><span class="loc-key">주소</span><span class="loc-val">대전광역시 유성구 [상세 주소]<br>(카이스트·충남대 인근)</span></div>
+          <div class="loc-row"><span class="loc-key">대표</span><span class="loc-val">김트리</span></div>
+          <div class="loc-row"><span class="loc-key">사업자</span><span class="loc-val">000-00-00000</span></div>
+          <div class="loc-row"><span class="loc-key">이메일</span><span class="loc-val">contact@gigcareer.kr</span></div>
+          <div class="loc-row"><span class="loc-key">운영시간</span><span class="loc-val">평일 09:00 — 18:00<br>(주말·공휴일 휴무)</span></div>
+        </div>
+      </div>
+      <div class="map-placeholder">
+        <div class="map-ph-label">Daejeon HQ</div>
+        <p class="map-ph-sub">지도 API 연동 예정<br>카카오맵 / 네이버지도 연동 후 실제 위치가 표시됩니다.</p>
+        <div class="map-ph-coord">36.3504° N, 127.3845° E</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <div class="wrap" style="width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:28px;">
+    <div class="cta-strip-h">함께하고 싶으신가요?<br><span class="it">파트너십 문의를 남겨주세요.</span></div>
+    <a href="gigcareer-contact.html" class="btn-wi">파트너십 문의하기 →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">GigCareer <span class="beta">BETA</span></div>
+    <ul class="foot-nav">
+      <li><a href="gigcareer-home.html">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="gigcareer-service.html">D-GIG</a></li>
+      <li><a href="gigcareer-insights.html">Insights</a></li>
+      <li><a href="gigcareer-contact.html">Contact</a></li>
+    </ul>
+    <span class="foot-copy">© 2025 GigCareer Inc.</span>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 90);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

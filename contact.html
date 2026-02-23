@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F4F2EE;--bg2:#ECEAE5;--bg3:#E4E1DB;--black:#0C0D0E;--ink:#1A1B1D;--mid:rgba(12,13,14,0.55);--muted:rgba(12,13,14,0.35);--border:rgba(12,13,14,0.1);--bhi:rgba(12,13,14,0.18);--fd:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:52px;display:flex;align-items:center;padding:0 32px;background:rgba(244,242,238,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .logo{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .beta{font-size:.5rem;letter-spacing:.12em;color:var(--bg);background:var(--black);padding:2px 6px;font-weight:700;}
+    .nav-links{display:flex;list-style:none;margin-left:36px;}
+    .nav-links a{font-family:var(--fb);font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;padding:0 16px;height:52px;display:flex;align-items:center;border-right:1px solid var(--border);transition:color .15s;}
+    .nav-links li:first-child a{border-left:1px solid var(--border);}
+    .nav-links a:hover,.nav-links a.on{color:var(--black);}
+    .nav-cta{margin-left:auto;font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--bg);padding:10px 22px;text-decoration:none;}
+    .nav-cta:hover{opacity:.8;}
+
+    /* HERO */
+    #hero{background:var(--black);padding:52px 0 0;min-height:52vh;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;}
+    .hero-inner{flex:1;display:flex;align-items:flex-end;max-width:1280px;margin:0 auto;width:100%;padding:80px 40px 60px;position:relative;z-index:2;}
+    .hero-label{font-family:var(--fb);font-size:.65rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(244,242,238,.35);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .hero-label::before{content:'';width:20px;height:1px;background:rgba(244,242,238,.35);display:block;}
+    .hero-h{font-family:var(--fd);font-size:clamp(2.4rem,5.2vw,6rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:.96;letter-spacing:-.01em;margin-bottom:24px;}
+    .hero-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.4);}
+    .hero-sub{font-family:var(--fb);font-size:1rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:520px;font-weight:300;}
+
+    /* COMMON */
+    .wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
+    .sec{padding:96px 0;border-bottom:1px solid var(--border);}
+    .sec-label{font-family:var(--fb);font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .sec-label::before{content:'';width:20px;height:1px;background:var(--muted);display:block;}
+    .sec-h{font-family:var(--fd);font-size:clamp(1.8rem,3.5vw,3.6rem);font-weight:700;text-transform:uppercase;letter-spacing:-.01em;color:var(--black);line-height:1.0;margin-bottom:12px;}
+    .sec-h .it{font-style:italic;font-weight:300;color:var(--mid);}
+
+    /* FORM + INFO LAYOUT */
+    .contact-layout{display:grid;grid-template-columns:1fr 380px;gap:2px;background:var(--border);border:1px solid var(--border);margin-top:52px;}
+    .form-area{background:var(--bg);padding:52px 48px;}
+    .info-area{background:var(--bg2);padding:52px 40px;display:flex;flex-direction:column;gap:32px;}
+
+    /* FORM ELEMENTS */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;}
+    .form-field{display:flex;flex-direction:column;gap:8px;margin-bottom:2px;}
+    .field-label{font-family:var(--fb);font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+    .field-input{font-family:var(--fb);font-size:.92rem;color:var(--ink);background:var(--bg2);border:1px solid var(--border);padding:13px 16px;outline:none;transition:border-color .16s;font-weight:400;width:100%;}
+    .field-input:focus{border-color:var(--black);}
+    .field-input::placeholder{color:var(--muted);}
+    select.field-input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(12,13,14,0.4)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+    textarea.field-input{resize:vertical;min-height:120px;font-family:var(--fb);}
+    .check-row{display:flex;align-items:flex-start;gap:12px;margin:20px 0 28px;}
+    .check-row input[type=checkbox]{width:16px;height:16px;border:1px solid var(--bhi);background:transparent;flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--black);}
+    .check-label{font-family:var(--fb);font-size:.82rem;color:var(--mid);line-height:1.6;font-weight:300;}
+    .check-label a{color:var(--ink);font-weight:500;}
+    .btn-submit{font-family:var(--fb);font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--black);color:var(--bg);padding:16px 36px;border:none;cursor:pointer;transition:opacity .16s,transform .14s;display:inline-flex;align-items:center;gap:10px;}
+    .btn-submit:hover{opacity:.82;transform:translateY(-1px);}
+
+    /* SUCCESS */
+    .form-success{display:none;padding:40px;background:var(--bg2);border:1px solid var(--border);text-align:center;}
+    .success-icon{font-family:var(--fd);font-size:3rem;font-weight:700;color:var(--black);margin-bottom:12px;}
+    .success-msg{font-family:var(--fd);font-size:1.4rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:8px;}
+    .success-sub{font-family:var(--fb);font-size:.9rem;color:var(--mid);font-weight:300;}
+
+    /* INFO AREA */
+    .info-block{border-bottom:1px solid var(--border);padding-bottom:24px;}
+    .info-block:last-child{border-bottom:none;padding-bottom:0;}
+    .info-title{font-family:var(--fd);font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--black);margin-bottom:14px;}
+    .info-row{display:flex;gap:12px;margin-bottom:10px;}
+    .info-key{font-family:var(--fb);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);width:68px;flex-shrink:0;padding-top:1px;}
+    .info-val{font-family:var(--fb);font-size:.88rem;color:var(--ink);line-height:1.55;font-weight:300;}
+    .info-val a{color:var(--ink);text-decoration:none;font-weight:500;}
+    .info-val a:hover{text-decoration:underline;}
+
+    /* FAQ */
+    .faq-list{margin-top:52px;border:1px solid var(--border);}
+    .faq-item{border-bottom:1px solid var(--border);}
+    .faq-item:last-child{border-bottom:none;}
+    .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:24px 32px;background:none;border:none;cursor:pointer;text-align:left;transition:background .16s;gap:16px;}
+    .faq-q:hover{background:var(--bg2);}
+    .faq-q-text{font-family:var(--fd);font-size:1.05rem;font-weight:700;text-transform:uppercase;color:var(--black);letter-spacing:.01em;line-height:1.2;}
+    .faq-icon{font-family:var(--fd);font-size:1.2rem;color:var(--muted);flex-shrink:0;transition:transform .22s;}
+    .faq-item.open .faq-icon{transform:rotate(45deg);}
+    .faq-a{display:none;padding:0 32px 28px;font-family:var(--fb);font-size:.92rem;line-height:1.78;color:var(--mid);font-weight:300;border-top:1px solid var(--border);padding-top:20px;}
+    .faq-a strong{color:var(--black);font-weight:600;}
+
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
+    .foot-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+    .foot-brand{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);}
+    .foot-nav{display:flex;gap:24px;list-style:none;}
+    .foot-nav a{font-family:var(--fb);font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .15s;}
+    .foot-nav a:hover{color:var(--black);}
+    .foot-copy{font-family:var(--fb);font-size:.62rem;color:var(--muted);}
+
+    .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+    .rv.on{opacity:1;transform:none;}
+
+    @media(max-width:960px){
+      nav{padding:0 20px;}.nav-links{display:none;}
+      .wrap,.hero-inner{padding-left:20px;padding-right:20px;}
+      .contact-layout{grid-template-columns:1fr;}
+      .form-row{grid-template-columns:1fr;}
+      .sec{padding:64px 0;}
+      .form-area,.info-area{padding:36px 24px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GigCareer <span class="beta">BETA</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html">D-GIG</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="contact.html" class="on">Contact</a></li>
+  </ul>
+  <a href="#form" class="nav-cta">서비스 사전 신청</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <p class="hero-label">Partnership & Contact — GigCareer</p>
+      <h1 class="hero-h">청년과 로컬,<br>그리고 글로벌을 잇는<br><span class="it">여정에 함께하세요.</span></h1>
+      <p class="hero-sub">D-GIG 플랫폼 도입, 지자체 협력, B2B 제휴 문의를 받고 있습니다. 어떤 형태의 협력이든 환영합니다.</p>
+    </div>
+  </div>
+</header>
+
+<!-- CONTACT FORM + INFO -->
+<section id="form" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">01 — Quick Contact</p>
+    <h2 class="sec-h rv">빠른 <span class="it">문의</span></h2>
+
+    <div class="contact-layout rv">
+      <!-- FORM -->
+      <div class="form-area">
+        <form id="contactForm" onsubmit="handleSubmit(event)" novalidate>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">회사 / 기관명</label>
+              <input class="field-input" type="text" placeholder="(주)회사명 또는 기관명" required>
+            </div>
+            <div class="form-field">
+              <label class="field-label">담당자 성함</label>
+              <input class="field-input" type="text" placeholder="홍길동" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">연락처</label>
+              <input class="field-input" type="tel" placeholder="010-0000-0000">
+            </div>
+            <div class="form-field">
+              <label class="field-label">이메일</label>
+              <input class="field-input" type="email" placeholder="email@company.com" required>
+            </div>
+          </div>
+          <div class="form-field" style="margin-bottom:2px;">
+            <label class="field-label">문의 유형</label>
+            <select class="field-input" required>
+              <option value="" disabled selected>문의 유형을 선택해주세요</option>
+              <option>로컬 프로젝트 구인 문의 (기업 → D-GIG)</option>
+              <option>B2B 채용 파트너십 (수도권·글로벌 기업)</option>
+              <option>지자체 및 대학 제휴</option>
+              <option>투자 및 기타 문의</option>
+            </select>
+          </div>
+          <div class="form-field" style="margin-top:2px;">
+            <label class="field-label">문의 내용</label>
+            <textarea class="field-input" placeholder="문의하실 내용을 자유롭게 작성해주세요."></textarea>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="agree" required>
+            <label class="check-label" for="agree">
+              <a href="#">개인정보 수집 및 이용</a>에 동의합니다. 수집된 정보는 문의 처리 목적으로만 사용되며, 처리 완료 후 즉시 파기됩니다.
+            </label>
+          </div>
+          <button type="submit" class="btn-submit">문의 제출하기 <span>→</span></button>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✓</div>
+          <div class="success-msg">문의가 접수되었습니다.</div>
+          <p class="success-sub">영업일 기준 1-2일 내로 담당자가 연락드리겠습니다.</p>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="info-area">
+        <div class="info-block">
+          <div class="info-title">Direct Contact</div>
+          <div class="info-row"><span class="info-key">이메일</span><span class="info-val"><a href="mailto:contact@gigcareer.kr">contact@gigcareer.kr</a></span></div>
+          <div class="info-row"><span class="info-key">전화</span><span class="info-val">042-000-0000</span></div>
+          <div class="info-row"><span class="info-key">운영시간</span><span class="info-val">평일 09:00 — 18:00<br>(주말·공휴일 휴무)</span></div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Partnership Types</div>
+          <div class="info-row"><span class="info-key">기업</span><span class="info-val">로컬 인재 채용 · D-GIG 플랫폼 도입</span></div>
+          <div class="info-row"><span class="info-key">지자체</span><span class="info-val">청년 일자리 사업 · LER 생태계 구축</span></div>
+          <div class="info-row"><span class="info-key">대학</span><span class="info-val">산학협력 · 학생 LER 인증 프로그램</span></div>
+          <div class="info-row"><span class="info-key">투자</span><span class="info-val">IR 자료 요청 · 미팅 문의</span></div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Company Info</div>
+          <div class="info-row"><span class="info-key">법인명</span><span class="info-val">(주)GigCareer</span></div>
+          <div class="info-row"><span class="info-key">주소</span><span class="info-val">대전광역시 유성구 [상세 주소]</span></div>
+          <div class="info-row"><span class="info-key">사업자</span><span class="info-val">000-00-00000</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">02 — FAQ</p>
+    <h2 class="sec-h rv">자주 묻는 <span class="it">질문</span></h2>
+
+    <div class="faq-list rv">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">D-GIG 플랫폼 입점 비용은 얼마인가요?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">MVP 단계에서는 <strong>기업 및 청년 모두 무료</strong>로 이용 가능합니다. 정식 런칭 후에는 기업의 경우 프로젝트 매칭 성사 시 수수료 모델이 적용될 예정이며, 청년 구직자는 지속적으로 무료로 제공됩니다. 자세한 요금제는 추후 공지 예정입니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">LER 데이터는 기업 채용 시스템(ATS)과 어떻게 연동되나요?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">D-GIG의 LER 데이터는 <strong>표준 API 형태</strong>로 제공되어 기업의 기존 ATS(지원자 추적 시스템)와 연동이 가능합니다. Workday, Greenhouse, SmartRecruiters 등 주요 ATS와의 연동을 단계적으로 지원할 예정이며, 자체 포맷의 LER 리포트 다운로드도 가능합니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">대전 외 타 지역 기업도 이용할 수 있나요?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">현재 MVP 단계에서는 <strong>대전·충청권을 중심으로 운영</strong>하고 있습니다. 단, 수도권 및 글로벌 기업이 대전의 로컬 인재를 원격으로 채용하는 경우는 적극 지원합니다. 향후 서울·경기권, 부산·울산권으로 순차적으로 확장할 계획입니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">청년 구직자가 첫 번째 Gig를 받으려면 어떻게 시작하나요?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">포트폴리오가 없어도 시작할 수 있습니다. D-GIG 프로필에 <strong>기술 스택, 관심 분야, 가용 시간</strong>을 입력하면 AI 매칭 알고리즘이 맞춤형 Gig를 추천합니다. 첫 번째 Gig 완료 후 LER 인증 배지가 발급되며, 이후 더 높은 수준의 프로젝트 매칭이 가능해집니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">지자체 및 대학과의 협력은 어떤 형태로 이루어지나요?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">지자체와는 <strong>청년 일자리 사업 연계, LER 기반 취업 지원 프로그램</strong> 형태로 협력합니다. 대학과는 산학협력 프로젝트 발굴, 재학생 LER 인증 프로그램 운영을 논의하고 있습니다. 구체적인 협력 방안은 담당자와 미팅을 통해 맞춤 설계해드립니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">GigCareer <span class="beta">BETA</span></div>
+    <ul class="foot-nav">
+      <li><a href="gigcareer-home.html">Home</a></li>
+      <li><a href="gigcareer-about.html">About</a></li>
+      <li><a href="gigcareer-service.html">D-GIG</a></li>
+      <li><a href="gigcareer-insights.html">Insights</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <span class="foot-copy">© 2025 GigCareer Inc.</span>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  window.toggleFaq = function(btn) {
+    const item = btn.parentElement;
+    const answer = item.querySelector('.faq-a');
+    const isOpen = item.classList.contains('open');
+    // close all
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-a').style.display = 'none';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.display = 'block';
+    }
+  };
+
+  // Form submit
+  window.handleSubmit = function(e) {
+    e.preventDefault();
+    const form = document.getElementById('contactForm');
+    const success = document.getElementById('formSuccess');
+    form.style.display = 'none';
+    success.style.display = 'block';
+  };
+
+  // Reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 90);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
