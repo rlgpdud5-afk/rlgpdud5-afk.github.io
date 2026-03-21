@@ -234,19 +234,42 @@ tr:hover td{background:var(--glass-3)}
 .tc-sv{font-size:15px;font-weight:700;font-family:var(--mono)}
 
 /* Login */
-.login{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:var(--bg-deep);
-  background-image:radial-gradient(ellipse at 30% 30%,rgba(212,165,116,0.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(59,130,246,0.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(139,92,246,0.04) 0%,transparent 40%);
-}
-.login-card{padding:48px 40px;width:430px;max-width:90vw}
-.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.role{padding:16px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;text-align:center;background:var(--glass-3)}
-.role:hover{border-color:var(--glass-highlight);background:var(--glass-2)}
-.role.sel{border-color:var(--accent-warm);background:rgba(212,165,116,0.1);box-shadow:0 0 20px var(--accent-glow)}
+@keyframes orbFloat1{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes orbFloat2{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes logoGlow{0%,100%{box-shadow:0 0 20px rgba(212,165,116,0.3)}50%{box-shadow:0 0 35px rgba(212,165,116,0.5)}}
+.login{min-height:100vh;position:relative;overflow:hidden;background:var(--bg-deep);background-image:radial-gradient(ellipse at 15% 50%,rgba(59,130,246,0.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 30%,rgba(212,165,116,0.06) 0%,transparent 45%),radial-gradient(ellipse at 50% 90%,rgba(139,92,246,0.04) 0%,transparent 40%)}
+.login .orb{position:absolute;border-radius:50%;pointer-events:none}
+.login .orb1{width:280px;height:280px;top:-5%;left:-5%;background:radial-gradient(circle,rgba(59,130,246,0.25),transparent 70%);filter:blur(60px);animation:orbFloat1 14s ease-in-out infinite}
+.login .orb2{width:200px;height:200px;bottom:10%;right:-3%;background:radial-gradient(circle,rgba(212,165,116,0.3),transparent 70%);filter:blur(50px);animation:orbFloat2 18s ease-in-out infinite}
+.login .orb3{width:160px;height:160px;top:40%;left:55%;background:radial-gradient(circle,rgba(139,92,246,0.2),transparent 70%);filter:blur(45px);animation:orbFloat1 16s ease-in-out infinite}
+.login-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1100px;margin:0 auto;padding:0 40px;min-height:100vh}
+.login-hero{padding:40px 0}
+.login-hero .logo-m{animation:logoGlow 3s ease-in-out infinite}
+.lh-title{font-size:clamp(28px,3.5vw,42px);font-weight:800;line-height:1.25;letter-spacing:-1px;margin:20px 0 14px}
+.lh-title em{font-style:normal;background:linear-gradient(135deg,var(--accent-warm),#E8B88A);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lh-sub{font-size:14px;line-height:1.7;color:var(--text-2);max-width:400px;margin-bottom:24px}
+.lh-nums{display:flex;gap:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06)}
+.lh-n{font-size:20px;font-weight:800;font-family:var(--mono);letter-spacing:-0.5px}
+.lh-l{font-size:11px;color:var(--text-3);margin-top:2px}
+.login-card{padding:36px 32px;width:100%;max-width:440px}
+.lc-t{font-size:20px;font-weight:700;margin-bottom:4px;text-align:center}
+.lc-s{font-size:13px;color:var(--text-2);text-align:center;margin-bottom:24px}
+.lc-micro{font-size:11px;color:var(--text-3);text-align:center;margin-top:12px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.role{padding:16px 12px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s;text-align:center;background:var(--glass-3)}
+.role:hover{border-color:var(--glass-highlight);background:var(--glass-2);transform:translateY(-2px)}
+.role.sel{border-color:var(--accent-warm);background:rgba(212,165,116,0.1);box-shadow:0 0 20px var(--accent-glow);transform:translateY(-2px)}
 .role .ri{font-size:24px;margin-bottom:6px}
 .role .rn{font-size:13px;font-weight:600}
 .role .rd{font-size:10px;color:var(--text-3);margin-top:2px}
-.role.fw{grid-column:span 2}
+/* Mobile Bottom Nav */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(12,18,32,0.92);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:1px solid var(--border);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.mob-nav-inner{display:flex;justify-content:space-around;align-items:center;max-width:500px;margin:0 auto}
+.mob-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 8px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--text-3);min-width:48px;position:relative}
+.mob-nav-item span{font-size:9px;font-weight:500;white-space:nowrap}
+.mob-nav-item:hover,.mob-nav-item.on{color:var(--accent-warm)}
+.mob-nav-item.on{background:rgba(212,165,116,0.1)}
+.mob-nav-item svg{width:20px;height:20px}
 
 /* Review dots */
 .rv-i{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
@@ -269,7 +292,9 @@ tr:hover td{background:var(--glass-3)}
 .port-sec h3{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent-warm);margin-bottom:12px;font-weight:600}
 
 @media(max-width:1200px){.stats{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}}
-@media(max-width:768px){.side{display:none}.stats{grid-template-columns:1fr}.g2,.g3{grid-template-columns:1fr}.pb{padding:16px}}
+@media(max-width:900px){.login-inner{grid-template-columns:1fr;gap:24px;padding:80px 24px 40px;min-height:auto}.login-hero{text-align:center;padding:0}.login-hero .logo{justify-content:center}.lh-sub{margin:0 auto 24px}.lh-nums{justify-content:center}.login-card{max-width:100%;margin:0 auto}}
+@media(max-width:768px){.side{display:none}.mob-nav{display:block}.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.pb{padding:16px 16px 90px}.ph{padding:18px 16px 14px}.ph h1{font-size:18px}.main{padding-bottom:0}}
+@media(max-width:480px){.login-inner{padding:60px 16px 32px}.roles{gap:8px}.role{padding:14px 8px}.login-card{padding:28px 20px}.stats{grid-template-columns:1fr}}
 `;
 
 // ─── Helpers ───
@@ -285,29 +310,40 @@ const PBar = ({v,c="var(--accent-warm)"}) => <div className="pbar"><div classNam
 function Login({onLogin}) {
   const [sel,setSel] = useState(null);
   const roles = [
-    {k:"maker",i:"🛠️",n:"Maker",d:"과업 수행 청년"},
-    {k:"reviewer",i:"🔍",n:"Reviewer",d:"작업물 검수자"},
-    {k:"client",i:"🏢",n:"Client",d:"프로젝트 의뢰 기업"},
-    {k:"admin",i:"⚙️",n:"Admin/PM",d:"운영 관리자"},
+    {k:"maker",i:"\u{1F6E0}\uFE0F",n:"Maker",d:"과업 수행 청년"},
+    {k:"reviewer",i:"\u{1F50D}",n:"Reviewer",d:"작업물 검수자"},
+    {k:"client",i:"\u{1F3E2}",n:"Client",d:"프로젝트 의뢰 기업"},
+    {k:"admin",i:"\u2699\uFE0F",n:"Admin/PM",d:"운영 관리자"},
   ];
   return (
     <div className="login">
-      <div className="login-card glass fade-up">
-        <div style={{display:"flex",justifyContent:"center",marginBottom:20}}>
-          <div className="logo"><div className="logo-m">L</div>로컬크루</div>
+      <div className="orb orb1"/><div className="orb orb2"/><div className="orb orb3"/>
+      <div className="login-inner">
+        <div className="login-hero">
+          <div className="logo"><div className="logo-m">L</div><span style={{background:'linear-gradient(135deg,var(--accent-warm),#E8B88A)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>로컬크루</span></div>
+          <h1 className="lh-title">지역의 작은 경험이,<br/><em>검증된 커리어</em>가 되다</h1>
+          <p className="lh-sub">프로젝트 수행 이력, 마이크로 크레덴셜, 포트폴리오 자동 생성을 통해 지역 청년의 실무 경험을 실제 기회와 연결합니다.</p>
+          <div className="lh-nums">
+            {[["240+","수행 완료 과업"],["96%","마감 준수율"],["47","발급 크레덴셜"]].map(function(arr){return <div key={arr[1]}><div className="lh-n">{arr[0]}</div><div className="lh-l">{arr[1]}</div></div>})}
+          </div>
         </div>
-        <div style={{fontSize:26,fontWeight:800,textAlign:"center",letterSpacing:-0.5}}>시작하기</div>
-        <div style={{fontSize:13,color:"var(--text-2)",textAlign:"center",margin:"6px 0 32px"}}>역할을 선택하고 대시보드에 입장하세요</div>
-        <div className="roles">
-          {roles.map(r => (
-            <div key={r.k} className={`role ${sel===r.k?"sel":""}`} onClick={()=>setSel(r.k)}>
-              <div className="ri">{r.i}</div><div className="rn">{r.n}</div><div className="rd">{r.d}</div>
+        <div style={{display:'flex',justifyContent:'center'}}>
+          <div className="login-card glass">
+            <div className="lc-t">체험하기</div>
+            <div className="lc-s">역할을 선택하고 대시보드에 입장하세요</div>
+            <div className="roles">
+              {roles.map(function(r){return(
+                <div key={r.k} className={"role"+(sel===r.k?" sel":"")} onClick={function(){setSel(r.k)}}>
+                  <div className="ri">{r.i}</div><div className="rn">{r.n}</div><div className="rd">{r.d}</div>
+                </div>
+              )})}
             </div>
-          ))}
+            <button className="btn btn-p" style={{width:"100%",justifyContent:"center",padding:13,fontSize:14}} disabled={!sel} onClick={function(){if(sel)onLogin(sel)}}>
+              {sel ? roles.find(function(r){return r.k===sel}).n+"로 입장" : "역할을 선택하세요"}
+            </button>
+            <div className="lc-micro">로그인 없이 주요 화면을 먼저 확인할 수 있습니다</div>
+          </div>
         </div>
-        <button className="btn btn-p" style={{width:"100%",justifyContent:"center",padding:13,fontSize:14}} disabled={!sel} onClick={()=>sel&&onLogin(sel)}>
-          {sel ? `${roles.find(r=>r.k===sel)?.n}로 입장` : "역할을 선택하세요"}
-        </button>
       </div>
     </div>
   );
@@ -676,6 +712,24 @@ function Review() {
   </div>);
 }
 
+// ─── Mobile Nav ───
+function MobileNav({page,onNav,items,onOut}) {
+  var allItems = [];
+  items.forEach(function(s){s.items.forEach(function(it){if(allItems.length<4)allItems.push(it)})});
+  return (
+    <div className="mob-nav">
+      <div className="mob-nav-inner">
+        {allItems.map(function(it){return(
+          <div key={it.id} className={"mob-nav-item"+(page===it.id?" on":"")} onClick={function(){onNav(it.id)}}>
+            {it.icon}<span>{it.name}</span>
+          </div>
+        )})}
+        <div className="mob-nav-item" onClick={onOut}>{I.out}<span>나가기</span></div>
+      </div>
+    </div>
+  );
+}
+
 // ─── App ───
 function App() {
   const [role,setRole]=useState(null);
@@ -714,6 +768,7 @@ function App() {
     <div className="app">
       <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard")}} items={navs[role]||navs.maker}/>
       <div className="main">{renderPage()}</div>
+      <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard")}}/>
     </div>
   </>);
 }
