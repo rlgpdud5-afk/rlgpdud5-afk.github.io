@@ -349,7 +349,7 @@ function Side({user,page,onNav,onOut,items}) {
 // ─── Maker Dashboard ───
 function MakerDash({user}) {
   return (<div>
-    <div className="ph"><h1>안녕하세요, {user.name}님 ✨</h1><p>오늘의 작업 현황을 확인하세요</p></div>
+    <div className="ph"><h1>안녕하세요, {user.name}님 </h1><p>오늘의 작업 현황을 확인하세요</p></div>
     <div className="pb">
       <div className="stats">
         {[["신뢰도 점수",user.trustScore,"상위 18%","bl"],["누적 배지",user.badges,"+2 이번 달","pu"],["마감 준수율",`${user.deadlineRate}%`,"최근 10건","gr"],["평균 평점",user.avgRating,"리뷰어 평가","or"]].map(([l,v,s,c],i) => (
