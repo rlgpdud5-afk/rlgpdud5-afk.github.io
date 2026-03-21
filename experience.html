@@ -1,18 +1,18 @@
-<!doc<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>로컬크루 | 체험하기</title>
-  <meta name="description" content="로컬크루 체험하기 프로토타입" />
+  <title>로컬크루 체험하기</title>
+  <meta name="description" content="지역의 작은 경험을 검증된 커리어로 연결하는 로컬크루 체험하기 페이지" />
+  <meta name="theme-color" content="#080D19" />
   <style>
     html, body, #root {
       margin: 0;
       width: 100%;
       min-height: 100%;
-      background: #0C1220;
+      background: #080D19;
     }
-    body { overflow-x: hidden; }
   </style>
 </head>
 <body>
@@ -23,701 +23,658 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
-const { useState, useEffect, useCallback, useMemo } = React;
+const { useState, useEffect, useRef, useCallback } = React;
 
-// ─── Mock Data (same as before) ───
-const MOCK_USERS = {
-  maker: { id: "u1", name: "김서연", role: "Maker", grade: "Verified", trustScore: 87, badges: 12, completedProjects: 8, deadlineRate: 96, avgRating: 4.7, skills: ["React", "Figma", "UX 리서치", "HTML/CSS"], region: "대전" },
-  reviewer: { id: "u2", name: "이준혁", role: "Reviewer", grade: "Reviewer", trustScore: 94, badges: 28, completedProjects: 22, deadlineRate: 100, avgRating: 4.9, skills: ["코드 리뷰", "QA", "프론트엔드"], region: "대전" },
-  client: { id: "u4", name: "(주)로컬테크", role: "Client", company: "로컬테크", projects: 5, activeProjects: 2, totalSpent: "12,500,000원" },
-  admin: { id: "u5", name: "운영자", role: "Admin" },
+// ─── Mouse parallax hook ───
+function useParallax() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const ref = useRef(null);
+  useEffect(() => {
+    const handle = (e) => {
+      const w = window.innerWidth, h = window.innerHeight;
+      setPos({ x: (e.clientX - w / 2) / w, y: (e.clientY - h / 2) / h });
+    };
+    window.addEventListener("mousemove", handle);
+    return () => window.removeEventListener("mousemove", handle);
+  }, []);
+  return pos;
+}
+
+// ─── Intersection observer for stagger ───
+function useInView(threshold = 0.1) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, visible];
+}
+
+// ─── Mini SVG icons ───
+const icons = {
+  shield: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+  badge: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+  file: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+  search: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  star: <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+  check: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>,
+  arrow: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+  chevDown: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="6 9 12 15 18 9"/></svg>,
+  play: <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
 };
 
-const MOCK_PROJECTS = [
-  { id: "p1", name: "로컬푸드 쇼핑몰 리뉴얼", client: "(주)로컬테크", status: "진행중", progress: 65, deadline: "2026-04-15", security: "일반", budget: "3,500,000원", tasks: 8, completedTasks: 5, modules: ["랜딩페이지", "상품 카드 UI", "검색 필터"], description: "기존 로컬푸드 쇼핑몰의 프론트엔드를 모던하게 리뉴얼" },
-  { id: "p2", name: "세종시 관광 데이터 정리", client: "세종시청", status: "진행중", progress: 40, deadline: "2026-04-30", security: "일반", budget: "2,000,000원", tasks: 6, completedTasks: 2, modules: ["데이터 수집", "정제", "시각화"], description: "세종시 관광 데이터 수집/정제/시각화" },
-  { id: "p3", name: "스타트업 IR 자료 디자인", client: "넥스트랩", status: "검수중", progress: 90, deadline: "2026-03-25", security: "높음", budget: "1,800,000원", tasks: 4, completedTasks: 4, modules: ["슬라이드 디자인", "인포그래픽"], description: "시리즈A IR 자료 디자인" },
-  { id: "p4", name: "교육 앱 QA 테스트", client: "에듀플러스", status: "배정중", progress: 10, deadline: "2026-05-10", security: "일반", budget: "1,200,000원", tasks: 10, completedTasks: 1, modules: ["기능 QA", "UI QA", "리포트"], description: "교육 앱 전면 QA" },
-  { id: "p5", name: "마케팅 리서치 보고서", client: "(주)로컬테크", status: "완료", progress: 100, deadline: "2026-03-01", security: "일반", budget: "800,000원", tasks: 5, completedTasks: 5, modules: ["설문 설계", "데이터 분석", "보고서"], description: "지역 소비자 마케팅 리서치" },
-];
+// ─── Glass Preview Cards ───
+function TrustCard({ delay, visible }) {
+  return (
+    <div className={`preview-card ${visible ? "card-in" : ""}`} style={{ animationDelay: `${delay}s` }}>
+      <div className="pc-icon" style={{ background: "rgba(59,130,246,0.15)", color: "#60A5FA" }}>{icons.shield}</div>
+      <div className="pc-label">신뢰도 점수</div>
+      <div className="pc-row">
+        <span className="pc-value">87</span>
+        <span className="pc-badge blue">상위 18%</span>
+      </div>
+      <div className="pc-bar"><div className="pc-bar-fill" style={{ width: "87%", background: "linear-gradient(90deg, #3B82F6, #60A5FA)" }} /></div>
+      <div className="pc-sub">마감 준수율 96% · 평균 평점 4.7</div>
+    </div>
+  );
+}
 
-const MOCK_TASKS = [
-  { id: "t1", projectId: "p1", name: "메인 히어로 섹션 퍼블리싱", status: "승인완료", assignee: "김서연", difficulty: "중", deadline: "2026-03-20", skills: ["HTML/CSS", "React"], autoCheck: "통과", reviewScore: 4.8 },
-  { id: "t2", projectId: "p1", name: "상품 카드 컴포넌트 제작", status: "진행중", assignee: "김서연", difficulty: "중", deadline: "2026-03-28", skills: ["React", "CSS"], autoCheck: null, reviewScore: null },
-  { id: "t3", projectId: "p1", name: "검색 필터 UI 구현", status: "배정됨", assignee: "박민수", difficulty: "상", deadline: "2026-04-05", skills: ["React", "TypeScript"], autoCheck: null, reviewScore: null },
-  { id: "t4", projectId: "p1", name: "반응형 레이아웃 적용", status: "제출완료", assignee: "최유나", difficulty: "중", deadline: "2026-03-25", skills: ["CSS", "미디어쿼리"], autoCheck: "통과", reviewScore: null },
-  { id: "t5", projectId: "p2", name: "관광지 데이터 크롤링", status: "진행중", assignee: "정하늘", difficulty: "상", deadline: "2026-04-10", skills: ["Python", "크롤링"], autoCheck: null, reviewScore: null },
-  { id: "t6", projectId: "p2", name: "데이터 정제 및 포맷 변환", status: "배정됨", assignee: "김서연", difficulty: "중", deadline: "2026-04-20", skills: ["Python", "Pandas"], autoCheck: null, reviewScore: null },
-];
+function CredCard({ delay, visible }) {
+  return (
+    <div className={`preview-card ${visible ? "card-in" : ""}`} style={{ animationDelay: `${delay}s` }}>
+      <div className="pc-icon" style={{ background: "rgba(139,92,246,0.15)", color: "#A78BFA" }}>{icons.badge}</div>
+      <div className="pc-label">마이크로 크레덴셜</div>
+      <div className="pc-cred-item">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontWeight: 600, fontSize: 13 }}>웹 기획 보조</span>
+          <span className="pc-badge green">{icons.check} QA 통과</span>
+        </div>
+        <div style={{ fontSize: 11, color: "var(--t3)", marginTop: 4 }}>마감 100% · 평점 4.8 · 3건 수행</div>
+      </div>
+      <div className="pc-cred-item" style={{ opacity: 0.6 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontWeight: 600, fontSize: 13 }}>데이터 정리</span>
+          <span className="pc-badge green">{icons.check} QA 통과</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-const MOCK_CREDENTIALS = [
-  { id: "c1", project: "로컬푸드 쇼핑몰 리뉴얼", role: "Maker", task: "메인 히어로 섹션 퍼블리싱", period: "2026.02 - 2026.03", skills: ["HTML/CSS", "React"], qaPass: true, rating: 4.8, trustDelta: "+3", issuedAt: "2026-03-20", verifyId: "VRF-2026-0320-A1B2" },
-  { id: "c2", project: "마케팅 리서치 보고서", role: "Maker", task: "설문 데이터 분석", period: "2026.01 - 2026.02", skills: ["Excel", "데이터 분석", "리서치"], qaPass: true, rating: 4.6, trustDelta: "+2", issuedAt: "2026-02-28", verifyId: "VRF-2026-0228-C3D4" },
-  { id: "c3", project: "교육 앱 UX 리서치", role: "Maker", task: "사용자 인터뷰 정리", period: "2025.11 - 2025.12", skills: ["UX 리서치", "인터뷰", "분석"], qaPass: true, rating: 4.9, trustDelta: "+4", issuedAt: "2025-12-15", verifyId: "VRF-2025-1215-E5F6" },
-];
+function PortfolioCard({ delay, visible }) {
+  return (
+    <div className={`preview-card ${visible ? "card-in" : ""}`} style={{ animationDelay: `${delay}s` }}>
+      <div className="pc-icon" style={{ background: "rgba(212,165,116,0.15)", color: "#D4A574" }}>{icons.file}</div>
+      <div className="pc-label">포트폴리오 자동 생성</div>
+      <div className="pc-templates">
+        {["지원서형", "프로젝트형", "경력기술서"].map((t, i) => (
+          <div key={t} className="pc-tpl">{t}</div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+        <div className="pc-mini-btn">PDF {icons.arrow}</div>
+        <div className="pc-mini-btn">URL 공유</div>
+      </div>
+    </div>
+  );
+}
 
-const MOCK_TALENTS = [
-  { id: "u1", name: "김서연", grade: "Verified", trustScore: 87, skills: ["React", "Figma", "UX 리서치"], deadlineRate: 96, rating: 4.7, projects: 8, region: "대전", available: true },
-  { id: "u6", name: "정하늘", grade: "Advanced", trustScore: 91, skills: ["Python", "데이터 분석", "크롤링"], deadlineRate: 98, rating: 4.8, projects: 14, region: "대전", available: true },
-  { id: "u7", name: "최유나", grade: "Verified", trustScore: 84, skills: ["CSS", "퍼블리싱", "반응형"], deadlineRate: 94, rating: 4.5, projects: 6, region: "세종", available: false },
-  { id: "u8", name: "박민수", grade: "Advanced", trustScore: 92, skills: ["TypeScript", "React", "Node.js"], deadlineRate: 100, rating: 4.9, projects: 18, region: "대전", available: true },
-  { id: "u9", name: "한소희", grade: "Starter", trustScore: 72, skills: ["Figma", "일러스트", "로고"], deadlineRate: 90, rating: 4.3, projects: 3, region: "청주", available: true },
-];
+function SearchCard({ delay, visible }) {
+  return (
+    <div className={`preview-card ${visible ? "card-in" : ""}`} style={{ animationDelay: `${delay}s` }}>
+      <div className="pc-icon" style={{ background: "rgba(16,185,129,0.15)", color: "#34D399" }}>{icons.search}</div>
+      <div className="pc-label">인재 검색</div>
+      <div className="pc-talent">
+        <div className="pc-talent-av" style={{ background: "linear-gradient(135deg, #3B82F6, #60A5FA)" }}>김</div>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: 12 }}>김서연</div>
+          <div style={{ fontSize: 10, color: "var(--t3)" }}>React · Figma · 신뢰도 87</div>
+        </div>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 2 }}>
+          {icons.star}<span style={{ fontFamily: "var(--mono)", fontSize: 12, fontWeight: 600 }}>4.7</span>
+        </div>
+      </div>
+      <div className="pc-talent" style={{ opacity: 0.5 }}>
+        <div className="pc-talent-av" style={{ background: "linear-gradient(135deg, #8B5CF6, #A78BFA)" }}>박</div>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: 12 }}>박민수</div>
+          <div style={{ fontSize: 10, color: "var(--t3)" }}>TypeScript · Node.js</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-const gradeColors = { Starter: "#6B7280", Verified: "#3B82F6", Advanced: "#8B5CF6", Reviewer: "#10B981", Assembler: "#D97706" };
+// ─── Floating Glass Objects ───
+function FloatingObj({ size, x, y, blur, opacity, color, speed, parallax, mouse }) {
+  return (
+    <div
+      className="float-obj"
+      style={{
+        width: size, height: size,
+        left: `${x}%`, top: `${y}%`,
+        background: `radial-gradient(circle at 30% 30%, ${color} 0%, transparent 70%)`,
+        filter: `blur(${blur}px)`,
+        opacity,
+        animationDuration: `${speed}s`,
+        transform: `translate(${mouse.x * parallax}px, ${mouse.y * parallax}px)`,
+      }}
+    />
+  );
+}
 
-// ─── Icons ───
-const I = {
-  home: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-  folder: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>,
-  check: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>,
-  badge: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
-  file: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
-  search: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-  users: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,
-  chart: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
-  star: <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-  clock: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  alert: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-  arrow: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>,
-  out: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
-  plus: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  dl: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
-  link: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>,
-  shield: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-};
+// ─── Main Component ───
+function LandingHero() {
+  const mouse = useParallax();
+  const [heroRef, heroVisible] = useInView(0.05);
+  const [cardsRef, cardsVisible] = useInView(0.1);
+  const [loaded, setLoaded] = useState(false);
+  
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
-// ─── Glassmorphism CSS ───
-const css = `
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  return (
+    <>
+      <style>{`
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  --bg-deep: #0C1220;
-  --bg-surface: rgba(17,24,39,0.85);
-  --glass-1: rgba(255,255,255,0.08);
-  --glass-2: rgba(255,255,255,0.05);
-  --glass-3: rgba(255,255,255,0.03);
-  --glass-border: rgba(255,255,255,0.12);
-  --glass-highlight: rgba(255,255,255,0.20);
-  --glass-blur: 40px;
+  --bg: #080D19;
+  --t1: #F1F5F9;
+  --t2: #94A3B8;
+  --t3: #546380;
   --accent: #3B82F6;
-  --accent-warm: #D4A574;
-  --accent-glow: rgba(212,165,116,0.25);
-  --success: #10B981;
-  --warning: #F59E0B;
-  --danger: #EF4444;
+  --warm: #D4A574;
+  --warm2: #E8B88A;
   --purple: #8B5CF6;
-  --text-1: #F1F5F9;
-  --text-2: #94A3B8;
-  --text-3: #64748B;
-  --border: rgba(255,255,255,0.08);
-  --font: 'Noto Sans KR', -apple-system, sans-serif;
+  --success: #10B981;
+  --glass: rgba(255,255,255,0.06);
+  --glass-b: rgba(255,255,255,0.10);
+  --glass-h: rgba(255,255,255,0.18);
   --mono: 'JetBrains Mono', monospace;
+  --sans: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg-deep);color:var(--text-1);overflow:hidden}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glowPulse{0%,100%{box-shadow:0 0 15px var(--accent-glow)}50%{box-shadow:0 0 30px var(--accent-glow),0 0 60px rgba(212,165,116,0.1)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-.fade-up{animation:fadeUp .4s ease-out both}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--t1); overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
 
-/* ─── Glass Card System ─── */
-.glass{
-  background:var(--glass-1);
-  backdrop-filter:blur(var(--glass-blur));
-  -webkit-backdrop-filter:blur(var(--glass-blur));
-  border:1px solid var(--glass-border);
-  border-radius:16px;
-  box-shadow:
-    inset -1px -1px 3px rgba(0,0,0,1),
-    20px 20px 20px rgba(0,0,0,0.2),
-    inset 0 -10px 4px rgba(255,255,255,0.06),
-    inset 0 4px 10px rgba(0,0,0,0.25);
-  position:relative;
-  overflow:hidden;
+/* ─── Animations ─── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.glass::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--glass-highlight),transparent);
+@keyframes fadeSlideRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-.glass-2{
-  background:var(--glass-2);
-  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-  border:1px solid rgba(255,255,255,0.08);border-radius:12px;
-  box-shadow:inset -1px -1px 2px rgba(0,0,0,0.6),8px 8px 16px rgba(0,0,0,0.15),inset 0 -6px 3px rgba(255,255,255,0.04),inset 0 2px 6px rgba(0,0,0,0.2);
-  position:relative;overflow:hidden;
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(40px) scale(0.95) rotateX(8deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotateX(0deg); }
 }
-.glass-2::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)}
-.glass-3{
-  background:var(--glass-3);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,0.05);border-radius:10px;
+@keyframes float1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(3deg); }
 }
+@keyframes float2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-2deg); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(212,165,116,0.3), 0 0 40px rgba(212,165,116,0.1); }
+  50% { box-shadow: 0 0 30px rgba(212,165,116,0.5), 0 0 60px rgba(212,165,116,0.2), 0 0 100px rgba(212,165,116,0.05); }
+}
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+@keyframes barGrow {
+  from { width: 0; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(212,165,116,0.3); }
+  50% { border-color: rgba(212,165,116,0.6); }
+}
+@keyframes logoGlow {
+  0%, 100% { text-shadow: 0 0 20px rgba(212,165,116,0.3); }
+  50% { text-shadow: 0 0 40px rgba(212,165,116,0.5); }
+}
+
+.hero-enter { opacity: 0; }
+.hero-visible { animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.hero-visible-d1 { animation-delay: 0.1s; }
+.hero-visible-d2 { animation-delay: 0.25s; }
+.hero-visible-d3 { animation-delay: 0.4s; }
+.hero-visible-d4 { animation-delay: 0.55s; }
+.hero-visible-d5 { animation-delay: 0.7s; }
+.hero-visible-d6 { animation-delay: 0.85s; }
+
+.card-in { animation: cardReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
 /* ─── Layout ─── */
-.app{display:flex;height:100vh;overflow:hidden;background:var(--bg-deep);
-  background-image:radial-gradient(ellipse at 20% 50%,rgba(59,130,246,0.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(212,165,116,0.05) 0%,transparent 40%),radial-gradient(ellipse at 50% 90%,rgba(139,92,246,0.04) 0%,transparent 40%);
+.hero-section {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 15% 50%, rgba(59,130,246,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 30%, rgba(212,165,116,0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 90%, rgba(139,92,246,0.04) 0%, transparent 40%);
 }
-.side{width:260px;background:rgba(17,24,39,0.6);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.side-head{padding:24px 20px;border-bottom:1px solid var(--border)}
-.logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;letter-spacing:-0.5px}
-.logo-m{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent-warm),#E8B88A);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#0C1220;box-shadow:0 0 20px var(--accent-glow)}
-.side-nav{flex:1;padding:12px;overflow-y:auto}
-.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);padding:12px 12px 4px}
-.nav-i{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-2);cursor:pointer;transition:all .2s;font-size:13px;font-weight:450;margin-bottom:2px}
-.nav-i:hover{background:var(--glass-2);color:var(--text-1)}
-.nav-i.on{background:rgba(212,165,116,0.12);color:var(--accent-warm);font-weight:600}
-.nav-i .nb{margin-left:auto;background:var(--accent-warm);color:#0C1220;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:18px;text-align:center}
-.side-foot{padding:16px;border-top:1px solid var(--border)}
-.side-user{display:flex;align-items:center;gap:10px;padding:8px}
-.avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;flex-shrink:0}
-.main{flex:1;overflow-y:auto;overflow-x:hidden}
-.ph{padding:28px 36px 20px;position:sticky;top:0;z-index:10;background:rgba(12,18,32,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.ph h1{font-size:22px;font-weight:700;letter-spacing:-0.3px}
-.ph p{font-size:13px;color:var(--text-2);margin-top:4px}
-.pb{padding:24px 36px 48px}
 
-/* ─── Components ─── */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat{padding:20px;position:relative}
-.stat::after{content:'';position:absolute;top:0;left:20px;right:20px;height:2px;border-radius:1px}
-.stat.bl::after{background:var(--accent)}.stat.gr::after{background:var(--success)}.stat.pu::after{background:var(--purple)}.stat.or::after{background:var(--accent-warm)}
-.stat-l{font-size:11px;color:var(--text-3);font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
-.stat-v{font-size:28px;font-weight:700;font-family:var(--mono);letter-spacing:-1px}
-.stat-s{font-size:11px;color:var(--text-2);margin-top:4px}
-
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-.b-bl{background:rgba(59,130,246,0.15);color:#60A5FA}
-.b-gr{background:rgba(16,185,129,0.15);color:#34D399}
-.b-or{background:rgba(245,158,11,0.15);color:#FBBF24}
-.b-pu{background:rgba(139,92,246,0.15);color:#A78BFA}
-.b-rd{background:rgba(239,68,68,0.15);color:#F87171}
-.b-gy{background:rgba(100,116,139,0.15);color:var(--text-3)}
-.tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:500;background:var(--glass-2);color:var(--text-2);border:1px solid var(--border);margin:2px}
-.pbar{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
-.pfill{height:100%;border-radius:3px;transition:width .6s ease}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:550;border:none;cursor:pointer;transition:all .2s;font-family:var(--font)}
-.btn-p{background:linear-gradient(135deg,var(--accent-warm),#C8956C);color:#0C1220;box-shadow:0 0 20px var(--accent-glow)}
-.btn-p:hover{box-shadow:0 0 30px var(--accent-glow),0 0 60px rgba(212,165,116,0.15);transform:translateY(-1px)}
-.btn-s{background:var(--glass-2);color:var(--text-1);border:1px solid var(--glass-border);backdrop-filter:blur(10px)}
-.btn-s:hover{background:var(--glass-1);border-color:var(--glass-highlight)}
-.btn-g{background:transparent;color:var(--text-2);border:none}.btn-g:hover{color:var(--text-1)}
-.btn-sm{padding:5px 10px;font-size:12px}
-.input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:9px 14px;font-size:13px;color:var(--text-1);width:100%;font-family:var(--font);outline:none;transition:all .2s}
-.input:focus{border-color:var(--accent-warm);box-shadow:0 0 0 3px rgba(212,165,116,0.15)}
-.input::placeholder{color:var(--text-3)}
-select.input{cursor:pointer;appearance:none}
-table{width:100%;border-collapse:collapse}
-th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
-td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;vertical-align:middle}
-tr:hover td{background:var(--glass-3)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.ct{font-size:14px;font-weight:600}
-
-/* Credential */
-.cred{padding:20px;position:relative}
-.cred::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-warm),var(--accent),var(--purple));border-radius:1px}
-/* Talent */
-.tc{padding:20px;transition:all .25s;cursor:pointer}
-.tc:hover{border-color:var(--accent-warm);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 20px var(--accent-glow)}
-.tc-av{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:white}
-.tc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.tc-sl{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px}
-.tc-sv{font-size:15px;font-weight:700;font-family:var(--mono)}
-
-/* Login */
-.login{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:var(--bg-deep);
-  background-image:radial-gradient(ellipse at 30% 30%,rgba(212,165,116,0.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(59,130,246,0.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(139,92,246,0.04) 0%,transparent 40%);
+.hero-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 2;
 }
-.login-card{padding:48px 40px;width:430px;max-width:90vw}
-.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.role{padding:16px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;text-align:center;background:var(--glass-3)}
-.role:hover{border-color:var(--glass-highlight);background:var(--glass-2)}
-.role.sel{border-color:var(--accent-warm);background:rgba(212,165,116,0.1);box-shadow:0 0 20px var(--accent-glow)}
-.role .ri{font-size:24px;margin-bottom:6px}
-.role .rn{font-size:13px;font-weight:600}
-.role .rd{font-size:10px;color:var(--text-3);margin-top:2px}
-.role.fw{grid-column:span 2}
 
-/* Review dots */
-.rv-i{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
-.rv-dots{display:flex;gap:4px}
-.rv-d{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-3)}
-.rv-d.on{border-color:var(--accent-warm);background:var(--accent-warm);color:#0C1220}
+/* ─── Left: Text ─── */
+.hero-text { padding: 40px 0; }
 
-/* Status flow */
-.sf{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}
-.sf-s{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3)}
-.sf-s.done{color:var(--success)}.sf-s.cur{color:var(--accent-warm);font-weight:600}
-.sf-d{width:20px;height:20px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px}
-.sf-d.done{background:var(--success);border-color:var(--success);color:white}
-.sf-d.cur{border-color:var(--accent-warm);animation:glowPulse 2s infinite}
-.sf-l{width:24px;height:2px;background:rgba(255,255,255,0.08)}.sf-l.done{background:var(--success)}
+.brand-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.brand-mark {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--warm), var(--warm2));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 15px; color: #080D19;
+  box-shadow: 0 0 25px rgba(212,165,116,0.4);
+  animation: logoGlow 3s ease-in-out infinite;
+}
+.brand-name {
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, var(--warm), var(--warm2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-/* Portfolio */
-.port{padding:32px;max-width:700px}
-.port-sec{margin-bottom:24px}
-.port-sec h3{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent-warm);margin-bottom:12px;font-weight:600}
+.hero-headline {
+  font-size: clamp(32px, 4.2vw, 52px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+  color: var(--t1);
+}
+.hero-headline em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--warm), var(--warm2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-@media(max-width:1200px){.stats{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}}
-@media(max-width:768px){.side{display:none}.stats{grid-template-columns:1fr}.g2,.g3{grid-template-columns:1fr}.pb{padding:16px}}
-`;
+.hero-sub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--t2);
+  max-width: 480px;
+  margin-bottom: 36px;
+  font-weight: 350;
+}
 
-// ─── Helpers ───
-const StatusBadge = ({s}) => {
-  const m = {"진행중":"bl","검수중":"or","배정중":"pu","완료":"gr","배정됨":"pu","제출완료":"or","승인완료":"gr","수정요청":"rd","반려":"rd","일반":"bl","높음":"or"};
-  return <span className={`badge b-${m[s]||"gy"}`}>{s}</span>;
-};
-const GradeBadge = ({g}) => <span className="badge" style={{background:`${gradeColors[g]}22`,color:gradeColors[g]}}>{g}</span>;
-const Stars = ({v}) => <span style={{display:"inline-flex",alignItems:"center",gap:2}}>{I.star}<span style={{fontFamily:"var(--mono)",fontWeight:600,fontSize:13}}>{v}</span></span>;
-const PBar = ({v,c="var(--accent-warm)"}) => <div className="pbar"><div className="pfill" style={{width:`${v}%`,background:c}}/></div>;
+.hero-ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
 
-// ─── Login ───
-function Login({onLogin}) {
-  const [sel,setSel] = useState(null);
-  const roles = [
-    {k:"maker",i:"🛠️",n:"Maker",d:"과업 수행 청년"},
-    {k:"reviewer",i:"🔍",n:"Reviewer",d:"작업물 검수자"},
-    {k:"client",i:"🏢",n:"Client",d:"프로젝트 의뢰 기업"},
-    {k:"admin",i:"⚙️",n:"Admin/PM",d:"운영 관리자"},
-  ];
-  return (
-    <div className="login">
-      <div className="login-card glass fade-up">
-        <div style={{display:"flex",justifyContent:"center",marginBottom:20}}>
-          <div className="logo"><div className="logo-m">L</div>로컬크루</div>
-        </div>
-        <div style={{fontSize:26,fontWeight:800,textAlign:"center",letterSpacing:-0.5}}>시작하기</div>
-        <div style={{fontSize:13,color:"var(--text-2)",textAlign:"center",margin:"6px 0 32px"}}>역할을 선택하고 대시보드에 입장하세요</div>
-        <div className="roles">
-          {roles.map(r => (
-            <div key={r.k} className={`role ${sel===r.k?"sel":""}`} onClick={()=>setSel(r.k)}>
-              <div className="ri">{r.i}</div><div className="rn">{r.n}</div><div className="rd">{r.d}</div>
+.cta-main {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--warm), #C8956C);
+  color: #080D19;
+  font-size: 15px; font-weight: 700;
+  border: none; border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.3s;
+  animation: glowPulse 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+.cta-main::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+.cta-main:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 40px rgba(212,165,116,0.5), 0 8px 32px rgba(212,165,116,0.3);
+}
+
+.cta-sub {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 14px 24px;
+  background: var(--glass);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-b);
+  color: var(--t1);
+  font-size: 14px; font-weight: 550;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.3s;
+}
+.cta-sub:hover {
+  background: var(--glass-b);
+  border-color: var(--glass-h);
+  transform: translateY(-1px);
+}
+
+.hero-micro {
+  font-size: 12px;
+  color: var(--t3);
+  margin-top: 4px;
+  display: flex; align-items: center; gap: 4px;
+}
+.hero-micro::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-block;
+}
+
+/* ─── Right: Glass Showcase ─── */
+.hero-showcase {
+  position: relative;
+  height: 560px;
+  perspective: 1200px;
+}
+
+.preview-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+  padding: 18px;
+  position: absolute;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+  box-shadow:
+    inset -1px -1px 2px rgba(0,0,0,0.8),
+    12px 12px 24px rgba(0,0,0,0.25),
+    inset 0 -8px 4px rgba(255,255,255,0.03),
+    inset 0 2px 8px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.preview-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.preview-card:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  border-color: rgba(212,165,116,0.3);
+  box-shadow:
+    inset -1px -1px 2px rgba(0,0,0,0.8),
+    16px 16px 32px rgba(0,0,0,0.3),
+    0 0 30px rgba(212,165,116,0.1),
+    inset 0 -8px 4px rgba(255,255,255,0.04);
+}
+
+/* Card positions */
+.preview-card:nth-child(1) { top: 0; left: 0; width: 260px; z-index: 4; }
+.preview-card:nth-child(2) { top: 20px; right: 0; width: 250px; z-index: 3; }
+.preview-card:nth-child(3) { bottom: 60px; left: 20px; width: 270px; z-index: 2; }
+.preview-card:nth-child(4) { bottom: 30px; right: 10px; width: 240px; z-index: 1; }
+
+/* Card inner elements */
+.pc-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+}
+.pc-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--t3); margin-bottom: 8px;
+}
+.pc-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.pc-value { font-size: 28px; font-weight: 800; font-family: var(--mono); letter-spacing: -1px; }
+.pc-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 8px; border-radius: 20px;
+  font-size: 10px; font-weight: 600;
+}
+.pc-badge.blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
+.pc-badge.green { background: rgba(16,185,129,0.15); color: #34D399; }
+.pc-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.pc-bar-fill { height: 100%; border-radius: 2px; animation: barGrow 1.2s ease-out 0.8s both; }
+.pc-sub { font-size: 11px; color: var(--t3); }
+.pc-cred-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 8px; padding: 10px; margin-bottom: 6px;
+}
+.pc-templates { display: flex; gap: 6px; margin-top: 6px; }
+.pc-tpl {
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+  color: var(--t2);
+}
+.pc-mini-btn {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 550;
+  background: rgba(212,165,116,0.1); color: var(--warm); cursor: pointer;
+}
+.pc-talent {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); margin-bottom: 6px;
+}
+.pc-talent-av {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; color: white; flex-shrink: 0;
+}
+
+/* ─── Floating Objects ─── */
+.float-obj {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: float1 12s ease-in-out infinite;
+  transition: transform 0.3s ease-out;
+}
+.float-obj:nth-child(even) { animation-name: float2; }
+
+/* ─── Grid Pattern ─── */
+.grid-pattern {
+  position: absolute; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%);
+}
+
+/* ─── Scroll Hint ─── */
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--t3);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  z-index: 3;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, rgba(212,165,116,0.4), transparent);
+  animation: scrollHint 2s ease-in-out infinite;
+}
+
+/* ─── Noise Overlay ─── */
+.noise-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* ─── Stats bar ─── */
+.trust-bar {
+  display: flex; gap: 32px; align-items: center;
+  padding: 20px 0; margin-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.trust-item {
+  display: flex; flex-direction: column;
+}
+.trust-num {
+  font-size: 20px; font-weight: 800; font-family: var(--mono);
+  letter-spacing: -0.5px;
+}
+.trust-label {
+  font-size: 11px; color: var(--t3); margin-top: 2px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1100px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .hero-text { display: flex; flex-direction: column; align-items: center; padding: 120px 0 20px; }
+  .hero-sub { margin-left: auto; margin-right: auto; }
+  .hero-ctas { justify-content: center; }
+  .hero-micro { justify-content: center; }
+  .hero-showcase { height: 420px; max-width: 560px; margin: 0 auto; }
+  .trust-bar { justify-content: center; }
+  .preview-card:nth-child(1) { top: 0; left: 5%; width: 240px; }
+  .preview-card:nth-child(2) { top: 10px; right: 5%; width: 230px; }
+  .preview-card:nth-child(3) { bottom: 40px; left: 10%; width: 250px; }
+  .preview-card:nth-child(4) { bottom: 20px; right: 5%; width: 220px; }
+}
+
+@media (max-width: 640px) {
+  .hero-inner { padding: 0 20px; }
+  .hero-text { padding: 100px 0 16px; }
+  .hero-headline { font-size: 28px; letter-spacing: -0.8px; }
+  .hero-sub { font-size: 14px; margin-bottom: 28px; }
+  .hero-showcase { height: 320px; }
+  .preview-card:nth-child(3), .preview-card:nth-child(4) { display: none; }
+  .preview-card:nth-child(1) { top: 10px; left: 0; width: 55%; }
+  .preview-card:nth-child(2) { top: 30px; right: 0; width: 50%; }
+  .cta-main { padding: 12px 28px; font-size: 14px; width: 100%; justify-content: center; }
+  .cta-sub { padding: 12px 20px; font-size: 13px; flex: 1; justify-content: center; }
+  .trust-bar { gap: 20px; flex-wrap: wrap; }
+}
+      `}</style>
+
+      <section className="hero-section" ref={heroRef}>
+        {/* Noise */}
+        <div className="noise-overlay" />
+
+        {/* Grid pattern */}
+        <div className="grid-pattern" />
+
+        {/* Floating objects */}
+        <FloatingObj size={300} x={-5} y={10} blur={80} opacity={0.12} color="rgba(59,130,246,0.4)" speed={14} parallax={20} mouse={mouse} />
+        <FloatingObj size={200} x={75} y={5} blur={60} opacity={0.1} color="rgba(212,165,116,0.4)" speed={18} parallax={-15} mouse={mouse} />
+        <FloatingObj size={160} x={60} y={70} blur={50} opacity={0.08} color="rgba(139,92,246,0.35)" speed={16} parallax={12} mouse={mouse} />
+        <FloatingObj size={120} x={20} y={80} blur={40} opacity={0.06} color="rgba(16,185,129,0.3)" speed={20} parallax={-10} mouse={mouse} />
+        <FloatingObj size={240} x={90} y={50} blur={70} opacity={0.05} color="rgba(59,130,246,0.3)" speed={22} parallax={18} mouse={mouse} />
+        <FloatingObj size={80} x={40} y={15} blur={30} opacity={0.08} color="rgba(212,165,116,0.5)" speed={15} parallax={-8} mouse={mouse} />
+
+        {/* Content */}
+        <div className="hero-inner">
+          {/* Left: Text */}
+          <div className="hero-text">
+            <div className={`brand-bar hero-enter ${loaded ? "hero-visible hero-visible-d1" : ""}`}>
+              <div className="brand-mark">L</div>
+              <div className="brand-name">로컬크루</div>
             </div>
-          ))}
-        </div>
-        <button className="btn btn-p" style={{width:"100%",justifyContent:"center",padding:13,fontSize:14}} disabled={!sel} onClick={()=>sel&&onLogin(sel)}>
-          {sel ? `${roles.find(r=>r.k===sel)?.n}로 입장` : "역할을 선택하세요"}
-        </button>
-      </div>
-    </div>
-  );
-}
 
-// ─── Sidebar ───
-function Side({user,page,onNav,onOut,items}) {
-  const bg = {Maker:"linear-gradient(135deg,#D4A574,#E8B88A)",Reviewer:"linear-gradient(135deg,#10B981,#34D399)",Client:"linear-gradient(135deg,#8B5CF6,#A78BFA)",Admin:"linear-gradient(135deg,#EF4444,#F87171)"};
-  return (
-    <div className="side">
-      <div className="side-head"><div className="logo"><div className="logo-m">L</div>로컬크루</div></div>
-      <nav className="side-nav">
-        {items.map((sec,si) => (
-          <div key={si}>
-            {sec.label && <div className="nav-label">{sec.label}</div>}
-            {sec.items.map(it => (
-              <div key={it.id} className={`nav-i ${page===it.id?"on":""}`} onClick={()=>onNav(it.id)}>
-                {it.icon}<span>{it.name}</span>
-                {it.badge && <span className="nb">{it.badge}</span>}
-              </div>
-            ))}
-          </div>
-        ))}
-      </nav>
-      <div className="side-foot">
-        <div className="side-user">
-          <div className="avatar" style={{background:bg[user.role]}}>{(user.name||"?")[0]}</div>
-          <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:13,fontWeight:600,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{user.name}</div>
-            <div style={{fontSize:11,color:"var(--text-3)"}}>{user.role}{user.grade?` · ${user.grade}`:""}</div>
-          </div>
-          <div style={{cursor:"pointer",color:"var(--text-3)"}} onClick={onOut}>{I.out}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
+            <h1 className={`hero-headline hero-enter ${loaded ? "hero-visible hero-visible-d2" : ""}`}>
+              지역의 작은 경험이,<br />
+              <em>검증된 커리어</em>가 되다
+            </h1>
 
-// ─── Maker Dashboard ───
-function MakerDash({user}) {
-  return (<div>
-    <div className="ph"><h1>안녕하세요, {user.name}님 ✨</h1><p>오늘의 작업 현황을 확인하세요</p></div>
-    <div className="pb">
-      <div className="stats">
-        {[["신뢰도 점수",user.trustScore,"상위 18%","bl"],["누적 배지",user.badges,"+2 이번 달","pu"],["마감 준수율",`${user.deadlineRate}%`,"최근 10건","gr"],["평균 평점",user.avgRating,"리뷰어 평가","or"]].map(([l,v,s,c],i) => (
-          <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*0.06}s`}}>
-            <div className="stat-l">{l}</div>
-            <div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div>
-            <div className="stat-s">{s}</div>
-          </div>
-        ))}
-      </div>
-      <div className="g2" style={{marginBottom:24}}>
-        <div className="glass fade-up" style={{padding:20,animationDelay:".15s"}}>
-          <div className="ch"><span className="ct">진행중 과업</span><StatusBadge s="진행중"/></div>
-          {MOCK_TASKS.filter(t=>t.assignee==="김서연"&&t.status!=="승인완료").map(t => (
-            <div key={t.id} style={{padding:"12px 0",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div><div style={{fontSize:13,fontWeight:550}}>{t.name}</div><div style={{fontSize:11,color:"var(--text-3)",marginTop:2,display:"flex",alignItems:"center",gap:4}}>{I.clock} 마감 {t.deadline}</div></div>
-              <StatusBadge s={t.status}/>
+            <p className={`hero-sub hero-enter ${loaded ? "hero-visible hero-visible-d3" : ""}`}>
+              로컬크루는 프로젝트 수행 이력, 마이크로 크레덴셜, 포트폴리오 자동 생성을 통해 지역 청년의 실무 경험을 실제 기회와 연결합니다.
+            </p>
+
+            <div className={`hero-ctas hero-enter ${loaded ? "hero-visible hero-visible-d4" : ""}`}>
+              <button className="cta-main" onClick={() => window.location.href='localcrew-mvp.html'}>
+                체험하기 {icons.arrow}
+              </button>
+              <button className="cta-sub" onClick={() => window.location.href='localcrew-mvp.html'}>
+                {icons.play} 데모 둘러보기
+              </button>
             </div>
-          ))}
-        </div>
-        <div className="glass fade-up" style={{padding:20,animationDelay:".2s"}}>
-          <div className="ch"><span className="ct">최근 획득 배지</span></div>
-          {MOCK_CREDENTIALS.slice(0,2).map(c => (
-            <div key={c.id} style={{padding:"12px 0",borderBottom:"1px solid var(--border)"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div style={{fontSize:13,fontWeight:550}}>{c.project}</div><Stars v={c.rating}/></div>
-              <div style={{fontSize:11,color:"var(--text-3)",marginTop:4}}>{c.task} · {c.period}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="glass fade-up" style={{padding:20,animationDelay:".25s"}}>
-        <div className="ct" style={{marginBottom:12}}>보유 기술</div>
-        <div style={{display:"flex",flexWrap:"wrap",gap:6}}>{user.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
-      </div>
-    </div>
-  </div>);
-}
 
-// ─── Credentials ───
-function Creds() {
-  return (<div>
-    <div className="ph"><h1>마이크로 크레덴셜</h1><p>검증된 수행 이력 배지 {MOCK_CREDENTIALS.length}건</p></div>
-    <div className="pb"><div className="g2">
-      {MOCK_CREDENTIALS.map((c,i) => (
-        <div key={c.id} className="glass cred fade-up" style={{animationDelay:`${i*.06}s`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
-            <div><div style={{fontSize:15,fontWeight:600}}>{c.project}</div><div style={{fontSize:12,color:"var(--text-2)",marginTop:2}}>{c.task}</div></div>
-            <span className={`badge ${c.qaPass?"b-gr":"b-rd"}`}>{c.qaPass?"QA 통과":"미통과"}</span>
-          </div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:12}}>{c.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,margin:"12px 0"}}>
-            {[["역할",c.role],["수행 기간",c.period]].map(([l,v])=><div key={l}><div style={{fontSize:10,color:"var(--text-3)",textTransform:"uppercase",letterSpacing:.5}}>{l}</div><div style={{fontSize:12,marginTop:2}}>{v}</div></div>)}
-            <div><div style={{fontSize:10,color:"var(--text-3)",textTransform:"uppercase",letterSpacing:.5}}>평점</div><Stars v={c.rating}/></div>
-            <div><div style={{fontSize:10,color:"var(--text-3)",textTransform:"uppercase",letterSpacing:.5}}>신뢰도 변동</div><span style={{color:"var(--success)",fontWeight:600,fontSize:13}}>{c.trustDelta}</span></div>
-          </div>
-          <div style={{fontFamily:"var(--mono)",fontSize:11,color:"var(--text-3)",marginTop:12,paddingTop:12,borderTop:"1px solid var(--border)"}}>검증 ID: {c.verifyId} · {c.issuedAt}</div>
-        </div>
-      ))}
-    </div></div>
-  </div>);
-}
-
-// ─── Portfolio ───
-function Portfolio({user}) {
-  const [tpl,setTpl] = useState("project");
-  const [gen,setGen] = useState(false);
-  const [done,setDone] = useState(false);
-  const go = () => {setGen(true);setTimeout(()=>{setGen(false);setDone(true)},1200)};
-  return (<div>
-    <div className="ph"><h1>포트폴리오 생성</h1><p>수행 데이터 기반 자동 포트폴리오</p></div>
-    <div className="pb">
-      <div className="glass" style={{padding:20,marginBottom:20}}>
-        <div className="ct" style={{marginBottom:14}}>템플릿 선택</div>
-        <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          {[["project","프로젝트형"],["resume","지원서형"],["career","경력기술서형"],["proposal","제안서형"]].map(([k,v])=>(
-            <button key={k} className={`btn ${tpl===k?"btn-p":"btn-s"}`} onClick={()=>{setTpl(k);setDone(false)}}>{v}</button>
-          ))}
-        </div>
-      </div>
-      <div className="glass" style={{padding:20,marginBottom:20}}>
-        <div className="ct" style={{marginBottom:14}}>강조 프로젝트</div>
-        {MOCK_CREDENTIALS.map(c=>(
-          <label key={c.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid var(--border)",cursor:"pointer"}}>
-            <input type="checkbox" defaultChecked style={{accentColor:"var(--accent-warm)"}}/>
-            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:550}}>{c.project}</div><div style={{fontSize:11,color:"var(--text-3)"}}>{c.task}</div></div>
-            <Stars v={c.rating}/>
-          </label>
-        ))}
-      </div>
-      <button className="btn btn-p" onClick={go} disabled={gen} style={{marginBottom:24}}>{gen?"생성중...":"포트폴리오 생성"}</button>
-      {done && (
-        <div className="glass port fade-up">
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
-            <div>
-              <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:1.2,color:"var(--accent-warm)",marginBottom:4}}>PORTFOLIO</div>
-              <div style={{fontSize:22,fontWeight:700}}>{user.name}</div>
-              <div style={{fontSize:13,color:"var(--text-2)"}}>{user.skills.join(" · ")}</div>
+            <div className={`hero-micro hero-enter ${loaded ? "hero-visible hero-visible-d5" : ""}`}>
+              로그인 없이 주요 화면을 먼저 확인할 수 있습니다
             </div>
-            <div style={{display:"flex",gap:8}}><button className="btn btn-s btn-sm">{I.dl} PDF</button><button className="btn btn-s btn-sm">{I.link} URL</button></div>
-          </div>
-          <div className="port-sec"><h3>핵심 역량</h3><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{user.skills.map(s=><span key={s} className="tag" style={{padding:"5px 12px",fontSize:12}}>{s}</span>)}</div></div>
-          <div className="port-sec"><h3>수행 실적</h3>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16}}>
-              {[["완료",user.completedProjects],["마감률",`${user.deadlineRate}%`],["평점",user.avgRating],["신뢰도",user.trustScore]].map(([l,v])=>(
-                <div key={l} style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:700,fontFamily:"var(--mono)"}}>{v}</div><div style={{fontSize:11,color:"var(--text-3)"}}>{l}</div></div>
+
+            <div className={`trust-bar hero-enter ${loaded ? "hero-visible hero-visible-d6" : ""}`}>
+              {[["240+", "수행 완료 과업"], ["96%", "마감 준수율"], ["47", "발급 크레덴셜"]].map(([n, l]) => (
+                <div className="trust-item" key={l}>
+                  <div className="trust-num">{n}</div>
+                  <div className="trust-label">{l}</div>
+                </div>
               ))}
             </div>
           </div>
-          <div className="port-sec"><h3>프로젝트 이력</h3>
-            {MOCK_CREDENTIALS.map(c=>(
-              <div key={c.id} style={{padding:"14px 0",borderBottom:"1px solid var(--border)"}}>
-                <div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:600,fontSize:14}}>{c.project}</div><Stars v={c.rating}/></div>
-                <div style={{fontSize:12,color:"var(--text-2)",marginTop:4}}>{c.task} | {c.role} | {c.period}</div>
-                <div style={{display:"flex",gap:4,marginTop:6}}>{c.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
-              </div>
-            ))}
+
+          {/* Right: Glass showcase */}
+          <div
+            className="hero-showcase"
+            ref={cardsRef}
+            style={{ transform: `translate(${mouse.x * 8}px, ${mouse.y * 8}px)` }}
+          >
+            <TrustCard delay={0.3} visible={cardsVisible} />
+            <CredCard delay={0.5} visible={cardsVisible} />
+            <PortfolioCard delay={0.7} visible={cardsVisible} />
+            <SearchCard delay={0.9} visible={cardsVisible} />
           </div>
         </div>
-      )}
-    </div>
-  </div>);
-}
 
-// ─── Client Dashboard ───
-function ClientDash({user}) {
-  return (<div>
-    <div className="ph"><h1>{user.company} 대시보드</h1><p>프로젝트 진행 현황</p></div>
-    <div className="pb">
-      <div className="stats">
-        {[["총 프로젝트",user.projects,"","bl"],["진행중",user.activeProjects,"","gr"],["검수 대기",1,"1건 확인 필요","or"],["누적 집행",`12.5M`,"원","pu"]].map(([l,v,s,c],i)=>(
-          <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*.06}s`}}><div className="stat-l">{l}</div><div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div>{s&&<div className="stat-s">{s}</div>}</div>
-        ))}
-      </div>
-      <div className="glass" style={{padding:20}}>
-        <div className="ch"><span className="ct">프로젝트 목록</span><button className="btn btn-p btn-sm">{I.plus} 새 의뢰</button></div>
-        <table><thead><tr><th>프로젝트명</th><th>상태</th><th>진행률</th><th>마감</th><th>예산</th></tr></thead>
-        <tbody>{MOCK_PROJECTS.filter(p=>p.client==="(주)로컬테크").map(p=>(
-          <tr key={p.id}><td style={{fontWeight:550}}>{p.name}</td><td><StatusBadge s={p.status}/></td>
-          <td style={{minWidth:120}}><PBar v={p.progress} c={p.progress===100?"var(--success)":"var(--accent-warm)"}/><span style={{fontSize:11,color:"var(--text-3)"}}>{p.progress}%</span></td>
-          <td style={{fontSize:12,color:"var(--text-2)"}}>{p.deadline}</td><td style={{fontFamily:"var(--mono)",fontSize:12}}>{p.budget}</td></tr>
-        ))}</tbody></table>
-      </div>
-    </div>
-  </div>);
-}
-
-// ─── Talent Search ───
-function TalentSearch() {
-  const [sf,setSf]=useState("");
-  const [gf,setGf]=useState("all");
-  const filtered=MOCK_TALENTS.filter(t=>{if(gf!=="all"&&t.grade!==gf)return false;if(sf&&!t.skills.some(s=>s.toLowerCase().includes(sf.toLowerCase())))return false;return true});
-  return (<div>
-    <div className="ph"><h1>인재 검색</h1><p>검증된 수행 이력 기반 인재 탐색</p></div>
-    <div className="pb">
-      <div className="glass" style={{padding:16,marginBottom:20}}>
-        <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-          <input className="input" placeholder="기술 검색 (예: React, Python)" value={sf} onChange={e=>setSf(e.target.value)} style={{flex:1,minWidth:200}}/>
-          <select className="input" value={gf} onChange={e=>setGf(e.target.value)} style={{width:140}}><option value="all">전체 등급</option><option value="Starter">Starter</option><option value="Verified">Verified</option><option value="Advanced">Advanced</option></select>
+        {/* Scroll hint */}
+        <div className={`scroll-hint hero-enter ${loaded ? "hero-visible hero-visible-d6" : ""}`}>
+          <div className="scroll-line" />
+          <span>scroll</span>
+          {icons.chevDown}
         </div>
-      </div>
-      <div className="g3">
-        {filtered.map((t,i)=>(
-          <div key={t.id} className="glass tc fade-up" style={{animationDelay:`${i*.06}s`}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-              <div style={{display:"flex",gap:12,alignItems:"center"}}>
-                <div className="tc-av" style={{background:`linear-gradient(135deg,${gradeColors[t.grade]},${gradeColors[t.grade]}88)`}}>{t.name[0]}</div>
-                <div><div style={{fontWeight:600,fontSize:15}}>{t.name}</div><div style={{fontSize:12,color:"var(--text-3)"}}>{t.region} · <GradeBadge g={t.grade}/></div></div>
-              </div>
-              <span className={`badge ${t.available?"b-gr":"b-gy"}`}>{t.available?"가용":"작업중"}</span>
-            </div>
-            <div className="tc-stats">
-              <div><div className="tc-sl">신뢰도</div><div className="tc-sv">{t.trustScore}</div></div>
-              <div><div className="tc-sl">마감률</div><div className="tc-sv">{t.deadlineRate}%</div></div>
-              <div><div className="tc-sl">평점</div><div className="tc-sv" style={{display:"flex",alignItems:"center",gap:2}}>{I.star}{t.rating}</div></div>
-            </div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>{t.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
-            <div style={{fontSize:11,color:"var(--text-3)"}}>완료 프로젝트 {t.projects}건</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>);
+      </section>
+    </>
+  );
 }
 
-// ─── Admin Dashboard ───
-function AdminDash() {
-  const active=MOCK_PROJECTS.filter(p=>p.status!=="완료");
-  const risk=MOCK_PROJECTS.filter(p=>{const d=new Date(p.deadline);return d-new Date()<7*864e5&&p.status!=="완료"});
-  return (<div>
-    <div className="ph"><h1>운영 대시보드</h1><p>플랫폼 전체 현황 관리</p></div>
-    <div className="pb">
-      <div className="stats">
-        {[["전체 프로젝트",MOCK_PROJECTS.length,`진행중 ${active.length}건`,"bl"],["납기 위험",risk.length,"7일 이내","or"],["활성 작업자",MOCK_TALENTS.length,"대전·세종·청주","gr"],["발급 크레덴셜",47,"이번 달 +12","pu"]].map(([l,v,s,c],i)=>(
-          <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*.06}s`}}><div className="stat-l">{l}</div><div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div><div className="stat-s">{s}</div></div>
-        ))}
-      </div>
-      <div className="g2" style={{marginBottom:24}}>
-        <div className="glass" style={{padding:20}}>
-          <div className="ch"><span className="ct">프로젝트 현황</span></div>
-          <table><thead><tr><th>프로젝트</th><th>상태</th><th>진행률</th><th>마감</th></tr></thead>
-          <tbody>{MOCK_PROJECTS.map(p=>(
-            <tr key={p.id}><td style={{fontWeight:550,fontSize:13}}>{p.name}</td><td><StatusBadge s={p.status}/></td>
-            <td><PBar v={p.progress} c={p.progress===100?"var(--success)":p.progress>70?"var(--accent-warm)":"var(--warning)"}/></td>
-            <td style={{fontSize:12,color:"var(--text-2)"}}>{p.deadline}</td></tr>
-          ))}</tbody></table>
-        </div>
-        <div className="glass" style={{padding:20}}>
-          <div className="ch"><span className="ct" style={{display:"flex",alignItems:"center",gap:6}}><span style={{color:"var(--warning)"}}>{I.alert}</span>납기 위험 · 지역 통계</span></div>
-          {risk.map(p=>(
-            <div key={p.id} style={{padding:"12px 0",borderBottom:"1px solid var(--border)"}}>
-              <div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:550,fontSize:13}}>{p.name}</div><span className="badge b-or">{p.deadline}</span></div>
-              <div style={{fontSize:11,color:"var(--text-3)",marginTop:4}}>진행률 {p.progress}% · 태스크 {p.completedTasks}/{p.tasks}건</div>
-            </div>
-          ))}
-          <div style={{marginTop:20}}>
-            <div className="ct" style={{marginBottom:12,fontSize:13}}>지역별 참여자</div>
-            {[["대전",45,62],["세종",18,25],["청주",12,16]].map(([r,c,pct])=>(
-              <div key={r} style={{marginBottom:10}}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:4}}><span>{r}</span><span style={{color:"var(--text-3)"}}>{c}명 ({pct}%)</span></div>
-                <PBar v={pct} c="var(--purple)"/>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="glass" style={{padding:20}}>
-        <div className="ch"><span className="ct">최근 활동 로그</span></div>
-        {[
-          {t:"14:32",a:"김서연님이 '상품 카드 컴포넌트 제작' 진행 시작",c:"var(--accent)"},
-          {t:"13:15",a:"최유나님이 '반응형 레이아웃 적용' 결과물 제출",c:"var(--warning)"},
-          {t:"11:48",a:"'스타트업 IR 자료 디자인' 검수 완료",c:"var(--success)"},
-          {t:"10:22",a:"박민수님 배지 발급: 고급 React 개발",c:"var(--purple)"},
-          {t:"09:05",a:"에듀플러스 '교육 앱 QA 테스트' 등록",c:"var(--accent-warm)"},
-        ].map((l,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid var(--border)"}}>
-            <span style={{fontFamily:"var(--mono)",fontSize:12,color:"var(--text-3)",minWidth:40}}>{l.t}</span>
-            <div style={{width:8,height:8,borderRadius:"50%",background:l.c,flexShrink:0,boxShadow:`0 0 8px ${l.c}`}}/>
-            <span style={{fontSize:13}}>{l.a}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>);
-}
-
-// ─── Projects ───
-function Projects({onSelect}) {
-  return (<div>
-    <div className="ph"><div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h1>프로젝트 관리</h1><p>전체 프로젝트 조회 및 관리</p></div><button className="btn btn-p">{I.plus} 프로젝트 등록</button></div></div>
-    <div className="pb">
-      {MOCK_PROJECTS.map((p,i)=>(
-        <div key={p.id} className="glass fade-up" style={{padding:20,marginBottom:12,cursor:"pointer",animationDelay:`${i*.04}s`}} onClick={()=>onSelect(p)}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-            <div style={{flex:1}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
-                <span style={{fontSize:15,fontWeight:600}}>{p.name}</span><StatusBadge s={p.status}/>
-                {p.security==="높음"&&<span className="badge b-or" style={{fontSize:10}}>{I.shield} 높음</span>}
-              </div>
-              <div style={{fontSize:12,color:"var(--text-3)"}}>{p.client} · 마감 {p.deadline} · {p.budget}</div>
-              <div style={{marginTop:8,display:"flex",gap:4}}>{p.modules.map(m=><span key={m} className="tag">{m}</span>)}</div>
-            </div>
-            <div style={{textAlign:"right",minWidth:100}}>
-              <div style={{fontSize:22,fontWeight:700,fontFamily:"var(--mono)"}}>{p.progress}%</div>
-              <div style={{fontSize:11,color:"var(--text-3)"}}>태스크 {p.completedTasks}/{p.tasks}</div>
-              <PBar v={p.progress} c={p.progress===100?"var(--success)":"var(--accent-warm)"}/>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>);
-}
-
-// ─── Project Detail ───
-function ProjectDetail({project:p,onBack}) {
-  const tasks=MOCK_TASKS.filter(t=>t.projectId===p.id);
-  return (<div>
-    <div className="ph">
-      <button className="btn btn-g btn-sm" onClick={onBack} style={{marginBottom:8}}>← 프로젝트 목록</button>
-      <div style={{display:"flex",justifyContent:"space-between"}}><div><h1>{p.name}</h1><p>{p.client} · {p.description}</p></div><StatusBadge s={p.status}/></div>
-    </div>
-    <div className="pb">
-      <div className="stats" style={{gridTemplateColumns:"repeat(5,1fr)"}}>
-        {[["진행률",`${p.progress}%`,"bl"],["총 태스크",p.tasks,"pu"],["완료",p.completedTasks,"gr"],["보안",p.security,"or"],["예산",p.budget.replace("원",""),"bl"]].map(([l,v,c],i)=>(
-          <div key={i} className={`glass stat ${c}`} style={{padding:16}}><div className="stat-l">{l}</div><div className="stat-v" style={{fontSize:22,color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div></div>
-        ))}
-      </div>
-      <div className="glass" style={{padding:20}}>
-        <div className="ch"><span className="ct">태스크 목록</span><button className="btn btn-p btn-sm">{I.plus} 태스크 추가</button></div>
-        <table><thead><tr><th>태스크</th><th>담당</th><th>난이도</th><th>상태</th><th>자동검증</th><th>마감</th><th>평점</th></tr></thead>
-        <tbody>{tasks.map(t=>(
-          <tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td>{t.assignee}</td>
-          <td><span className={`badge ${t.difficulty==="상"?"b-rd":"b-or"}`}>{t.difficulty}</span></td>
-          <td><StatusBadge s={t.status}/></td>
-          <td>{t.autoCheck?<span className="badge b-gr">통과</span>:<span className="badge b-gy">대기</span>}</td>
-          <td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td>
-          <td>{t.reviewScore?<Stars v={t.reviewScore}/>:"-"}</td></tr>
-        ))}</tbody></table>
-      </div>
-    </div>
-  </div>);
-}
-
-// ─── Review ───
-function Review() {
-  const [sc,setSc]=useState({deadline:5,quality:4,speed:5,comm:4,guide:5,rework:5});
-  const items=[{k:"deadline",l:"마감 준수"},{k:"quality",l:"요구사항 충족도"},{k:"speed",l:"수정 대응 속도"},{k:"comm",l:"커뮤니케이션 성실도"},{k:"guide",l:"규약 준수도"},{k:"rework",l:"재작업 불발생"}];
-  return (<div>
-    <div className="ph"><h1>리뷰 / 평가</h1><p>구조화된 항목으로 작업 결과 기록</p></div>
-    <div className="pb">
-      <div className="glass" style={{padding:20,maxWidth:600}}>
-        <div className="ch"><span className="ct">평가: 메인 히어로 섹션 퍼블리싱</span><span className="badge b-bl">김서연</span></div>
-        {items.map(it=>(
-          <div className="rv-i" key={it.k}><span style={{fontSize:13}}>{it.l}</span>
-            <div className="rv-dots">{[1,2,3,4,5].map(n=>(
-              <div key={n} className={`rv-d ${sc[it.k]>=n?"on":""}`} onClick={()=>setSc(p=>({...p,[it.k]:n}))}>{n}</div>
-            ))}</div>
-          </div>
-        ))}
-        <div style={{marginTop:16}}><div style={{fontSize:12,color:"var(--text-3)",marginBottom:6}}>코멘트</div><textarea className="input" rows={3} placeholder="작업 결과에 대한 의견" style={{resize:"vertical"}}/></div>
-        <div style={{display:"flex",gap:10,marginTop:16}}><button className="btn btn-p">승인</button><button className="btn btn-s" style={{borderColor:"var(--danger)",color:"var(--danger)"}}>반려</button></div>
-      </div>
-    </div>
-  </div>);
-}
-
-// ─── App ───
-function App() {
-  const [role,setRole]=useState(null);
-  const [page,setPage]=useState("dashboard");
-  const [selProj,setSelProj]=useState(null);
-  const user=role?MOCK_USERS[role]:null;
-
-  const navs={
-    maker:[{items:[{id:"dashboard",name:"대시보드",icon:I.home},{id:"tasks",name:"내 과업",icon:I.check,badge:2},{id:"credentials",name:"크레덴셜",icon:I.badge},{id:"portfolio",name:"포트폴리오",icon:I.file}]}],
-    reviewer:[{items:[{id:"dashboard",name:"대시보드",icon:I.home},{id:"review",name:"리뷰 대기",icon:I.check,badge:3},{id:"credentials",name:"크레덴셜",icon:I.badge}]}],
-    client:[{items:[{id:"dashboard",name:"대시보드",icon:I.home},{id:"projects",name:"프로젝트",icon:I.folder},{id:"talent",name:"인재 검색",icon:I.search}]}],
-    admin:[{label:"운영",items:[{id:"dashboard",name:"운영 대시보드",icon:I.chart},{id:"projects",name:"프로젝트 관리",icon:I.folder},{id:"review",name:"리뷰 관리",icon:I.badge}]},{label:"관리",items:[{id:"users",name:"사용자 관리",icon:I.users},{id:"talent",name:"인재 검색",icon:I.search},{id:"credentials",name:"크레덴셜",icon:I.badge}]}],
-  };
-
-  const nav=id=>{setPage(id);setSelProj(null)};
-
-  const renderPage=()=>{
-    if(!user)return null;
-    if(selProj)return <ProjectDetail project={selProj} onBack={()=>setSelProj(null)}/>;
-    switch(page){
-      case "dashboard": return role==="admin"?<AdminDash/>:role==="client"?<ClientDash user={user}/>:<MakerDash user={user}/>;
-      case "projects": return <Projects onSelect={setSelProj}/>;
-      case "tasks": return (<div><div className="ph"><h1>내 과업</h1><p>배정된 태스크 관리</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>태스크</th><th>프로젝트</th><th>상태</th><th>난이도</th><th>마감</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={t.status}/></td><td><span className={`badge ${t.difficulty==="상"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
-      case "credentials": return <Creds/>;
-      case "portfolio": return <Portfolio user={user}/>;
-      case "talent": return <TalentSearch/>;
-      case "review": return <Review/>;
-      case "users": return (<div><div className="ph"><h1>사용자 관리</h1></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>이름</th><th>등급</th><th>신뢰도</th><th>완료</th><th>마감률</th><th>지역</th></tr></thead><tbody>{MOCK_TALENTS.map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td><GradeBadge g={t.grade}/></td><td style={{fontFamily:"var(--mono)"}}>{t.trustScore}</td><td>{t.projects}건</td><td>{t.deadlineRate}%</td><td>{t.region}</td></tr>)}</tbody></table></div></div></div>);
-      default: return <MakerDash user={user}/>;
-    }
-  };
-
-  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setRole(r);setPage("dashboard")}}/></>);
-
-  return (<><style>{css}</style>
-    <div className="app">
-      <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard")}} items={navs[role]||navs.maker}/>
-      <div className="main">{renderPage()}</div>
-    </div>
-  </>);
-}
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
+ReactDOM.createRoot(document.getElementById("root")).render(<LandingHero />);
   </script>
 </body>
 </html>
