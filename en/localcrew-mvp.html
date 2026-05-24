@@ -384,10 +384,10 @@ function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds,
 const TOUR_STEPS = [
   {short:"LER", t:"What is LER?", b:"Core concept — read this first (30 sec).", ler:true, btn:null, action:null, scene:{role:"maker",page:"dashboard",label:"Maker · Dashboard"}, previewFlow:0},
   {short:"Start", t:"Demo guide", b:"Maker submits work → Reviewer approves → LER badge issued. No login or payment.", btn:"Start demo", action:"tasks", scene:{role:"maker",page:"tasks",label:"Maker · My tasks"}, previewFlow:0},
-  {short:"1", t:"Step 1 · Submit deliverable", b:"Background: My tasks. 'Product card component' → [Submit work]을 눌러 보세요.", btn:"Go to tasks", action:"tasks", needFlow:0, scene:{role:"maker",page:"tasks",label:"Maker · My tasks"}, previewFlow:0},
-  {short:"2", t:"Step 2 · Switch to Reviewer", b:"Background: Reviewer queue. Submit 후 이 화면에서 Approve합니다.", btn:"Switch to Reviewer", action:"switchReviewer", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review queue"}, previewFlow:1},
-  {short:"3", t:"Step 3 · Approve review", b:"[Approve & issue LER]을 누르면 검증 ID(VRF)가 생성됩니다.", btn:"Go to review", action:"review", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review"}, previewFlow:1},
-  {short:"4", t:"Step 4 · View LER", b:"Background: Credentials. 발급된 배지와 검증 ID를 Verify하세요.", btn:"View credentials", action:"credentials", needFlow:2, scene:{role:"maker",page:"credentials",label:"Maker · Credentials"}, previewFlow:2},
+  {short:"1", t:"Step 1 · Submit work", b:"Background: My tasks. Open 'Product card component' and click [Submit work].", btn:"Go to tasks", action:"tasks", needFlow:0, scene:{role:"maker",page:"tasks",label:"Maker · My tasks"}, previewFlow:0},
+  {short:"2", t:"Step 2 · Switch to Reviewer", b:"Background: Reviewer queue. After you submit, approve on this screen.", btn:"Switch to Reviewer", action:"switchReviewer", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review queue"}, previewFlow:1},
+  {short:"3", t:"Step 3 · Approve review", b:"Click [Approve & issue LER] to generate a Verify ID (VRF).", btn:"Go to review", action:"review", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review"}, previewFlow:1},
+  {short:"4", t:"Step 4 · View LER", b:"Background: Credentials. Check the new badge and Verify ID.", btn:"View credentials", action:"credentials", needFlow:2, scene:{role:"maker",page:"credentials",label:"Maker · Credentials"}, previewFlow:2},
   {short:"End", t:"Demo complete", b:"Use ‹ › arrows and step buttons to jump anytime.", btn:"Close", action:"done", scene:{role:"maker",page:"credentials",label:"Done"}, previewFlow:2},
 ];
 
@@ -410,9 +410,9 @@ function LerExplainBox() {
     <div className="tour-ler-box">
       <strong>LER = Learning & Employment Record</strong>
       <ul>
-        <li><b>Resume</b>는 self-reported — hard to verify</li>
-        <li><b>LER</b>는 real project + reviewer approval + skills <b>verified proof data</b>입니다.</li>
-        <li>기업은 <b>VRF-xxxxx</b> 같은 ID로 “whether this person did the work” before hiring</li>
+        <li><b>Resume</b> is self-reported — hard to verify.</li>
+        <li><b>LER</b> is real project work + reviewer approval with skills, stored as <b>verified proof data</b>.</li>
+        <li>Enterprises use IDs like <b>VRF-xxxxx</b> to confirm whether someone did the work before hiring.</li>
         <li>Steps 3–6 walk you through issuing one LER record.</li>
       </ul>
     </div>
@@ -593,7 +593,7 @@ function Creds({flow, highlightId}) {
       <div className="pb" style={{paddingTop:0}}>
         <div className="glass flow-card ler-new" style={{padding:16,marginBottom:16}}>
           <div style={{fontSize:12,color:"var(--accent-warm)",fontWeight:600,marginBottom:6}}>✓ LER issued — Learning & Employment Record</div>
-          <div style={{fontSize:12,color:"var(--text-2)",marginBottom:8}}>Records real project work + reviewer approval <b>verifiable work history</b>입니다. (not a one-line resume)</div>
+          <div style={{fontSize:12,color:"var(--text-2)",marginBottom:8}}>Records real project work + reviewer approval as <b>verifiable work history</b>. (Not a one-line resume.)</div>
           <div style={{fontFamily:"var(--mono)",fontSize:13}}>Verify ID: {DEMO_NEW_CRED.verifyId}</div>
           <div style={{fontSize:11,color:"var(--text-3)",marginTop:6}}>Enterprises verify skills before hiring with this ID (demo).</div>
         </div>

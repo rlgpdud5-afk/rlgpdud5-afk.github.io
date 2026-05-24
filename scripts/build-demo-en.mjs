@@ -420,6 +420,39 @@ const mvpUiRepl = [
   [' 후 가능합니다. ‹ › 로 다른 단계 화면은 미리 볼 수 있습니다.', ' — use ‹ › to preview other screens.'],
   ['이전 단계', 'Previous step'],
   ['다음 단계', 'Next step'],
+  // Full tour rows — must stay longer than partial fragments (결과물 제출, 배경 화면, etc.)
+  [
+    '{short:"1", t:"1단계 · 결과물 제출", b:"배경 화면: [내 과업]. \'상품 카드 컴포넌트 제작\' → [결과물 제출]을 눌러 보세요.", btn:"과업 화면으로", action:"tasks", needFlow:0, scene:{role:"maker",page:"tasks",label:"Maker · 내 과업"}, previewFlow:0}',
+    '{short:"1", t:"Step 1 · Submit work", b:"Background: My tasks. Open \'Product card component\' and click [Submit work].", btn:"Go to tasks", action:"tasks", needFlow:0, scene:{role:"maker",page:"tasks",label:"Maker · My tasks"}, previewFlow:0}',
+  ],
+  [
+    '{short:"2", t:"2단계 · Reviewer 전환", b:"배경 화면: Reviewer [리뷰 대기]. 제출 후 이 화면에서 승인합니다.", btn:"Reviewer로 전환", action:"switchReviewer", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · 리뷰 대기"}, previewFlow:1}',
+    '{short:"2", t:"Step 2 · Switch to Reviewer", b:"Background: Reviewer queue. After you submit, approve on this screen.", btn:"Switch to Reviewer", action:"switchReviewer", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review queue"}, previewFlow:1}',
+  ],
+  [
+    '{short:"3", t:"3단계 · 검수 승인", b:"[승인 및 LER 발급]을 누르면 검증 ID(VRF)가 생성됩니다.", btn:"리뷰 화면으로", action:"review", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · 검수"}, previewFlow:1}',
+    '{short:"3", t:"Step 3 · Approve review", b:"Click [Approve & issue LER] to generate a Verify ID (VRF).", btn:"Go to review", action:"review", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review"}, previewFlow:1}',
+  ],
+  [
+    '{short:"4", t:"4단계 · LER 확인", b:"배경 화면: [크레덴셜]. 발급된 배지와 검증 ID를 확인하세요.", btn:"크레덴셜 보기", action:"credentials", needFlow:2, scene:{role:"maker",page:"credentials",label:"Maker · 크레덴셜"}, previewFlow:2}',
+    '{short:"4", t:"Step 4 · View LER", b:"Background: Credentials. Check the new badge and Verify ID.", btn:"View credentials", action:"credentials", needFlow:2, scene:{role:"maker",page:"credentials",label:"Maker · Credentials"}, previewFlow:2}',
+  ],
+  [
+    '<li><b>이력서</b>는 스스로 쓴 글 → 검증이 어렵습니다.</li>',
+    '<li><b>Resume</b> is self-reported — hard to verify.</li>',
+  ],
+  [
+    '<li><b>LER</b>는 실제 프로젝트 + Reviewer 승인 + 스킬이 담긴 <b>증명 데이터</b>입니다.</li>',
+    '<li><b>LER</b> is real project work + reviewer approval with skills, stored as <b>verified proof data</b>.</li>',
+  ],
+  [
+    '<li>기업은 <b>VRF-xxxxx</b> 같은 ID로 “이 사람이 이 일을 했는지” 채용 전에 확인합니다.</li>',
+    '<li>Enterprises use IDs like <b>VRF-xxxxx</b> to confirm whether someone did the work before hiring.</li>',
+  ],
+  [
+    '<div style={{fontSize:12,color:"var(--text-2)",marginBottom:8}}>실제 프로젝트 수행 + Reviewer 승인이 기록된 <b>검증 가능한 일 이력</b>입니다. (이력서 한 줄이 아님)</div>',
+    '<div style={{fontSize:12,color:"var(--text-2)",marginBottom:8}}>Records real project work + reviewer approval as <b>verifiable work history</b>. (Not a one-line resume.)</div>',
+  ],
 ];
 
 function apply(html, list) {
