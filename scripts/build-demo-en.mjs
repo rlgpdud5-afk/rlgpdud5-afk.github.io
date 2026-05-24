@@ -361,6 +361,9 @@ const mvpUiRepl = [
   ['이 데이터는 Enterprise 인재 검색·ATS 연동에 사용됩니다 (데모).', 'Used in Enterprise talent search & ATS integration (demo).'],
   ['LER 방금 발급', 'LER just issued'],
   ['평가: 상품 카드 컴포넌트 제작', 'Review: Product card component'],
+  ['확인', 'OK'],
+  ['Client·Admin·인재 검색도 자유롭게 둘러보세요. 상단 바에서 언제든 LER 단계를 확인할 수 있습니다.', 'Explore Client, Admin, and Talent search freely. Track LER steps in the top bar.'],
+  ['로그인·결제는 없습니다.', 'No login or payment required.'],
 ];
 
 function apply(html, list) {

@@ -321,6 +321,7 @@ tr:hover td{background:var(--glass-3)}
 .tour-box{max-width:420px;width:100%;padding:28px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
 .tour-box h3{margin:0 0 10px;font-size:18px}
 .tour-box p{margin:0 0 20px;font-size:13px;color:var(--text-2);line-height:1.65}
+.tour-box .btn{position:relative;z-index:2;cursor:pointer}
 .tour-dots{display:flex;gap:6px;margin-bottom:18px}
 .tour-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
 .tour-dots span.on{background:var(--accent-warm)}
@@ -368,37 +369,47 @@ function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds}
   );
 }
 
-function DemoTour({step, role, flow, onNext, onSkip, onAction}) {
+const TOUR_STEPS = [
+  {t:"Welcome to the LER demo",b:"Maker → Reviewer 순서로 클릭만 하면 LER(검증 배지)이 발급됩니다. No login or payment required.",btn:"Start",action:"next"},
+  {t:"Step 1 · Submit deliverable",b:"[My tasks]에서 'Product card component'의 [Submit work]을 눌러 주세요.",btn:"Go to tasks",action:"tasks"},
+  {t:"Step 2 · Switch to Reviewer",b:"Submit 후 Hard단 [Switch role] → Reviewer를 선택하세요.",btn:"Switch to Reviewer",action:"switchReviewer",minFlow:1},
+  {t:"Step 3 · Approve review",b:"[Review queue]에서 [Approve & issue LER]을 누르면 검증 데이터가 생성됩니다.",btn:"Go to review",action:"review",minFlow:1},
+  {t:"Step 4 · View LER",b:"[Credentials]에서 검증 ID(VRF-…)를 Verify하세요. 이력서가 아닌 증명 데이터입니다.",btn:"View credentials",action:"credentials",minFlow:2},
+  {t:"Demo complete",b:"Explore Client, Admin, and Talent search freely. Track LER steps in the top bar.",btn:"Verify",action:"done"},
+];
+
+function tourStepFor(step, flow) {
+  let idx = Math.max(0, Math.min(step - 1, TOUR_STEPS.length - 1));
+  let cur = TOUR_STEPS[idx];
+  if(cur.minFlow && flow < cur.minFlow) {
+    if(flow < 1) { idx = 1; cur = TOUR_STEPS[1]; }
+    else if(flow < 2) { idx = 2; cur = TOUR_STEPS[2]; }
+  }
+  return { cur, idx };
+}
+
+function DemoTour({step, flow, onSkip, onAction}) {
   if(!step) return null;
-  const makerSteps = [
-    {t:"Welcome to the LER demo",b:"Click through Maker → Reviewer to issue a verified LER badge. No login or payment.",a:"Start"},
-    {t:"Step 1 · Submit deliverable",b:"Open My tasks and click Submit on Product card component.",a:"Go to tasks"},
-    {t:"Step 2 · Switch to Reviewer",b:"After submit, use Switch role → Reviewer, then Approve.",a:"Switch to Reviewer"},
-  ];
-  const reviewerSteps = [
-    {t:"Step 3 · Approve review",b:"On Review queue, click Approve to generate LER data.",a:"Go to review"},
-    {t:"Step 4 · View LER",b:"Open Credentials and check the new Verify ID (VRF-…). Proof-of-work, not a resume.",a:"View credentials"},
-    {t:"Demo complete",b:"Enterprises use Talent search with the same verified history. Explore other roles freely.",a:"Done"},
-  ];
-  const list = role==="reviewer"||flow>=1 ? reviewerSteps : makerSteps;
-  const idx = Math.min(step-1, list.length-1);
-  const cur = list[idx];
-  const go = () => {
-    if(step===2&&role==="maker") onAction("tasks");
-    else if(step===3&&flow>=1) onAction("switchReviewer");
-    else if(cur.t.includes("Review")) onAction("review");
-    else if(cur.t.includes("LER")) onAction("credentials");
-    else onNext();
+  const { cur, idx } = tourStepFor(step, flow);
+  const handlePrimary = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAction(cur.action);
+  };
+  const handleSkip = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onSkip();
   };
   return (
-    <div className="tour-ov" onClick={onSkip}>
+    <div className="tour-ov" onClick={handleSkip}>
       <div className="tour-box" onClick={e=>e.stopPropagation()}>
-        <div className="tour-dots">{list.map((_,i)=><span key={i} className={i===idx?"on":""}/>)}</div>
+        <div className="tour-dots">{TOUR_STEPS.map((_,i)=><span key={i} className={i===idx?"on":""}/>)}</div>
         <h3>{cur.t}</h3>
         <p>{cur.b}</p>
         <div style={{display:"flex",gap:10}}>
-          <button className="btn btn-p" onClick={go}>{cur.a}</button>
-          <button className="btn btn-s" onClick={onSkip}>Skip</button>
+          <button type="button" className="btn btn-p" onClick={handlePrimary}>{cur.btn}</button>
+          <button type="button" className="btn btn-s" onClick={handleSkip}>Skip</button>
         </div>
       </div>
     </div>
@@ -922,11 +933,12 @@ function App() {
     else setPage("dashboard");
   };
   const tourAction = (act) => {
-    if(act==="tasks") { setPage("tasks"); setTour(2); }
+    if(act==="next") setTour(2);
+    else if(act==="tasks") { setPage("tasks"); setTour(2); }
     else if(act==="switchReviewer") { switchDemoRole("reviewer"); setTour(4); }
     else if(act==="review") { setPage("review"); setTour(4); }
-    else if(act==="credentials") { setPage("credentials"); setTour(0); }
-    else setTour(t=>t+1);
+    else if(act==="credentials") { setPage("credentials"); setTour(5); }
+    else if(act==="done") setTour(0);
   };
 
   const navs={
@@ -964,7 +976,7 @@ function App() {
         {renderPage()}
       </div>
       <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTour(0)}}/>
-      {tour>0&&<DemoTour step={tour} role={role} flow={flow} onNext={()=>setTour(s=>s+1)} onSkip={()=>setTour(0)} onAction={tourAction}/>}
+      {tour>0&&<DemoTour step={tour} flow={flow} onSkip={()=>setTour(0)} onAction={tourAction}/>}
     </div>
   </>);
 }
