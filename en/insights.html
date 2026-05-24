@@ -100,9 +100,16 @@
     .card-sub-light { font-family: var(--fb); font-size: .72rem; color: rgba(244,242,238,.38); letter-spacing: .06em; margin-bottom: 28px; }
 
     /* chart containers */
-    .ch { position: relative; width: 100%; height: 280px; }
-    .ch-sm { position: relative; width: 100%; height: 220px; }
-    .ch-lg { position: relative; width: 100%; height: 360px; }
+    .ch { position: relative; width: 100%; max-width: 100%; height: 280px; min-width: 0; }
+    .ch-sm { position: relative; width: 100%; max-width: 100%; height: 220px; min-width: 0; }
+    .ch-lg { position: relative; width: 100%; max-width: 100%; height: 360px; min-width: 0; }
+    .ch canvas, .ch-sm canvas, .ch-lg canvas { display: block; max-width: 100% !important; }
+
+    /* split layouts (sec 2–5 charts) */
+    .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; width: 100%; max-width: 100%; }
+    .split-2--sm { gap: 24px; align-items: center; }
+    .split-21 { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: center; width: 100%; max-width: 100%; }
+    .split-2 > *, .split-21 > * { min-width: 0; }
 
     /* ── GRID LAYOUTS ── */
     .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); border: 1px solid var(--border); }
@@ -167,29 +174,39 @@
     .foot-copy { font-family: var(--fb); font-size: .65rem; color: var(--muted); margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); max-width: 1280px; margin-left: auto; margin-right: auto; }
 
     @media (max-width: 960px) {
-      .gnav, .wrap { padding-left: 12px; padding-right: 12px; }
-
-.gnav-links {
-  display: flex;
-  margin-left: 10px;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
-}
-.gnav-links::-webkit-scrollbar { display: none; }
-
-.gnav-links a {
-  padding: 0 10px;
-  font-size: .64rem;
-}
-
-.gnav-cta { display: none; }
+      .gnav { padding: 0 12px; }
+      .wrap { padding-left: 16px; padding-right: 16px; }
+      .gnav-links {
+        display: flex;
+        margin-left: 10px;
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .gnav-links::-webkit-scrollbar { display: none; }
+      .gnav-links a { padding: 0 10px; font-size: .64rem; }
+      .gnav-cta { display: none; }
       .hero-inner { padding: 60px 20px 52px; }
-      .chapnav-inner { padding: 0 20px; }
+      .chapnav-inner { padding: 0 12px; }
       .g2, .g3 { grid-template-columns: 1fr; }
+      .split-2, .split-21 { grid-template-columns: 1fr; gap: 28px; }
+      .card, .card-dark { padding: 24px 18px; }
+      .ch { height: 240px; }
+      .ch-sm { height: 200px; }
+      .ch-lg { height: 300px; }
       .arch { grid-template-columns: 1fr; }
       .arch-arr { display: none; }
-      .sec { padding: 64px 0; }
+      .sec { padding: 64px 0; scroll-margin-top: 100px; }
+      .sec-h { font-size: clamp(1.65rem, 8vw, 2.5rem); }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding-left: 14px; padding-right: 14px; }
+      .card, .card-dark { padding: 20px 14px; }
+      .split-2, .split-21 { gap: 22px; }
+      .ch { height: 220px; }
+      .ch-lg { height: 280px; }
+      .legend-row { gap: 10px; }
     }
   
     .lang-switch{display:flex;align-items:center;align-items:center;gap:8px;margin-left:18px;flex-shrink:0;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
@@ -264,7 +281,7 @@
       <div class="card-dark">
         <div class="card-title-light">University graduate outflow — pilot region (2020)</div>
         <div class="card-sub-light">Total graduates (employable): 15,094</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+        <div class="split-2 split-2--sm">
           <div class="ch-sm">
             <canvas id="outflowChart"></canvas>
           </div>
@@ -356,7 +373,7 @@
     <h2 class="sec-h rv">Task automation & <span class="it">capability shift</span></h2>
 
     <div class="card-dark rv">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div class="split-2">
         <div>
           <div class="card-title-light" style="font-size:1.35rem;margin-bottom:16px;">The rungs junior talent used to climb are disappearing.</div>
           <p style="font-family:var(--fb);font-size:.9rem;line-height:1.78;color:rgba(244,242,238,.55);font-weight:300;margin-bottom:28px;">Generative AI is shifting entry-level demand from routine execution to <strong style="color:rgba(244,242,238,.85);">AI-augmented problem definition</strong>.</p>
@@ -432,7 +449,7 @@
 
     <!-- WTP 산점도 -->
     <div class="card rv" style="margin-bottom:2px;">
-      <div style="display:grid;grid-template-columns:1fr 2fr;gap:40px;align-items:center;">
+      <div class="split-21">
         <div>
           <div class="card-title">Skills-based hiring & WTP</div>
           <div class="card-sub">Verification trust vs enterprise WTP</div>
@@ -597,6 +614,9 @@
 
   renderMismatch('volume');
 
+  const chartMob = () => window.innerWidth < 768;
+  const axisFont = () => chartMob() ? 9 : 11;
+
   // ── Chart 4: AI impact ──
   new Chart(document.getElementById('aiChart'), {
     type: 'line',
@@ -609,13 +629,14 @@
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      layout: { padding: chartMob() ? 6 : 10 },
       plugins: {
         legend: { display: false },
         tooltip: { ...tt, backgroundColor: 'rgba(12,13,14,.92)' }
       },
       scales: {
-        y: { grid: { color: 'rgba(255,255,255,.08)' }, ticks: { color: 'rgba(244,242,238,.35)' } },
-        x: { grid: { display: false }, ticks: { color: 'rgba(244,242,238,.35)' } }
+        y: { grid: { color: 'rgba(255,255,255,.08)' }, ticks: { color: 'rgba(244,242,238,.35)', font: { size: axisFont() }, maxTicksLimit: 6 } },
+        x: { grid: { display: false }, ticks: { color: 'rgba(244,242,238,.35)', font: { size: axisFont() }, maxRotation: 0 } }
       }
     }
   });
@@ -645,6 +666,7 @@
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      layout: { padding: chartMob() ? { left: 2, right: 6, top: 18, bottom: 4 } : { left: 8, right: 12, top: 20, bottom: 8 } },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -657,20 +679,22 @@
       scales: {
         x: {
           min: 0, max: 6,
-          title: { display: true, text: 'Verification trust (Low → High)', font: { size: 11 } },
+          title: { display: !chartMob(), text: 'Verification trust (Low → High)', font: { size: axisFont() } },
           grid: { color: palette.border },
-          ticks: { stepSize: 1, callback: v => v === 0 ? '' : v }
+          ticks: { stepSize: 1, callback: v => v === 0 ? '' : v, font: { size: axisFont() } }
         },
         y: {
           min: 0, max: 110,
-          title: { display: true, text: 'Enterprise WTP / hiring priority', font: { size: 11 } },
-          grid: { color: palette.border }
+          title: { display: true, text: chartMob() ? 'Enterprise WTP' : 'Enterprise WTP / hiring priority', font: { size: axisFont() } },
+          grid: { color: palette.border },
+          ticks: { font: { size: axisFont() }, maxTicksLimit: chartMob() ? 5 : 8 }
         }
       }
     },
     plugins: [{
       id: 'bubbleLabels',
       afterDatasetsDraw(chart) {
+        if (chartMob()) return;
         const { ctx } = chart;
         chart.data.datasets.forEach((ds, i) => {
           const meta = chart.getDatasetMeta(i);
