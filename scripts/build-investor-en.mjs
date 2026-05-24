@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { insightsRepl } from './insights-en-replacements.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const enSourceDir = path.join(root, 'sources', 'en');
@@ -186,6 +187,13 @@ const serviceRepl = [
   ['지금 바로 D-GIG MVP에서<br>당신의 첫 <span class="it">LER을 기록하세요.</span>', 'MVP is live.<br><span class="it">Request a walkthrough.</span>'],
   ['포트폴리오가 없어도 됩니다. 첫 번째 로컬 Gig가 당신의 커리어 자산의 시작이 됩니다.', 'Book a demo for investors and enterprise partners — including role-based MVP flows.'],
   ['D-GIG 시작하기 →', 'View MVP demo →'],
+  ['서울 핀테크 스타트업 · 원격 계약직', 'Seoul Fintech Startup · Remote Contract'],
+  ['[ 01 ] — 탐색 및 매칭', '[ 01 ] — Discovery & Matching'],
+  ['[ 02 ] — LER 인증', '[ 02 ] — LER Verification'],
+  ['[ 03 ] — 포트폴리오', '[ 03 ] — Portfolio & Match'],
+  ['[ 01 ] — LER 기반 검색', '[ 01 ] — LER-Based Search'],
+  ['[ 02 ] — 유연한 조달', '[ 02 ] — Flexible Staffing'],
+  ['[ 03 ] — 리스크 제로화', '[ 03 ] — Risk Mitigation'],
 ];
 
 const contactRepl = [
@@ -226,14 +234,19 @@ const contactRepl = [
   ['주소', 'Address'],
   ['대전광역시 유성구 [상세 주소]', 'Daejeon, Republic of Korea'],
   ['자주 묻는 <span class="it">질문</span>', 'FAQ'],
-];
-
-const insightsRepl = [
-  ['<title>Insights — GigCareer</title>', '<title>Market Thesis — GigCareer</title>'],
-  ['인사이트', 'Thesis'],
-  ['노동시장', 'Labor market'],
-  ['데이터로 읽는', 'Data-driven'],
-  ['대전·충청권', 'Pilot market'],
+  ['운영시간', 'Business Hours'],
+  ['평일 09:00 — 18:00<br>(주말·공휴일 휴무)', 'Weekdays 09:00 — 18:00<br>(Closed on weekends and holidays)'],
+  ['사업자', 'Business Reg. No.'],
+  ['D-GIG 플랫폼 입점 비용은 얼마인가요?', 'What is the pricing model for the D-GIG platform?'],
+  ['MVP 단계에서는 <strong>기업 및 청년 모두 무료</strong>로 이용 가능합니다. 정식 런칭 후에는 기업의 경우 프로젝트 매칭 성사 시 수수료 모델이 적용될 예정이며, 청년 구직자는 지속적으로 무료로 제공됩니다. 자세한 요금제는 추후 공지 예정입니다.', 'During the MVP phase, the platform is free for both Enterprises and Talent. Post-launch, a success-fee model will apply to Enterprises upon successful project matching, while it remains free for all talent. Detailed pricing will be announced later.'],
+  ['LER 데이터는 기업 채용 시스템(ATS)과 어떻게 연동되나요?', 'How does LER data integrate with an Enterprise ATS?'],
+  ['D-GIG의 LER 데이터는 <strong>표준 API 형태</strong>로 제공되어 기업의 기존 ATS(지원자 추적 시스템)와 연동이 가능합니다. Workday, Greenhouse, SmartRecruiters 등 주요 ATS와의 연동을 단계적으로 지원할 예정이며, 자체 포맷의 LER 리포트 다운로드도 가능합니다.', 'D-GIG\'s LER data is provided via standard API, allowing seamless integration with existing Applicant Tracking Systems. We plan to support major platforms like Workday, Greenhouse, and SmartRecruiters in phases. Custom LER reports can also be downloaded directly.'],
+  ['대전 외 타 지역 기업도 이용할 수 있나요?', 'Can Enterprises outside Daejeon use the platform?'],
+  ['현재 MVP 단계에서는 <strong>대전·충청권을 중심으로 운영</strong>하고 있습니다. 단, 수도권 및 글로벌 기업이 대전의 로컬 인재를 원격으로 채용하는 경우는 적극 지원합니다. 향후 서울·경기권, 부산·울산권으로 순차적으로 확장할 계획입니다.', 'Currently, our MVP focuses on the Daejeon and Chungcheong regions. However, we actively support Enterprises in the capital area or globally seeking remote talent from Daejeon. We plan to expand to other regions sequentially.'],
+  ['청년 구직자가 첫 번째 Gig를 받으려면 어떻게 시작하나요?', 'How do candidates land their first Gig without a portfolio?'],
+  ['포트폴리오가 없어도 시작할 수 있습니다. D-GIG 프로필에 <strong>기술 스택, 관심 분야, 가용 시간</strong>을 입력하면 AI 매칭 알고리즘이 맞춤형 Gig를 추천합니다. 첫 번째 Gig 완료 후 LER 인증 배지가 발급되며, 이후 더 높은 수준의 프로젝트 매칭이 가능해집니다.', 'You can start from zero. Once you enter your tech stack, interests, and availability, our AI matching algorithm recommends tailored Gigs. Completing the first Gig unlocks your LER verification badge and higher-level project matches.'],
+  ['지자체 및 대학과의 협력은 어떤 형태로 이루어지나요?', 'How do you partner with Governments and Universities?'],
+  ['지자체와는 <strong>청년 일자리 사업 연계, LER 기반 취업 지원 프로그램</strong> 형태로 협력합니다. 대학과는 산학협력 프로젝트 발굴, 재학생 LER 인증 프로그램 운영을 논의하고 있습니다. 구체적인 협력 방안은 담당자와 미팅을 통해 맞춤 설계해드립니다.', 'We partner with governments on youth employment initiatives and LER-based career support programs. For universities, we facilitate industry-academia projects and LER certification programs. Specific partnership models are custom-designed through direct consultation.'],
 ];
 
 function applyReplacements(html, list) {
@@ -262,9 +275,32 @@ function buildEn(src, dest, extra) {
   console.log('wrote sources/en/' + dest);
 }
 
+function buildInsightsEn() {
+  let html = readFileSync(path.join(root, 'insights.html'), 'utf8');
+  html = applyReplacements(html, [...common, ...insightsRepl]);
+  html = html.replace(
+    /<span class="dim">대전[^<]*<\/span><br>\s*심층 분석/,
+    '<span class="dim">regional talent misalignment</span><br>\n      &amp; the LER opportunity'
+  );
+  html = html
+    .replace("labels: ['주택 (Housing)', '가족 (Family)', '직업 (Job)', '기타 (교육, 교통 등)']", "labels: ['Housing', 'Family', 'Job', 'Other (education, transport)']")
+    .replace('// ── 공통 차트 설정 ──', '// chart defaults')
+    .replace('// ── Chart 1: 인구 이동 사유 ──', '// Chart 1: migration')
+    .replace('// ── Chart 2: 유출 도넛 ──', '// Chart 2: outflow')
+    .replace('// ── Chart 3: 미스매치 ──', '// Chart 3: mismatch')
+    .replace('// ── WTP 버블 차트 (Chart.js bubble) ──', '// WTP bubble chart')
+    .replace('// ── 스크롤 reveal ──', '// scroll reveal')
+    .replace('// ── 챕터 nav 스크롤스파이 ──', '// chapter nav spy');
+  html = fixLinks(html);
+  html = injectNav(html, true);
+  html = html.replace('<li><a href="index-en.html">EN</a></li>', '<li><a href="index.html">KO</a></li>');
+  writeFileSync(path.join(enSourceDir, 'insights.html'), html, 'utf8');
+  console.log('wrote sources/en/insights.html');
+}
+
 buildEn('ko/index.html', 'index.html', indexRepl);
 buildEn('about.html', 'about.html', aboutRepl);
 buildEn('service.html', 'service.html', serviceRepl);
-buildEn('insights.html', 'insights.html', insightsRepl);
+buildInsightsEn();
 buildEn('contact.html', 'contact.html', contactRepl);
 console.log('investor EN sources ready');

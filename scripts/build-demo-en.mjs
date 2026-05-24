@@ -42,6 +42,15 @@ const experienceRepl = [
   ['수행 완료 과업', 'Tasks completed'],
   ['마감 준수율', 'On-time rate'],
   ['발급 크레덴셜', 'Credentials issued'],
+  ['대시보드', 'Dashboard'],
+  ['프로젝트', 'Projects'],
+  ['리뷰 관리', 'Review queue'],
+  ['운영', 'Operations'],
+  ['관리', 'Admin'],
+  ['사용자 관리', 'User admin'],
+  ['크레덴셜', 'Credentials'],
+  ['{label:"운영",items:', '{label:"Operations",items:'],
+  ['{label:"관리",items:', '{label:"Admin",items:'],
 ];
 
 const mvpRepl = [
@@ -69,10 +78,10 @@ const mvpRepl = [
   ['반려', 'Rejected'],
   ['일반', 'Standard'],
   ['높음', 'High'],
-  ['과업 수행 청년', 'Youth contributor'],
-  ['작업물 검수자', 'Work reviewer'],
-  ['프로젝트 의뢰 기업', 'Project client'],
-  ['운영 관리자', 'Platform operator'],
+  ['과업 수행 청년', 'Talent'],
+  ['작업물 검수자', 'Project Assessor'],
+  ['프로젝트 의뢰 기업', 'Enterprise Client'],
+  ['운영 관리자', 'Platform Admin'],
   ['지역의 작은 경험이,<br/><em>검증된 커리어</em>가 되다', 'Regional project work,<br/><em>verified credentials</em>'],
   ['프로젝트 수행 이력, 마이크로 크레덴셜, 포트폴리오 자동 생성을 통해 지역 청년의 실무 경험을 실제 기회와 연결합니다.', 'Connect regional project work to real opportunities through verified history, micro-credentials, and auto portfolios.'],
   ['수행 완료 과업', 'Tasks completed'],
@@ -243,7 +252,11 @@ writeFileSync(
 );
 writeFileSync(
   path.join(outDir, 'localcrew-mvp.html'),
-  apply(readFileSync(path.join(root, 'localcrew-mvp.html'), 'utf8'), mvpRepl),
+  apply(readFileSync(path.join(root, 'localcrew-mvp.html'), 'utf8'), mvpRepl)
+    .replace('d:"Youth contributor"', 'd:"Talent"')
+    .replace('d:"Work reviewer"', 'd:"Project Assessor"')
+    .replace('d:"Project client"', 'd:"Enterprise Client"')
+    .replace('d:"Platform operator"', 'd:"Platform Admin"'),
   'utf8'
 );
 
