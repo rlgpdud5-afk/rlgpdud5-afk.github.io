@@ -192,6 +192,11 @@ header .site-map-btn:hover::after{ width:100%; }
 .site-map .conts-right .cont-inner #menu ul li:nth-child(2) .txt-wrap span::before{content:'02';}
 .site-map .conts-right .cont-inner #menu ul li:nth-child(3) .txt-wrap span::before{content:'03';}
 .site-map .conts-right .cont-inner #menu ul li:nth-child(4) .txt-wrap span::before{content:'04';}
+.site-map-lang-switch{ display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:56px; font-size:18px; font-weight:600; letter-spacing:.1em; }
+.site-map-lang-switch a{ color:#505154; text-decoration:none; transition: color .2s ease, opacity .2s ease; opacity:.65; }
+.site-map-lang-switch a:hover{ color:#fff; opacity:1; }
+.site-map-lang-switch a.is--on{ color:#ee3d47; opacity:1; }
+.site-map-lang-switch span{ opacity:.25; font-size:13px; }
 .site-map .conts-right .cont-inner #menu ul li .txt-wrap span::after{ position: absolute; left:-20px; top:50%; transform: translate(0,-50%); content:''; width:0; height:12px; background:#ee3d47; transition: all .3s ease; }
 .site-map .conts-right .cont-inner #menu ul li:hover .txt-wrap span::after{ width:calc(100% + 40px); }
 .sec02 section{padding:0 25vh;}
@@ -331,6 +336,13 @@ header .site-map-btn:hover::after{ width:100%; }
                     <div class="cont-inner">
                         <div class="tag tag01"> <p><i></i><span class="en">2026 Portfolio V.3.0</span></p> </div>
                         <div class="tag tag02"> <p><i></i><span class="en">2026 Portfolio V.3.0</span></p> </div>
+                        <nav class="site-map-lang-switch en" aria-label="Language">
+                            <a href="index.html">KO</a>
+                            <span>|</span>
+                            <a href="index-en.html" class="is--on">EN</a>
+                            <span>|</span>
+                            <a href="index-es.html">ES</a>
+                        </nav>
                         <div id="menu">
                             <ul>
                                 <li class="is--on">
