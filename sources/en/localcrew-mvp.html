@@ -68,6 +68,20 @@ const MOCK_TALENTS = [
 
 const gradeColors = { Starter: "#6B7280", Verified: "#3B82F6", Advanced: "#8B5CF6", Reviewer: "#10B981", Assembler: "#D97706" };
 
+const FLOW_TASK_ID = "t2";
+const DEMO_NEW_CRED = {
+  id: "c-demo", project: "Local food mall redesign", role: "Maker", task: "Product card component",
+  period: "2026.03", skills: ["React", "CSS"], qaPass: true, rating: 4.9, trustDelta: "+5",
+  issuedAt: "2026-03-24", verifyId: "VRF-2026-DEMO-LER01", isNew: true
+};
+
+function taskStatusForDemo(t, flow) {
+  if (t.id !== FLOW_TASK_ID) return t.status;
+  if (flow >= 2) return "Approved";
+  if (flow >= 1) return "Submitted";
+  return t.status;
+}
+
 // ─── Icons ───
 const I = {
   home: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
@@ -295,6 +309,26 @@ tr:hover td{background:var(--glass-3)}
 @media(max-width:900px){.login-inner{grid-template-columns:1fr;gap:24px;padding:80px 24px 40px;min-height:auto}.login-hero{text-align:center;padding:0}.login-hero .logo{justify-content:center}.lh-sub{margin:0 auto 24px}.lh-nums{justify-content:center}.login-card{max-width:100%;margin:0 auto}}
 @media(max-width:768px){.side{display:none}.mob-nav{display:block}.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.pb{padding:16px 16px 90px}.ph{padding:18px 16px 14px}.ph h1{font-size:18px}.main{padding-bottom:0}}
 @media(max-width:480px){.login-inner{padding:60px 16px 32px}.roles{gap:8px}.role{padding:14px 8px}.login-card{padding:28px 20px}.stats{grid-template-columns:1fr}}
+.demo-bar{position:sticky;top:0;z-index:90;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 18px;background:linear-gradient(90deg,rgba(212,165,116,.18),rgba(139,92,246,.12));border-bottom:1px solid rgba(212,165,116,.25);font-size:12px}
+.demo-bar strong{color:var(--accent-warm);font-weight:600}
+.demo-bar .flow-pills{display:flex;gap:6px;flex-wrap:wrap}
+.demo-bar .fp{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--text-3);font-size:11px}
+.demo-bar .fp.on{background:rgba(212,165,116,.25);color:var(--accent-warm);font-weight:600}
+.demo-role-sw{display:flex;gap:6px;align-items:center}
+.demo-role-sw button{padding:5px 10px;font-size:11px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text-2);cursor:pointer}
+.demo-role-sw button.on{border-color:var(--accent-warm);color:var(--accent-warm)}
+.tour-ov{position:fixed;inset:0;z-index:200;background:rgba(4,8,18,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
+.tour-box{max-width:420px;width:100%;padding:28px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+.tour-box h3{margin:0 0 10px;font-size:18px}
+.tour-box p{margin:0 0 20px;font-size:13px;color:var(--text-2);line-height:1.65}
+.tour-dots{display:flex;gap:6px;margin-bottom:18px}
+.tour-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
+.tour-dots span.on{background:var(--accent-warm)}
+.hl-demo{outline:2px solid var(--accent-warm);outline-offset:3px;border-radius:8px;animation:demoPulse 2s ease infinite}
+@keyframes demoPulse{0%,100%{outline-color:rgba(212,165,116,.5)}50%{outline-color:rgba(212,165,116,1)}}
+.flow-card{border:1px solid rgba(212,165,116,.35);background:rgba(212,165,116,.08)!important}
+.ler-new{animation:lerPop .5s ease}
+@keyframes lerPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 `;
 
 // ─── Helpers ───
@@ -306,8 +340,73 @@ const GradeBadge = ({g}) => <span className="badge" style={{background:`${gradeC
 const Stars = ({v}) => <span style={{display:"inline-flex",alignItems:"center",gap:2}}>{I.star}<span style={{fontFamily:"var(--mono)",fontWeight:600,fontSize:13}}>{v}</span></span>;
 const PBar = ({v,c="var(--accent-warm)"}) => <div className="pbar"><div className="pfill" style={{width:`${v}%`,background:c}}/></div>;
 
+// ─── Demo UI ───
+function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds}) {
+  const steps = [
+    {n:1,l:"Submit",done:flow>=1},
+    {n:2,l:"Review",done:flow>=2},
+    {n:3,l:"LER issued",done:flow>=2},
+    {n:4,l:"Verify",done:flow>=2},
+  ];
+  return (
+    <div className="demo-bar">
+      <div>
+        <strong>Demo</strong> · Sample data · No login
+        <span style={{marginLeft:8,color:"var(--text-3)"}}>LER issuance flow</span>
+      </div>
+      <div className="flow-pills">{steps.map(s=><span key={s.n} className={"fp"+(s.done?" on":"")}>{s.n}. {s.l}</span>)}</div>
+      <div className="demo-role-sw">
+        <span style={{color:"var(--text-3)",fontSize:11}}>Switch role</span>
+        {["maker","reviewer"].map(r=>(
+          <button key={r} className={role===r?"on":""} onClick={()=>onSwitchRole(r)}>{r==="maker"?"Maker":"Reviewer"}</button>
+        ))}
+        {flow===0&&role==="maker"&&<button className="btn btn-p btn-sm" onClick={onGoTasks}>① Submit task</button>}
+        {flow===1&&role==="reviewer"&&<button className="btn btn-p btn-sm" onClick={onGoReview}>② Approve</button>}
+        {flow>=2&&<button className="btn btn-p btn-sm" onClick={onGoCreds}>③ View LER</button>}
+      </div>
+    </div>
+  );
+}
+
+function DemoTour({step, role, flow, onNext, onSkip, onAction}) {
+  if(!step) return null;
+  const makerSteps = [
+    {t:"Welcome to the LER demo",b:"Click through Maker → Reviewer to issue a verified LER badge. No login or payment.",a:"Start"},
+    {t:"Step 1 · Submit deliverable",b:"Open My tasks and click Submit on Product card component.",a:"Go to tasks"},
+    {t:"Step 2 · Switch to Reviewer",b:"After submit, use Switch role → Reviewer, then Approve.",a:"Switch to Reviewer"},
+  ];
+  const reviewerSteps = [
+    {t:"Step 3 · Approve review",b:"On Review queue, click Approve to generate LER data.",a:"Go to review"},
+    {t:"Step 4 · View LER",b:"Open Credentials and check the new Verify ID (VRF-…). Proof-of-work, not a resume.",a:"View credentials"},
+    {t:"Demo complete",b:"Enterprises use Talent search with the same verified history. Explore other roles freely.",a:"Done"},
+  ];
+  const list = role==="reviewer"||flow>=1 ? reviewerSteps : makerSteps;
+  const idx = Math.min(step-1, list.length-1);
+  const cur = list[idx];
+  const go = () => {
+    if(step===2&&role==="maker") onAction("tasks");
+    else if(step===3&&flow>=1) onAction("switchReviewer");
+    else if(cur.t.includes("Review")) onAction("review");
+    else if(cur.t.includes("LER")) onAction("credentials");
+    else onNext();
+  };
+  return (
+    <div className="tour-ov" onClick={onSkip}>
+      <div className="tour-box" onClick={e=>e.stopPropagation()}>
+        <div className="tour-dots">{list.map((_,i)=><span key={i} className={i===idx?"on":""}/>)}</div>
+        <h3>{cur.t}</h3>
+        <p>{cur.b}</p>
+        <div style={{display:"flex",gap:10}}>
+          <button className="btn btn-p" onClick={go}>{cur.a}</button>
+          <button className="btn btn-s" onClick={onSkip}>Skip</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Login ───
-function Login({onLogin}) {
+function Login({onLogin, onStartFlow}) {
   const [sel,setSel] = useState(null);
   const roles = [
     {k:"maker",i:"\u{1F6E0}\uFE0F",n:"Maker",d:"Talent"},
@@ -342,6 +441,9 @@ function Login({onLogin}) {
               {sel ? roles.find(function(r){return r.k===sel}).n+" dashboard" : "Select a role"}
             </button>
             <div className="lc-micro">Preview key screens without signing in</div>
+            <button type="button" className="btn btn-s" style={{width:"100%",marginTop:12,justifyContent:"center"}} onClick={onStartFlow}>
+              Try LER flow (2 min) →
+            </button>
           </div>
         </div>
       </div>
@@ -425,12 +527,22 @@ function MakerDash({user}) {
 }
 
 // ─── Credentials ───
-function Creds() {
+function Creds({flow, highlightId}) {
+  const list = flow>=2 ? [DEMO_NEW_CRED, ...MOCK_CREDENTIALS] : MOCK_CREDENTIALS;
   return (<div>
-    <div className="ph"><h1>Micro-credentials</h1><p>Verified work badges {MOCK_CREDENTIALS.length}</p></div>
+    <div className="ph"><h1>Micro-credentials</h1><p>Verified work badges {list.length} {flow>=2&&<span className="badge b-gr" style={{marginLeft:8}}>LER just issued</span>}</p></div>
+    {flow>=2&&(
+      <div className="pb" style={{paddingTop:0}}>
+        <div className="glass flow-card ler-new" style={{padding:16,marginBottom:16}}>
+          <div style={{fontSize:12,color:"var(--accent-warm)",fontWeight:600,marginBottom:6}}>✓ LER issued — learning & employment record created</div>
+          <div style={{fontFamily:"var(--mono)",fontSize:13}}>Verify ID: {DEMO_NEW_CRED.verifyId}</div>
+          <div style={{fontSize:11,color:"var(--text-3)",marginTop:6}}>Used in Enterprise talent search & ATS integration (demo).</div>
+        </div>
+      </div>
+    )}
     <div className="pb"><div className="g2">
-      {MOCK_CREDENTIALS.map((c,i) => (
-        <div key={c.id} className="glass cred fade-up" style={{animationDelay:`${i*.06}s`}}>
+      {list.map((c,i) => (
+        <div key={c.id} id={c.verifyId} className={"glass cred fade-up"+(c.verifyId===highlightId||c.isNew?" hl-demo":"")} style={{animationDelay:`${i*.06}s`}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div><div style={{fontSize:15,fontWeight:600}}>{c.project}</div><div style={{fontSize:12,color:"var(--text-2)",marginTop:2}}>{c.task}</div></div>
             <span className={`badge ${c.qaPass?"b-gr":"b-rd"}`}>{c.qaPass?"QA passed":"Not passed"}</span>
@@ -690,14 +802,19 @@ function ProjectDetail({project:p,onBack}) {
 }
 
 // ─── Review ───
-function Review() {
+function Review({flow, onApprove}) {
   const [sc,setSc]=useState({deadline:5,quality:4,speed:5,comm:4,guide:5,rework:5});
+  const [done,setDone]=useState(flow>=2);
   const items=[{k:"deadline",l:"Deadline adherence"},{k:"quality",l:"Requirements met"},{k:"speed",l:"Revision turnaround"},{k:"comm",l:"Communication"},{k:"guide",l:"Guideline compliance"},{k:"rework",l:"No rework needed"}];
+  const pending = flow===1;
+  const approve = () => { onApprove(); setDone(true); };
   return (<div>
     <div className="ph"><h1>Review & rating</h1><p>Record outcomes with structured criteria</p></div>
     <div className="pb">
-      <div className="glass" style={{padding:20,maxWidth:600}}>
-        <div className="ch"><span className="ct">Review: Hero section publishing</span><span className="badge b-bl">Sarah Kim</span></div>
+      {pending&&<div className="glass flow-card" style={{padding:14,marginBottom:16,maxWidth:600}}><span className="badge b-or">Pending review</span> <span style={{fontSize:13,marginLeft:8}}>Product card component — submitted by Maker</span></div>}
+      {done&&flow>=2&&<div className="glass" style={{padding:14,marginBottom:16,maxWidth:600,background:"rgba(16,185,129,.12)",border:"1px solid rgba(16,185,129,.3)"}}><span className="badge b-gr">Approved</span> <span style={{fontSize:13,marginLeft:8}}>LER issued · {DEMO_NEW_CRED.verifyId}</span></div>}
+      <div className={"glass"+(pending?" hl-demo":"")} style={{padding:20,maxWidth:600}}>
+        <div className="ch"><span className="ct">Review: Product card component</span><span className="badge b-bl">Sarah Kim</span></div>
         {items.map(it=>(
           <div className="rv-i" key={it.k}><span style={{fontSize:13}}>{it.l}</span>
             <div className="rv-dots">{[1,2,3,4,5].map(n=>(
@@ -706,7 +823,55 @@ function Review() {
           </div>
         ))}
         <div style={{marginTop:16}}><div style={{fontSize:12,color:"var(--text-3)",marginBottom:6}}>Comments</div><textarea className="input" rows={3} placeholder="Feedback on deliverable quality" style={{resize:"vertical"}}/></div>
-        <div style={{display:"flex",gap:10,marginTop:16}}><button className="btn btn-p">Approve</button><button className="btn btn-s" style={{borderColor:"var(--danger)",color:"var(--danger)"}}>Rejected</button></div>
+        <div style={{display:"flex",gap:10,marginTop:16}}>
+          <button className="btn btn-p" onClick={approve} disabled={!pending||done}>{done?"LER issued":"Approve & issue LER"}</button>
+          <button className="btn btn-s" style={{borderColor:"var(--danger)",color:"var(--danger)"}} disabled={done}>Rejected</button>
+        </div>
+      </div>
+    </div>
+  </div>);
+}
+
+// ─── Maker Tasks (demo flow) ───
+function MakerTasks({user, flow, onSubmit}) {
+  const tasks = MOCK_TASKS.filter(t=>t.assignee===user.name);
+  const flowTask = tasks.find(t=>t.id===FLOW_TASK_ID);
+  return (<div>
+    <div className="ph"><h1>My tasks</h1><p>Assigned tasks · LER demo</p></div>
+    <div className="pb">
+      {flow===0&&(
+        <div className="glass flow-card" style={{padding:16,marginBottom:16}}>
+          <div style={{fontSize:13,fontWeight:600,marginBottom:8}}>LER demo task</div>
+          <p style={{fontSize:12,color:"var(--text-2)",margin:"0 0 12px"}}>Submit below → Reviewer approval → LER badge issued.</p>
+          <div className="sf">
+            <div className="sf-s done"><span className="sf-d done">✓</span>Assigned</div><span className="sf-l done"/>
+            <div className="sf-s cur"><span className="sf-d cur">2</span>Submit</div><span className="sf-l"/>
+            <div className="sf-s"><span className="sf-d">3</span>Review</div><span className="sf-l"/>
+            <div className="sf-s"><span className="sf-d">4</span>LER</div>
+          </div>
+        </div>
+      )}
+      {flow>=1&&(
+        <div className="glass" style={{padding:14,marginBottom:16,background:"rgba(16,185,129,.1)",border:"1px solid rgba(16,185,129,.25)"}}>
+          <span className="badge b-gr">Submitted</span> <span style={{fontSize:13,marginLeft:8}}>Awaiting Reviewer — switch role at the top.</span>
+        </div>
+      )}
+      <div className="glass" style={{padding:20}}>
+        <table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th><th></th></tr></thead>
+        <tbody>{tasks.map(t=>{
+          const st = taskStatusForDemo(t, flow);
+          const isFlow = t.id===FLOW_TASK_ID;
+          return (
+            <tr key={t.id} className={isFlow&&flow===0?"hl-demo":""}>
+              <td style={{fontWeight:550}}>{t.name}</td>
+              <td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td>
+              <td><StatusBadge s={st}/></td>
+              <td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td>
+              <td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td>
+              <td>{isFlow&&flow===0&&<button className="btn btn-p btn-sm" onClick={onSubmit}>Submit work</button>}{isFlow&&flow>=1&&<span style={{fontSize:11,color:"var(--text-3)"}}>Submitted</span>}</td>
+            </tr>
+          );
+        })}</tbody></table>
       </div>
     </div>
   </div>);
@@ -735,7 +900,34 @@ function App() {
   const [role,setRole]=useState(null);
   const [page,setPage]=useState("dashboard");
   const [selProj,setSelProj]=useState(null);
+  const [flow,setFlow]=useState(0);
+  const [tour,setTour]=useState(0);
   const user=role?MOCK_USERS[role]:null;
+
+  const startFlow = () => { setRole("maker"); setPage("tasks"); setFlow(0); setTour(1); };
+  const submitFlow = () => { setFlow(1); setTour(3); };
+  const approveFlow = () => {
+    setFlow(2);
+    setTour(5);
+    setPage("credentials");
+    setTimeout(() => {
+      const el = document.getElementById(DEMO_NEW_CRED.verifyId);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 400);
+  };
+  const switchDemoRole = (r) => {
+    setRole(r);
+    if(r==="reviewer"&&flow>=1) setPage("review");
+    else if(r==="maker") setPage(flow>=2?"credentials":"tasks");
+    else setPage("dashboard");
+  };
+  const tourAction = (act) => {
+    if(act==="tasks") { setPage("tasks"); setTour(2); }
+    else if(act==="switchReviewer") { switchDemoRole("reviewer"); setTour(4); }
+    else if(act==="review") { setPage("review"); setTour(4); }
+    else if(act==="credentials") { setPage("credentials"); setTour(0); }
+    else setTour(t=>t+1);
+  };
 
   const navs={
     maker:[{items:[{id:"dashboard",name:"Dashboard",icon:I.home},{id:"tasks",name:"My tasks",icon:I.check,badge:2},{id:"credentials",name:"Credentials",icon:I.badge},{id:"portfolio",name:"Portfolio",icon:I.file}]}],
@@ -752,23 +944,27 @@ function App() {
     switch(page){
       case "dashboard": return role==="admin"?<AdminDash/>:role==="client"?<ClientDash user={user}/>:<MakerDash user={user}/>;
       case "projects": return <Projects onSelect={setSelProj}/>;
-      case "tasks": return (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={t.status}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
-      case "credentials": return <Creds/>;
+      case "tasks": return role==="maker" ? <MakerTasks user={user} flow={flow} onSubmit={submitFlow}/> : (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={taskStatusForDemo(t,flow)}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
+      case "credentials": return <Creds flow={flow} highlightId={DEMO_NEW_CRED.verifyId}/>;
       case "portfolio": return <Portfolio user={user}/>;
       case "talent": return <TalentSearch/>;
-      case "review": return <Review/>;
+      case "review": return <Review flow={flow} onApprove={approveFlow}/>;
       case "users": return (<div><div className="ph"><h1>User admin</h1></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Name</th><th>Grade</th><th>Trust</th><th>Done</th><th>On-time</th><th>Region</th></tr></thead><tbody>{MOCK_TALENTS.map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td><GradeBadge g={t.grade}/></td><td style={{fontFamily:"var(--mono)"}}>{t.trustScore}</td><td>{t.projects}</td><td>{t.deadlineRate}%</td><td>{t.region}</td></tr>)}</tbody></table></div></div></div>);
       default: return <MakerDash user={user}/>;
     }
   };
 
-  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setRole(r);setPage("dashboard")}}/></>);
+  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setRole(r);setPage("dashboard");setTour(1);setFlow(0)}} onStartFlow={startFlow}/></>);
 
   return (<><style>{css}</style>
     <div className="app">
-      <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard")}} items={navs[role]||navs.maker}/>
-      <div className="main">{renderPage()}</div>
-      <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard")}}/>
+      <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTour(0)}} items={navs[role]||navs.maker}/>
+      <div className="main">
+        <DemoBanner flow={flow} role={role} onSwitchRole={switchDemoRole} onGoTasks={()=>{setPage("tasks");setTour(2)}} onGoReview={()=>{switchDemoRole("reviewer")}} onGoCreds={()=>{setPage("credentials");setTour(0)}}/>
+        {renderPage()}
+      </div>
+      <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTour(0)}}/>
+      {tour>0&&<DemoTour step={tour} role={role} flow={flow} onNext={()=>setTour(s=>s+1)} onSkip={()=>setTour(0)} onAction={tourAction}/>}
     </div>
   </>);
 }
