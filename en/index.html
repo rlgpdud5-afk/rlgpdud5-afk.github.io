@@ -1,1 +1,954 @@
-<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/en/"><script>location.replace('/en/');</script></head><body><a href="/en/">Continue</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigCareer — Verified Regional Talent Infrastructure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #F4F2EE;
+      --bg2:       #ECEAE5;
+      --bg3:       #E4E1DB;
+      --black:     #0C0D0E;
+      --ink:       #1A1B1D;
+      --mid:       rgba(12,13,14,0.55);
+      --muted:     rgba(12,13,14,0.35);
+      --border:    rgba(12,13,14,0.1);
+      --border-hi: rgba(12,13,14,0.2);
+      --accent:    #0C0D0E;
+      --green:     #16B85A;
+      --f-display: 'Barlow Condensed', sans-serif;
+      --f-body:    'Barlow', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      font-weight: 400;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav.site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 52px;
+      display: flex; align-items: center;
+      padding: 0 32px;
+      background: rgba(244,242,238,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: var(--f-body);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .beta-tag {
+      font-family: var(--f-body);
+      font-size: .5rem;
+      letter-spacing: .12em;
+      color: var(--bg);
+      background: var(--black);
+      padding: 2px 6px;
+      font-weight: 700;
+    }
+
+    .nav-links { display: flex; list-style: none; margin-left: 36px; }
+    .nav-links a {
+      font-family: var(--f-body);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      padding: 0 16px;
+      height: 52px;
+      display: flex; align-items: center;
+      border-right: 1px solid var(--border);
+      transition: color .16s;
+    }
+    .nav-links li:first-child a { border-left: 1px solid var(--border); }
+    .nav-links a:hover { color: var(--black); }
+
+    .nav-cta {
+      margin-left: auto;
+      font-family: var(--f-body);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--black);
+      color: var(--bg);
+      padding: 10px 22px;
+      text-decoration: none;
+      transition: opacity .16s;
+    }
+    .nav-cta:hover { opacity: .8; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      padding: 52px 0 0;
+      position: relative; overflow: hidden;
+      background: var(--bg);
+    }
+
+    .hero-inner {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      max-width: 1280px; margin: 0 auto; width: 100%;
+      padding: 80px 40px 0;
+      position: relative; z-index: 2;
+    }
+
+    /* subtle grid */
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(ellipse 100% 90% at 50% 0%, black 0%, transparent 80%);
+      opacity: .5;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--f-body);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+      opacity: 0; animation: fu .7s ease .15s forwards;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--muted); }
+
+    h1 {
+      font-family: var(--f-display);
+      font-size: clamp(5rem, 11vw, 13rem);
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: -.01em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0; animation: fu .9s ease .28s forwards;
+    }
+
+    h1 .italic {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    .hero-sub {
+      max-width: 540px;
+      margin-top: 36px;
+      font-family: var(--f-body);
+      font-size: 1rem;
+      line-height: 1.78;
+      color: var(--mid);
+      font-weight: 300;
+      opacity: 0; animation: fu .9s ease .46s forwards;
+    }
+
+    .hero-btns {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-top: 44px;
+      opacity: 0; animation: fu .9s ease .62s forwards;
+    }
+
+    .btn-fill {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: var(--black); color: var(--bg);
+      padding: 14px 28px;
+      text-decoration: none; display: inline-block;
+      transition: opacity .16s, transform .14s;
+    }
+    .btn-fill:hover { opacity: .8; transform: translateY(-1px); }
+
+    .btn-line {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: transparent; color: var(--mid);
+      padding: 13px 28px;
+      text-decoration: none; display: inline-block;
+      border: 1px solid var(--border-hi);
+      transition: border-color .16s, color .16s;
+    }
+    .btn-line:hover { border-color: var(--black); color: var(--black); }
+
+    /* hero bottom stat bar */
+    .hero-stats {
+      max-width: 1280px; margin: 0 auto; width: 100%;
+      padding: 0 40px;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      margin-top: 80px;
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 2;
+      opacity: 0; animation: fi .9s ease 1.05s forwards;
+    }
+
+    .hs {
+      padding: 28px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .hs:last-child { border-right: none; }
+
+    .hs-val {
+      font-family: var(--f-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1;
+      letter-spacing: -.01em;
+      margin-bottom: 6px;
+    }
+
+    .hs-lbl {
+      font-family: var(--f-body);
+      font-size: .62rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── SECTION COMMON ── */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+    .sec { padding: 120px 0; border-bottom: 1px solid var(--border); }
+
+    .sec-label {
+      font-family: var(--f-body);
+      font-size: .62rem; font-weight: 600;
+      letter-spacing: .28em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--muted); display: block; }
+
+    .sec-h {
+      font-family: var(--f-display);
+      font-size: clamp(2.6rem, 4.5vw, 5.2rem);
+      font-weight: 700;
+      line-height: 1.0;
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      color: var(--black);
+      margin-bottom: 24px;
+    }
+    .sec-h .italic { font-style: italic; font-weight: 300; color: var(--mid); }
+
+    .sec-body {
+      font-family: var(--f-body);
+      font-size: .97rem; line-height: 1.82;
+      color: var(--mid); max-width: 580px;
+      font-weight: 300;
+    }
+
+    /* REVEAL */
+    .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .rv.on { opacity: 1; transform: none; }
+
+    /* ── S2 PARADOX ── */
+    #paradox { background: var(--bg); }
+
+    .paradox-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 64px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .pdata {
+      background: var(--bg);
+      padding: 52px 44px;
+      position: relative;
+    }
+
+    .pdata-num {
+      font-family: var(--f-display);
+      font-size: clamp(4.5rem,8vw,8.5rem);
+      font-weight: 700;
+      color: var(--black);
+      line-height: .95;
+      letter-spacing: -.02em;
+      margin-bottom: 12px;
+    }
+
+    .pdata-unit {
+      font-family: var(--f-body);
+      font-size: .65rem; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pdata-desc {
+      font-family: var(--f-body);
+      font-size: .9rem; line-height: 1.72;
+      color: var(--mid); font-weight: 300;
+    }
+
+    .paradox-full {
+      background: var(--bg2);
+      padding: 48px 44px;
+      border: none;
+      grid-column: span 2;
+    }
+    .paradox-full .sec-body { max-width: 100%; font-size: 1.05rem; }
+
+    /* ── S3 SHIFT ── */
+    #shift { background: var(--bg2); }
+
+    .shift-quote {
+      font-family: var(--f-display);
+      font-size: clamp(1.4rem, 2.8vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.45;
+      color: var(--mid);
+      max-width: 900px;
+      margin-top: 52px;
+      letter-spacing: -.005em;
+    }
+
+    .shift-quote .dy {
+      color: rgba(12,13,14,.18);
+      text-decoration: line-through;
+      text-decoration-color: rgba(12,13,14,.15);
+      font-weight: 300;
+    }
+    .shift-quote .ri {
+      color: var(--black);
+      font-weight: 700;
+    }
+
+    .shift-facts {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--border);
+      background: var(--border);
+      margin-top: 64px;
+      gap: 1px;
+    }
+
+    .sf {
+      background: var(--bg2);
+      padding: 40px 36px;
+      transition: background .2s;
+    }
+    .sf:hover { background: var(--bg3); }
+
+    .sf-idx {
+      font-family: var(--f-body);
+      font-size: .6rem; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .sf-title {
+      font-family: var(--f-display);
+      font-size: 1.25rem; font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .01em;
+      color: var(--black);
+      margin-bottom: 12px; line-height: 1.2;
+    }
+
+    .sf-desc {
+      font-family: var(--f-body);
+      font-size: .85rem; line-height: 1.72;
+      color: var(--mid); font-weight: 300;
+    }
+
+    /* ── S4 SOLUTION ── */
+    #solution { background: var(--bg); }
+
+    .sol-steps {
+      display: grid;
+      grid-template-columns: 1fr 36px 1fr 36px 1fr;
+      align-items: center;
+      margin-top: 64px;
+    }
+
+    .sol-step {
+      padding: 44px 36px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      min-height: 300px;
+      display: flex; flex-direction: column;
+      transition: background .2s, border-color .2s;
+    }
+    .sol-step:hover { background: var(--bg2); border-color: var(--border-hi); }
+
+    .sol-arr {
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--f-body);
+      font-size: 1rem; color: var(--muted);
+    }
+
+    .sol-badge {
+      font-family: var(--f-body);
+      font-size: .58rem; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--bg); background: var(--black);
+      padding: 3px 9px;
+      display: inline-block; margin-bottom: 20px;
+    }
+
+    .sol-ghost {
+      font-family: var(--f-display);
+      font-size: 4rem; font-weight: 700;
+      color: rgba(12,13,14,.05);
+      position: absolute; top: 14px; right: 20px;
+      line-height: 1; letter-spacing: -.02em;
+    }
+
+    .sol-title {
+      font-family: var(--f-display);
+      font-size: 1.7rem; font-weight: 700;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 14px; line-height: 1.1;
+      letter-spacing: -.01em;
+    }
+
+    .sol-desc {
+      font-family: var(--f-body);
+      font-size: .85rem; line-height: 1.75;
+      color: var(--mid); font-weight: 300;
+      margin-top: auto;
+    }
+
+    /* terminal */
+    .terminal {
+      margin-top: 52px;
+      background: var(--black);
+      padding: 28px 32px;
+      max-width: 700px;
+    }
+    .t-bar { display: flex; gap: 7px; margin-bottom: 20px; }
+    .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .t-line {
+      font-family: 'Barlow Condensed', monospace;
+      font-size: .8rem; line-height: 2;
+      color: rgba(244,242,238,.4);
+      letter-spacing: .02em;
+    }
+    .t-line .g { color: #16B85A; }
+    .t-line .w { color: var(--bg); }
+    .t-line .cursor::after { content: '█'; animation: blink 1.1s step-end infinite; color: #16B85A; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── S5 VALUE ── */
+    #value { background: var(--bg2); }
+
+    .val-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 64px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .vc {
+      background: var(--bg2);
+      padding: 60px 52px;
+      position: relative;
+      transition: background .2s;
+    }
+    .vc:hover { background: var(--bg3); }
+
+    .vc-tag {
+      font-family: var(--f-body);
+      font-size: .6rem; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .vc-tag::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .vc-title {
+      font-family: var(--f-display);
+      font-size: 2rem; font-weight: 700;
+      text-transform: uppercase;
+      color: var(--black);
+      line-height: 1.1; margin-bottom: 20px;
+      letter-spacing: -.01em;
+    }
+    .vc-title .italic { font-style: italic; font-weight: 300; }
+
+    .vc-body {
+      font-family: var(--f-body);
+      font-size: .92rem; line-height: 1.8;
+      color: var(--mid); font-weight: 300;
+    }
+    .vc-body strong { color: var(--black); font-weight: 600; }
+
+    /* ── S6 CTA ── */
+    #cta-sec { background: var(--bg); border-bottom: none; }
+
+    .cta-box {
+      position: relative;
+      padding: 104px 72px;
+      background: var(--black);
+      overflow: hidden;
+    }
+
+    .cta-ghost {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 30vw; font-weight: 700;
+      color: rgba(244,242,238,.03);
+      line-height: 1; right: -4%; top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: -.04em;
+      user-select: none;
+    }
+
+    .cta-h {
+      font-family: var(--f-display);
+      font-size: clamp(2.4rem, 5vw, 5.6rem);
+      font-weight: 700; text-transform: uppercase;
+      color: var(--bg);
+      line-height: 1.0; max-width: 680px;
+      position: relative; z-index: 2;
+      margin-bottom: 28px;
+      letter-spacing: -.01em;
+    }
+    .cta-h .italic { font-style: italic; font-weight: 300; color: rgba(244,242,238,.5); }
+
+    .cta-sub {
+      font-family: var(--f-body);
+      font-size: .97rem; line-height: 1.78;
+      color: rgba(244,242,238,.55);
+      max-width: 480px; font-weight: 300;
+      position: relative; z-index: 2;
+      margin-bottom: 48px;
+    }
+
+    .cta-btns { display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 2; }
+
+    .btn-fill-inv {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: var(--bg); color: var(--black);
+      padding: 14px 28px;
+      text-decoration: none; display: inline-block;
+      transition: opacity .16s, transform .14s;
+    }
+    .btn-fill-inv:hover { opacity: .85; transform: translateY(-1px); }
+
+    .btn-line-inv {
+      font-family: var(--f-body);
+      font-size: .72rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: transparent; color: rgba(244,242,238,.5);
+      padding: 13px 28px;
+      text-decoration: none; display: inline-block;
+      border: 1px solid rgba(244,242,238,.2);
+      transition: border-color .16s, color .16s;
+    }
+    .btn-line-inv:hover { border-color: rgba(244,242,238,.5); color: var(--bg); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 56px 40px;
+    }
+
+    .footer-grid {
+      max-width: 1280px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      gap: 48px; align-items: start;
+    }
+
+    .f-brand {
+      font-family: var(--f-body);
+      font-size: .82rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--black);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .f-tagline {
+      font-family: var(--f-body);
+      font-size: .62rem; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); margin-top: 8px;
+    }
+
+    .f-info {
+      font-family: var(--f-body);
+      font-size: .7rem; line-height: 1.9;
+      color: var(--muted); letter-spacing: .02em;
+    }
+
+    .f-nav { display: flex; flex-direction: column; gap: 10px; list-style: none; }
+    .f-nav a {
+      font-family: var(--f-body);
+      font-size: .68rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color .16s;
+    }
+    .f-nav a:hover { color: var(--black); }
+
+    .f-bottom {
+      max-width: 1280px; margin: 36px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .f-copy {
+      font-family: var(--f-body);
+      font-size: .62rem; color: var(--muted);
+      letter-spacing: .06em;
+    }
+
+    .f-links { display: flex; gap: 24px; list-style: none; }
+    .f-links a {
+      font-family: var(--f-body);
+      font-size: .62rem; color: var(--muted);
+      text-decoration: none; letter-spacing: .06em;
+      transition: color .16s;
+    }
+    .f-links a:hover { color: var(--black); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fu { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    @keyframes fi { from{opacity:0} to{opacity:1} }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+nav.site-nav {
+  padding: 0 12px;
+}
+.nav-links {
+  display: flex;
+  margin-left: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  padding: 0 10px;
+  font-size: .64rem;
+}
+.nav-cta {
+  display: none;
+}
+      .hero-inner, .wrap { padding-left: 20px; padding-right: 20px; }
+      .hero-stats { padding: 0 20px; grid-template-columns: 1fr 1fr; }
+      .hs:nth-child(2) { border-right: none; }
+      .sec { padding: 80px 0; }
+      h1 { font-size: clamp(3.5rem, 13vw, 7rem); }
+      .paradox-grid { grid-template-columns: 1fr; }
+      .paradox-full { grid-column: span 1; }
+      .shift-facts { grid-template-columns: 1fr; }
+      .sol-steps { grid-template-columns: 1fr; }
+      .sol-arr { display: none; }
+      .val-split { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .cta-box { padding: 64px 24px; }
+      .vc { padding: 44px 28px; }
+    }
+  
+    .lang-switch{display:flex;align-items:center;gap:8px;margin-left:18px;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .lang-switch a{color:var(--mid);text-decoration:none;opacity:.45;transition:opacity .16s,color .16s;}
+    .lang-switch a:hover,.lang-switch a.is--on{opacity:1;color:var(--black);}
+    .lang-switch span{opacity:.25;font-size:.62rem;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <a href="index.html" class="logo">GigCareer <span class="beta-tag">BETA</span></a>
+  <div class="lang-switch" aria-label="Language"><a href="../ko/index.html">KR</a><span>|</span><a href="index.html" class="is--on">EN</a></div>
+  <ul class="nav-links">
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html">D-GIG</a></li>
+    <li><a href="insights.html">Insights</a></li>    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="#cta-sec" class="nav-cta">Partner with us</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+
+  <div class="hero-inner">
+    <p class="hero-eyebrow">GigCareer × D-GIG — Regional Talent Infrastructure</p>
+    <h1>
+      Opportunity<br>
+      isn't limited<br>
+      <span class="italic">by geography.</span>
+    </h1>
+    <p class="hero-sub">
+      GigCareer builds proof-of-work infrastructure that turns regional project experience into portable, employer-trusted credentials — enabling remote-ready talent pipelines beyond capital-city hubs.
+    </p>
+    <div class="hero-btns">
+      <a href="#solution" class="btn-fill">Explore the platform</a>
+      <a href="#paradox" class="btn-line">View market thesis →</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hs">
+      <div class="hs-val" data-count="57.9" data-suffix="%">—</div>
+      <div class="hs-lbl">Pilot: graduate outflow rate</div>
+    </div>
+    <div class="hs">
+      <div class="hs-val" data-count="2.86" data-suffix="×">—</div>
+      <div class="hs-lbl">Pilot: jobs per candidate</div>
+    </div>
+    <div class="hs">
+      <div class="hs-val">LER</div>
+      <div class="hs-lbl">LER credential layer</div>
+    </div>
+    <div class="hs">
+      <div class="hs-val">3-Step</div>
+      <div class="hs-lbl">Local → Data → Global</div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 PARADOX -->
+<section id="paradox" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">02 — The Paradox</p>
+    <h2 class="sec-h rv">Strong regional assets.<br><span class="italic">Misaligned</span> opportunity.</h2>
+
+    <div class="paradox-grid">
+      <div class="pdata rv">
+        <div class="pdata-num"><span data-count="57.9" data-suffix="%">—</span></div>
+        <div class="pdata-unit">Pilot: graduate outflow rate</div>
+        <p class="pdata-desc">In our pilot market (Korea's Daejeon–Chungcheong region), a majority of university graduates leave for capital cities early in their careers — despite strong R&D and university density. The region exports talent instead of retaining verified work history.</p>
+      </div>
+      <div class="pdata rv">
+        <div class="pdata-num"><span data-count="2.86" data-suffix="×">—</span></div>
+        <div class="pdata-unit">Applicants per role (non-STEM cohorts)</div>
+        <p class="pdata-desc">This is not a major-specific issue — it is a structural verification gap. Employers cannot assess proof-of-work; candidates cannot prove capability without capital-city networks.</p>
+      </div>
+      <div class="paradox-full rv">
+        <p class="sec-body">Youth want pathways to build capability; regional employers need deployable talent. Job boards optimize for credentials, not verified outcomes. The missing layer is <strong style="color:var(--black); font-weight:600;">trusted proof-of-work infrastructure</strong> — which we call LER (Learning & Employment Records).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 SHIFT -->
+<section id="shift" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">03 — The Shift</p>
+    <h2 class="sec-h rv">In the AI economy,<br><span class="italic">proof beats pedigree.</span></h2>
+
+    <div class="shift-quote rv">
+      <span class="dy">Routine admin tasks</span>,&nbsp;
+      <span class="dy">Basic research</span>,&nbsp;
+      <span class="dy">Data entry</span> are being automated.<br>
+      What employers need now:&nbsp;
+      <span class="ri">Non-routine problem solving</span>,&nbsp;
+      <span class="ri">Verified work records</span>,&nbsp;
+      <span class="ri">LER portfolios</span>.
+    </div>
+
+    <div class="shift-facts rv">
+      <div class="sf">
+        <div class="sf-idx">[ 01 ]</div>
+        <div class="sf-title">Junior tasks are automating</div>
+        <p class="sf-desc">Generative AI is compressing entry-level knowledge work. The traditional apprentice model for building experience is breaking — increasing demand for verifiable, project-based proof.</p>
+      </div>
+      <div class="sf">
+        <div class="sf-idx">[ 02 ]</div>
+        <div class="sf-title">Credentials → proof</div>
+        <p class="sf-desc">Degrees alone no longer de-risk hiring. Employers increasingly require evidence of outcomes — not self-reported resumes.</p>
+      </div>
+      <div class="sf">
+        <div class="sf-idx">[ 03 ]</div>
+        <div class="sf-title">Regional double bind</div>
+        <p class="sf-desc">Without local proof-of-work rails, regional talent competes globally with no portable evidence — a pattern repeated in secondary cities worldwide.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 SOLUTION -->
+<section id="solution" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">04 — The Solution</p>
+    <h2 class="sec-h rv">Turn regional work into<br><span class="italic">global credentials.</span></h2>
+    <p class="sec-body rv">D-GIG is a three-layer infrastructure: local project marketplace, LER verification, and skills-based matching. It is designed to scale across regions — Korea is our controlled pilot.</p>
+
+    <div class="sol-steps rv">
+      <div class="sol-step">
+        <span class="sol-ghost">01</span>
+        <div class="sol-badge">Local Gig</div>
+        <div class="sol-title">Local Gig</div>
+        <p class="sol-desc">Short-cycle regional projects produce real deliverables — not simulated coursework — creating auditable work history.</p>
+      </div>
+      <div class="sol-arr">→</div>
+      <div class="sol-step">
+        <span class="sol-ghost">02</span>
+        <div class="sol-badge">LER Data</div>
+        <div class="sol-title">LER layer</div>
+        <p class="sol-desc">Outcomes, skills, and reviewer signals are encoded as Learning & Employment Records — portable across employers and markets.</p>
+      </div>
+      <div class="sol-arr">→</div>
+      <div class="sol-step">
+        <span class="sol-ghost">03</span>
+        <div class="sol-badge">Global Match</div>
+        <div class="sol-title">Global match</div>
+        <p class="sol-desc">Verified records unlock remote and skills-based hiring — decoupling opportunity from relocation.</p>
+      </div>
+    </div>
+
+    <div class="terminal rv">
+      <div class="t-bar">
+        <div class="t-dot" style="background:#FF5F57"></div>
+        <div class="t-dot" style="background:#FFBD2E"></div>
+        <div class="t-dot" style="background:#28C840"></div>
+      </div>
+      <div class="t-line"><span class="g">$</span> ler-verify --candidate <span class="w">kim_daejeon_001</span></div>
+      <div class="t-line"><span class="g">✔</span> Project: <span class="w">Regional startup · marketing analytics (4 wks)</span></div>
+      <div class="t-line"><span class="g">✔</span> Skills verified: <span class="w">Data Analysis · Figma · Copywriting</span></div>
+      <div class="t-line"><span class="g">✔</span> Outcome score: <span class="w">92 / 100</span></div>
+      <div class="t-line"><span class="g">→</span> Match: <span class="w">Fintech startup · remote contract (matched) </span><span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 VALUE -->
+<section id="value" class="sec">
+  <div class="wrap">
+    <p class="sec-label rv">05 — Value Proposition</p>
+    <h2 class="sec-h rv">Built for<br><span class="italic">who scales.</span></h2>
+
+    <div class="val-split">
+      <div class="vc rv">
+        <div class="vc-tag">For Workforce Partners</div>
+        <div class="vc-title">Pipeline infrastructure<br>for <span class="italic">regional talent.</span></div>
+        <p class="vc-body">Municipal workforce programs, universities, and regional employers gain a shared verification layer — reducing friction between training spend and hireable outcomes.</p>
+      </div>
+      <div class="vc rv">
+        <div class="vc-tag">For Enterprise & Investors</div>
+        <div class="vc-title">De-risk hiring with<br><span class="italic">verified work data.</span></div>
+        <p class="vc-body">Enterprises reduce screening cost; investors gain exposure to infrastructure with measurable unit economics in a large, repeatable labor-market inefficiency.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 CTA -->
+<section id="cta-sec" class="sec">
+  <div class="wrap">
+    <div class="cta-box rv">
+      <div class="cta-ghost">GIG</div>
+      <h2 class="cta-h">Partner with us to<br>scale verified regional<br><span class="italic">talent rails.</span></h2>
+      <p class="cta-sub">We are raising pilot partnerships with enterprises, workforce agencies, and strategic investors. Request the investor deck, pilot metrics, or a partnership call.</p>
+      <div class="cta-btns">
+        <a href="contact.html" class="btn-fill-inv">Request investor deck</a>
+        <a href="#paradox" class="btn-line-inv">Book a partnership call →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="f-brand">GigCareer <span class="beta-tag">BETA</span></div>
+      <div class="f-tagline">Verified regional talent infrastructure.</div>
+    </div>
+    <div class="f-info">
+      GigCareer Inc. &nbsp;|&nbsp; Pilot HQ: Daejeon, Korea<br>
+      Founder: Hye-Young Kim &nbsp;|&nbsp; rlgpdud5@gmail.com
+    </div>
+    <ul class="f-nav">
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="service.html">D-GIG</a></li>
+      <li><a href="insights.html">Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+  <div class="f-bottom">
+    <span class="f-copy">© 2026 GigCareer Inc. All rights reserved.</span>
+    <ul class="f-links">
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Privacy</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 100);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+  // Count-up
+  function countUp(el, to, suffix, dur) {
+    const isF = String(to).includes('.');
+    const t0 = performance.now();
+    (function step(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = (isF ? (ease * to).toFixed(1) : Math.round(ease * to)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  const cObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const to = parseFloat(e.target.dataset.count);
+      const sx = e.target.dataset.suffix || '';
+      countUp(e.target, to, sx, 1800);
+      cObs.unobserve(e.target);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+</script>
+</body>
+</html>

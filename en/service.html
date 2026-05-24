@@ -1,1 +1,337 @@
-<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/en/service.html"><script>location.replace('/en/service.html');</script></head><body><a href="/en/service.html">Continue</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D-GIG Platform — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#F4F2EE;--bg2:#ECEAE5;--bg3:#E4E1DB;
+      --black:#0C0D0E;--ink:#1A1B1D;
+      --mid:rgba(12,13,14,0.55);--muted:rgba(12,13,14,0.35);
+      --border:rgba(12,13,14,0.1);--bhi:rgba(12,13,14,0.18);
+      --fd:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:52px;display:flex;align-items:center;padding:0 32px;background:rgba(244,242,238,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .logo{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .beta{font-size:.5rem;letter-spacing:.12em;color:var(--bg);background:var(--black);padding:2px 6px;font-weight:700;}
+    .nav-links{display:flex;list-style:none;margin-left:36px;}
+    .nav-links a{font-family:var(--fb);font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;padding:0 16px;height:52px;display:flex;align-items:center;border-right:1px solid var(--border);transition:color .15s;}
+    .nav-links li:first-child a{border-left:1px solid var(--border);}
+    .nav-links a:hover,.nav-links a.on{color:var(--black);}
+    .nav-cta{margin-left:auto;font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--bg);padding:10px 22px;text-decoration:none;}
+    .nav-cta:hover{opacity:.8;}
+
+    /* HERO */
+    #hero{min-height:72vh;background:var(--black);padding:52px 0 0;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;}
+    .hero-inner{flex:1;display:flex;align-items:flex-end;max-width:1280px;margin:0 auto;width:100%;padding:88px 40px 64px;position:relative;z-index:2;}
+    .hero-left{flex:1;}
+    .hero-label{font-family:var(--fb);font-size:.65rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(244,242,238,.35);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .hero-label::before{content:'';width:20px;height:1px;background:rgba(244,242,238,.35);display:block;}
+    .hero-h{font-family:var(--fd);font-size:clamp(2.4rem,5vw,5.8rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:.96;letter-spacing:-.01em;margin-bottom:24px;}
+    .hero-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.45);}
+    .hero-sub{font-family:var(--fb);font-size:.97rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:480px;font-weight:300;}
+
+    /* MOCKUP */
+    .hero-mockup{flex-shrink:0;width:320px;margin-left:80px;position:relative;align-self:flex-end;}
+    .mockup-phone{background:#1A1D22;border:1px solid rgba(255,255,255,.1);padding:20px 16px;width:100%;position:relative;}
+    .mockup-status{display:flex;justify-content:space-between;font-family:var(--fd);font-size:.6rem;color:rgba(244,242,238,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06);}
+    .mockup-row{padding:14px 16px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);margin-bottom:8px;}
+    .mockup-row-label{font-family:var(--fb);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(244,242,238,.3);margin-bottom:4px;}
+    .mockup-row-val{font-family:var(--fd);font-size:.95rem;font-weight:600;color:var(--bg);letter-spacing:.02em;}
+    .mockup-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+    .mockup-badge{font-family:var(--fb);font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;background:rgba(255,255,255,.08);color:rgba(244,242,238,.6);}
+    .mockup-badge.hl{background:var(--bg);color:var(--black);}
+    .mockup-score{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+    .score-bar-track{flex:1;height:4px;background:rgba(255,255,255,.08);}
+    .score-bar-fill{height:100%;background:var(--bg);width:92%;}
+    .score-val{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--bg);}
+
+    /* COMMON */
+    .wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
+    .sec{padding:104px 0;border-bottom:1px solid var(--border);}
+    .sec-label{font-family:var(--fb);font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+    .sec-label::before{content:'';width:20px;height:1px;background:var(--muted);display:block;}
+    .sec-h{font-family:var(--fd);font-size:clamp(2rem,3.8vw,4rem);font-weight:700;text-transform:uppercase;letter-spacing:-.01em;color:var(--black);line-height:1.0;margin-bottom:12px;}
+    .sec-h .it{font-style:italic;font-weight:300;color:var(--mid);}
+    .sec-sub{font-family:var(--fb);font-size:.92rem;color:var(--mid);line-height:1.75;font-weight:300;max-width:600px;margin-bottom:52px;}
+
+    /* TOGGLE */
+    .toggle-wrap{display:flex;border:1px solid var(--border);background:var(--bg2);width:fit-content;margin-bottom:52px;}
+    .toggle-btn{font-family:var(--fb);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:12px 32px;cursor:pointer;background:transparent;border:none;color:var(--muted);transition:all .18s;}
+    .toggle-btn.on{background:var(--black);color:var(--bg);}
+
+    /* FEATURE CARDS */
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);}
+    .feat-card{background:var(--bg);padding:44px 36px;position:relative;transition:background .2s;}
+    .feat-card:hover{background:var(--bg2);}
+    .feat-num{font-family:var(--fd);font-size:4rem;font-weight:700;color:rgba(12,13,14,.05);position:absolute;top:12px;right:16px;line-height:1;}
+    .feat-idx{font-family:var(--fb);font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+    .feat-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:14px;line-height:1.15;letter-spacing:.01em;}
+    .feat-desc{font-family:var(--fb);font-size:.88rem;line-height:1.72;color:var(--mid);font-weight:300;}
+
+    /* STEPS */
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);}
+    .step{padding:44px 32px;border-right:1px solid var(--border);position:relative;}
+    .step:last-child{border-right:none;}
+    .step-num{font-family:var(--fd);font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+    .step-title{font-family:var(--fd);font-size:1.25rem;font-weight:700;text-transform:uppercase;color:var(--black);margin-bottom:12px;line-height:1.1;}
+    .step-desc{font-family:var(--fb);font-size:.85rem;line-height:1.7;color:var(--mid);font-weight:300;}
+    .step-arr{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:28px;height:28px;background:var(--black);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.8rem;z-index:2;}
+
+    /* CTA */
+    .cta-box{background:var(--black);padding:96px 72px;position:relative;overflow:hidden;}
+    .cta-ghost{position:absolute;font-family:var(--fd);font-size:28vw;font-weight:700;color:rgba(244,242,238,.025);line-height:1;right:-4%;top:50%;transform:translateY(-50%);pointer-events:none;text-transform:uppercase;user-select:none;}
+    .cta-h{font-family:var(--fd);font-size:clamp(2.2rem,4.5vw,5rem);font-weight:700;text-transform:uppercase;color:var(--bg);line-height:1.0;max-width:660px;position:relative;z-index:2;margin-bottom:28px;letter-spacing:-.01em;}
+    .cta-h .it{font-style:italic;font-weight:300;color:rgba(244,242,238,.4);}
+    .cta-sub{font-family:var(--fb);font-size:.97rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:480px;font-weight:300;position:relative;z-index:2;margin-bottom:44px;}
+    .btn-wi{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg);color:var(--black);padding:15px 32px;text-decoration:none;display:inline-block;transition:opacity .16s,transform .14s;position:relative;z-index:2;}
+    .btn-wi:hover{opacity:.88;transform:translateY(-1px);}
+
+    /* FOOTER */
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
+    .foot-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+    .foot-brand{font-family:var(--fb);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);}
+    .foot-nav{display:flex;gap:24px;list-style:none;}
+    .foot-nav a{font-family:var(--fb);font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .15s;}
+    .foot-nav a:hover{color:var(--black);}
+    .foot-copy{font-family:var(--fb);font-size:.62rem;color:var(--muted);}
+
+    /* REVEAL */
+    .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+    .rv.on{opacity:1;transform:none;}
+
+    @media(max-width:960px){
+      nav{padding:0 12px;}
+.nav-links{
+  display:flex;
+  margin-left:10px;
+  overflow-x:auto;
+  white-space:nowrap;
+  scrollbar-width:none;
+}
+.nav-links::-webkit-scrollbar{display:none;}
+.nav-links a{padding:0 10px;font-size:.64rem;}
+.nav-cta{display:none;}
+      .wrap,.hero-inner{padding-left:20px;padding-right:20px;}
+      .hero-inner{flex-direction:column;align-items:flex-start;}
+      .hero-mockup{width:100%;margin:40px 0 0;}
+      .feat-grid,.steps{grid-template-columns:1fr;}
+      .step{border-right:none;border-bottom:1px solid var(--border);}
+      .step-arr{display:none;}
+      .cta-box{padding:64px 24px;}
+    }
+  
+    .lang-switch{display:flex;align-items:center;align-items:center;gap:8px;margin-left:18px;flex-shrink:0;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .lang-switch a{color:var(--mid);text-decoration:none;opacity:.45;transition:opacity .16s,color .16s;}
+    .lang-switch a:hover,.lang-switch a.is--on{opacity:1;color:var(--black);}
+    .lang-switch span{opacity:.25;font-size:.62rem;}
+    nav.site-nav .nav-links, nav.site-nav .gnav-links{flex:1;min-width:0;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="logo">GigCareer <span class="beta">BETA</span></a>
+  <div class="lang-switch" aria-label="Language"><a href="../ko/service.html">KR</a><span>|</span><a href="service.html" class="is--on">EN</a></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html" class="on">D-GIG</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Partner with us</a>
+</nav>
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <p class="hero-label">D-GIG Platform — Local Gig × LER × Global Match</p>
+      <h1 class="hero-h">Proof-of-work<br>infrastructure<br><span class="it">for regions,</span><br>D-GIG</h1>
+      <p class="hero-sub">A three-layer stack for investors: marketplace (Local Gig), verification (LER), and distribution (Global Match). Built to integrate with workforce agencies and enterprise hiring workflows.</p>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-phone">
+        <div class="mockup-status"><span>D-GIG MVP</span><span>v0.1</span></div>
+        <div class="mockup-row">
+          <div class="mockup-row-label">Active gig (demo)</div>
+          <div class="mockup-row-val">Regional startup · analytics project</div>
+        </div>
+        <div class="mockup-row">
+          <div class="mockup-row-label">Verified skills</div>
+          <div class="mockup-badge-row">
+            <span class="mockup-badge hl">Data Analysis</span>
+            <span class="mockup-badge hl">Figma</span>
+            <span class="mockup-badge">Copywriting</span>
+            <span class="mockup-badge">Notion</span>
+          </div>
+        </div>
+        <div class="mockup-row">
+          <div class="mockup-row-label">LER trust score</div>
+          <div class="mockup-score">
+            <div class="score-bar-track"><div class="score-bar-fill"></div></div>
+            <div class="score-val">92</div>
+          </div>
+        </div>
+        <div class="mockup-row" style="margin-bottom:0;">
+          <div class="mockup-row-label">Matched role (demo)</div>
+          <div class="mockup-row-val" style="font-size:.82rem;">서울 핀테크 스타트업 · 원격 계약직</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TARGET VIEW TOGGLE -->
+<section class="sec" style="background:var(--bg);">
+  <div class="wrap">
+    <p class="sec-label rv">02 — Platform Features</p>
+    <h2 class="sec-h rv">Platform <span class="it">architecture</span></h2>
+    <p class="sec-sub rv">Dual-sided value: supply (regional talent) and demand (enterprises + institutions) connected through verified records.</p>
+
+    <div class="toggle-wrap rv" id="toggleWrap">
+      <button class="toggle-btn on" id="btnYouth" onclick="switchView('youth')">Supply side</button>
+      <button class="toggle-btn" id="btnBiz" onclick="switchView('biz')">Demand side</button>
+    </div>
+
+    <!-- YOUTH VIEW -->
+    <div id="viewYouth" class="feat-grid rv">
+      <div class="feat-card">
+        <span class="feat-num">01</span>
+        <div class="feat-idx">[ 01 ] — 탐색 및 매칭</div>
+        <div class="feat-title">Local gig<br>marketplace</div>
+        <p class="feat-desc">Project intake from regional employers and institutions — scoped, short-cycle, outcome-defined.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">02</span>
+        <div class="feat-idx">[ 02 ] — LER 인증</div>
+        <div class="feat-title">LER<br>verification</div>
+        <p class="feat-desc">Reviewer signals, deliverables, and skill tags become portable credentials — the core IP moat.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">03</span>
+        <div class="feat-idx">[ 03 ] — 포트폴리오</div>
+        <div class="feat-title">Matching<br>layer</div>
+        <p class="feat-desc">Skills-based matching for remote and contract roles — API-ready for HR systems.</p>
+      </div>
+    </div>
+
+    <!-- BIZ VIEW (hidden) -->
+    <div id="viewBiz" class="feat-grid rv" style="display:none;">
+      <div class="feat-card">
+        <span class="feat-num">01</span>
+        <div class="feat-idx">[ 01 ] — LER 기반 검색</div>
+        <div class="feat-title">LER-based<br>talent search</div>
+        <p class="feat-desc">Search by verified project similarity — reducing screening cost and mis-hire risk.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">02</span>
+        <div class="feat-idx">[ 02 ] — 유연한 조달</div>
+        <div class="feat-title">Flexible<br>regional staffing</div>
+        <p class="feat-desc">Project-based talent deployment for enterprises and agencies — measurable utilization.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-num">03</span>
+        <div class="feat-idx">[ 03 ] — 리스크 제로화</div>
+        <div class="feat-title">Risk<br>reduction</div>
+        <p class="feat-desc">Trust scores aggregate completion, review, and skill verification — auditable for compliance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO USE -->
+<section class="sec" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label rv">03 — How to Use</p>
+    <h2 class="sec-h rv">Go-to-market <span class="it">flywheel</span></h2>
+    <p class="sec-sub rv">Four steps from pilot project to portable credential.</p>
+
+    <div class="steps rv">
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <div class="step-title">Onboard supply</div>
+        <p class="step-desc">Talent and enterprise profiles with skills, availability, and project constraints.</p>
+        <div class="step-arr">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <div class="step-title">Match projects</div>
+        <p class="step-desc">Matching engine ranks fit by skills, geography, and outcome history.</p>
+        <div class="step-arr">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <div class="step-title">Execute & record</div>
+        <p class="step-desc">Work artifacts and milestones captured on-platform — source data for LER.</p>
+        <div class="step-arr">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 04</div>
+        <div class="step-title">Verify & match</div>
+        <p class="step-desc">Completion triggers LER issuance and unlocks downstream matching — network effects.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="cta-box rv">
+      <div class="cta-ghost">LER</div>
+      <h2 class="cta-h">MVP is live.<br><span class="it">Request a walkthrough.</span></h2>
+      <p class="cta-sub">Book a demo for investors and enterprise partners — including role-based MVP flows.</p>
+      <a href="experience.html" class="btn-wi">View MVP demo →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">GigCareer <span class="beta">BETA</span></div>
+    <ul class="foot-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="service.html">D-GIG</a></li>
+      <li><a href="insights.html">Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <span class="foot-copy">© 2025 GigCareer Inc.</span>
+  </div>
+</footer>
+
+<script>
+  // Toggle
+  window.switchView = function(view) {
+    document.getElementById('viewYouth').style.display = view === 'youth' ? 'grid' : 'none';
+    document.getElementById('viewBiz').style.display   = view === 'biz'   ? 'grid' : 'none';
+    document.getElementById('btnYouth').classList.toggle('on', view === 'youth');
+    document.getElementById('btnBiz').classList.toggle('on', view === 'biz');
+  };
+
+  // Reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const siblings = Array.from(e.target.parentElement.querySelectorAll('.rv'));
+      const i = siblings.indexOf(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 90);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

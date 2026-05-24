@@ -4,36 +4,45 @@ import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const koDir = path.join(root, 'ko');
+const enSourceDir = path.join(root, 'sources', 'en');
 const enDir = path.join(root, 'en');
 
 const koPages = ['index', 'about', 'service', 'insights', 'contact', 'experience', 'localcrew-mvp'];
 const enPages = ['index', 'about', 'service', 'insights', 'contact'];
 
 const LANG_CSS = `
-    .lang-switch{display:flex;align-items:center;gap:8px;margin-left:18px;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .lang-switch{display:flex;align-items:center;align-items:center;gap:8px;margin-left:18px;flex-shrink:0;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
     .lang-switch a{color:var(--mid);text-decoration:none;opacity:.45;transition:opacity .16s,color .16s;}
     .lang-switch a:hover,.lang-switch a.is--on{opacity:1;color:var(--black);}
     .lang-switch span{opacity:.25;font-size:.62rem;}
+    nav.site-nav .nav-links, nav.site-nav .gnav-links{flex:1;min-width:0;}
 `;
 
 mkdirSync(koDir, { recursive: true });
 mkdirSync(enDir, { recursive: true });
 
 function getKoSource(page) {
-  if (page === 'index') {
-    const koIndex = path.join(koDir, 'index.html');
-    if (existsSync(koIndex) && readFileSync(koIndex, 'utf8').includes('hero-inner')) {
-      return koIndex;
-    }
-    throw new Error('Korean index source missing in ko/index.html');
+  const koFile = path.join(koDir, `${page}.html`);
+  if (page === 'index' && existsSync(koFile) && readFileSync(koFile, 'utf8').includes('hero-inner')) {
+    return koFile;
   }
-  return path.join(root, `${page}.html`);
+  const rootFile = path.join(root, `${page}.html`);
+  if (existsSync(rootFile)) return rootFile;
+  throw new Error(`Missing Korean source for ${page}`);
+}
+
+function getEnSource(page) {
+  const sourceFile = path.join(enSourceDir, `${page}.html`);
+  if (!existsSync(sourceFile)) {
+    throw new Error(`Missing English source: sources/en/${page}.html — run build-investor-en.mjs first`);
+  }
+  return sourceFile;
 }
 
 function stripOldLangLinks(html) {
   return html
-    .replace(/\s*<li><a href="[^"]*">(?:EN|KO)<\/a><\/li>\n?/g, '')
-    .replace(/\s*<nav class="lang-switch"[\s\S]*?<\/nav>\n?/g, '');
+    .replace(/\s*<li><a href="[^"]*">(?:EN|KO|KR)<\/a><\/li>\n?/g, '')
+    .replace(/\s*<(?:nav|div) class="lang-switch"[\s\S]*?<\/(?:nav|motion\.div|div)>\n?/g, '');
 }
 
 function injectLangCss(html) {
@@ -41,17 +50,27 @@ function injectLangCss(html) {
   return html.replace('</style>', `${LANG_CSS}</style>`);
 }
 
+function fixNavSelector(html) {
+  if (html.includes('class="site-nav"') || html.includes('class="gnav site-nav"')) return html;
+  return html
+    .replace(/<nav class="gnav">/g, '<nav class="gnav site-nav">')
+    .replace(/<nav>/g, '<nav class="site-nav">')
+    .replace(/\n    nav \{/g, '\n    nav.site-nav {')
+    .replace(/\nnav \{/g, '\nnav.site-nav {');
+}
+
 function langSwitchHtml(lang, page) {
   const otherBase = `../${lang === 'ko' ? 'en' : 'ko'}/${page}.html`;
   if (lang === 'ko') {
-    return `<nav class="lang-switch" aria-label="Language"><a href="${page}.html" class="is--on">KR</a><span>|</span><a href="${otherBase}">EN</a></nav>`;
+    return `<div class="lang-switch" aria-label="Language"><a href="${page}.html" class="is--on">KR</a><span>|</span><a href="${otherBase}">EN</a></div>`;
   }
-  return `<nav class="lang-switch" aria-label="Language"><a href="${otherBase}">KR</a><span>|</span><a href="${page}.html" class="is--on">EN</a></nav>`;
+  return `<div class="lang-switch" aria-label="Language"><a href="${otherBase}">KR</a><span>|</span><a href="${page}.html" class="is--on">EN</a></div>`;
 }
 
 function injectLangSwitch(html, lang, page) {
   html = stripOldLangLinks(html);
   html = injectLangCss(html);
+  html = fixNavSelector(html);
   const switcher = langSwitchHtml(lang, page);
   if (html.includes('class="gnav-logo"')) {
     return html.replace(
@@ -90,9 +109,7 @@ for (const page of koPages) {
 }
 
 for (const page of enPages) {
-  const src = path.join(root, `${page}-en.html`);
-  if (!existsSync(src)) throw new Error(`Missing ${src}`);
-  let html = readFileSync(src, 'utf8');
+  let html = readFileSync(getEnSource(page), 'utf8');
   html = rewriteInternalLinks(html, 'en');
   html = injectLangSwitch(html, 'en', page);
   writeFileSync(path.join(enDir, `${page}.html`), html, 'utf8');
@@ -112,11 +129,10 @@ writeFileSync(
   <meta http-equiv="refresh" content="0; url=/ko/" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GigCareer</title>
-  <link rel="canonical" href="https://www.gigcareer.kr/ko/" />
 </head>
 <body>
   <script>location.replace('/ko/');</script>
-  <p>Redirecting to <a href="/ko/">Korean home</a> · <a href="/en/">English home</a></p>
+  <p><a href="/ko/">KR</a> · <a href="/en/">EN</a></p>
 </body>
 </html>
 `,
@@ -141,4 +157,4 @@ for (const [file, target] of Object.entries(legacyRedirects)) {
   );
 }
 
-console.log('ko/en structure generated with KR | EN switcher');
+console.log('ko/en structure generated');

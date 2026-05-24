@@ -119,17 +119,18 @@
       .form-area,.info-area{padding:36px 24px;}
     }
   
-    .lang-switch{display:flex;align-items:center;gap:8px;margin-left:18px;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .lang-switch{display:flex;align-items:center;align-items:center;gap:8px;margin-left:18px;flex-shrink:0;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
     .lang-switch a{color:var(--mid);text-decoration:none;opacity:.45;transition:opacity .16s,color .16s;}
     .lang-switch a:hover,.lang-switch a.is--on{opacity:1;color:var(--black);}
     .lang-switch span{opacity:.25;font-size:.62rem;}
+    nav.site-nav .nav-links, nav.site-nav .gnav-links{flex:1;min-width:0;}
 </style>
 </head>
 <body>
 
-<nav>
+<nav class="site-nav">
   <a href="index.html" class="logo">GigCareer <span class="beta">BETA</span></a>
-  <nav class="lang-switch" aria-label="Language"><a href="contact.html" class="is--on">KR</a><span>|</span><a href="../en/contact.html">EN</a></nav>
+  <div class="lang-switch" aria-label="Language"><a href="contact.html" class="is--on">KR</a><span>|</span><a href="../en/contact.html">EN</a></div>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html">About Us</a></li>

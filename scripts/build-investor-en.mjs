@@ -1,8 +1,10 @@
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const enSourceDir = path.join(root, 'sources', 'en');
+mkdirSync(enSourceDir, { recursive: true });
 
 const linkMap = [
   ['index.html', 'index-en.html'],
@@ -256,25 +258,13 @@ function buildEn(src, dest, extra) {
     /\(주\)GigCareer &nbsp;\|&nbsp; 대전광역시 유성구 \[상세 주소\]<br>\s*대표자: 김트리 &nbsp;\|&nbsp; 사업자등록번호: 000-00-00000<br>\s*이메일: rlgpdud5@gmail\.com/g,
     'GigCareer Inc. &nbsp;|&nbsp; Pilot HQ: Daejeon, Korea<br>\n      Founder: Hye-Young Kim &nbsp;|&nbsp; rlgpdud5@gmail.com'
   );
-  writeFileSync(path.join(root, dest), html, 'utf8');
-  console.log('wrote', dest);
+  writeFileSync(path.join(enSourceDir, dest), html, 'utf8');
+  console.log('wrote sources/en/' + dest);
 }
 
-function patchKoFiles() {
-  for (const file of ['index.html', 'about.html', 'service.html', 'insights.html', 'contact.html']) {
-    const p = path.join(root, file);
-    if (!readFileSync(p, 'utf8').includes('index-en.html')) {
-      let html = readFileSync(p, 'utf8');
-      html = injectNav(html, false);
-      writeFileSync(p, html, 'utf8');
-    }
-  }
-}
-
-buildEn('index.html', 'index-en.html', indexRepl);
-buildEn('about.html', 'about-en.html', aboutRepl);
-buildEn('service.html', 'service-en.html', serviceRepl);
-buildEn('insights.html', 'insights-en.html', insightsRepl);
-buildEn('contact.html', 'contact-en.html', contactRepl);
-patchKoFiles();
-console.log('investor EN pages ready');
+buildEn('ko/index.html', 'index.html', indexRepl);
+buildEn('about.html', 'about.html', aboutRepl);
+buildEn('service.html', 'service.html', serviceRepl);
+buildEn('insights.html', 'insights.html', insightsRepl);
+buildEn('contact.html', 'contact.html', contactRepl);
+console.log('investor EN sources ready');

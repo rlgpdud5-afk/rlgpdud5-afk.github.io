@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D-GIG Service — GigCareer</title>
+  <title>D-GIG Platform — GigCareer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -129,27 +129,21 @@
       .step-arr{display:none;}
       .cta-box{padding:64px 24px;}
     }
-  
-    .lang-switch{display:flex;align-items:center;align-items:center;gap:8px;margin-left:18px;flex-shrink:0;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
-    .lang-switch a{color:var(--mid);text-decoration:none;opacity:.45;transition:opacity .16s,color .16s;}
-    .lang-switch a:hover,.lang-switch a.is--on{opacity:1;color:var(--black);}
-    .lang-switch span{opacity:.25;font-size:.62rem;}
-    nav.site-nav .nav-links, nav.site-nav .gnav-links{flex:1;min-width:0;}
-</style>
+  </style>
 </head>
 <body>
 
-<nav class="site-nav">
-  <a href="index.html" class="logo">GigCareer <span class="beta">BETA</span></a>
-  <div class="lang-switch" aria-label="Language"><a href="service.html" class="is--on">KR</a><span>|</span><a href="../en/service.html">EN</a></div>
+<nav>
+  <a href="index-en.html" class="logo">GigCareer <span class="beta">BETA</span></a>
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About Us</a></li>
-    <li><a href="service.html" class="on">D-GIG</a></li>
-    <li><a href="insights.html">Insights</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="index-en.html">Home</a></li>
+    <li><a href="about-en.html">About Us</a></li>
+    <li><a href="service-en.html" class="on">D-GIG</a></li>
+    <li><a href="insights-en.html">Insights</a></li>
+    <li><a href="index.html">KO</a></li>
+    <li><a href="contact-en.html">Contact</a></li>
   </ul>
-  <a href="contact.html" class="nav-cta">서비스 사전 신청</a>
+  <a href="contact-en.html" class="nav-cta">Partner with us</a>
 </nav>
 
 <!-- HERO -->
@@ -158,18 +152,18 @@
   <div class="hero-inner">
     <div class="hero-left">
       <p class="hero-label">D-GIG Platform — Local Gig × LER × Global Match</p>
-      <h1 class="hero-h">실무 경험이<br>스펙이 되는<br><span class="it">로컬 긱 플랫폼,</span><br>D-GIG</h1>
-      <p class="hero-sub">크몽도, 잡코리아도 해결하지 못한 '포트폴리오 부재'와 '스펙 중심 필터링'의 한계를 넘어섭니다. 로컬에서 쌓은 실무 경험이 글로벌 커리어 자산이 됩니다.</p>
+      <h1 class="hero-h">Proof-of-work<br>infrastructure<br><span class="it">for regions,</span><br>D-GIG</h1>
+      <p class="hero-sub">A three-layer stack for investors: marketplace (Local Gig), verification (LER), and distribution (Global Match). Built to integrate with workforce agencies and enterprise hiring workflows.</p>
     </div>
     <div class="hero-mockup">
       <div class="mockup-phone">
         <div class="mockup-status"><span>D-GIG MVP</span><span>v0.1</span></div>
         <div class="mockup-row">
-          <div class="mockup-row-label">현재 매칭된 Gig</div>
-          <div class="mockup-row-val">대전 스타트업 · 마케팅 데이터 분석</div>
+          <div class="mockup-row-label">Active gig (demo)</div>
+          <div class="mockup-row-val">Regional startup · analytics project</div>
         </div>
         <div class="mockup-row">
-          <div class="mockup-row-label">LER 인증 스킬</div>
+          <div class="mockup-row-label">Verified skills</div>
           <div class="mockup-badge-row">
             <span class="mockup-badge hl">Data Analysis</span>
             <span class="mockup-badge hl">Figma</span>
@@ -178,14 +172,14 @@
           </div>
         </div>
         <div class="mockup-row">
-          <div class="mockup-row-label">LER 신뢰 점수</div>
+          <div class="mockup-row-label">LER trust score</div>
           <div class="mockup-score">
             <div class="score-bar-track"><div class="score-bar-fill"></div></div>
             <div class="score-val">92</div>
           </div>
         </div>
         <div class="mockup-row" style="margin-bottom:0;">
-          <div class="mockup-row-label">매칭 추천 포지션</div>
+          <div class="mockup-row-label">Matched role (demo)</div>
           <div class="mockup-row-val" style="font-size:.82rem;">서울 핀테크 스타트업 · 원격 계약직</div>
         </div>
       </div>
@@ -197,12 +191,12 @@
 <section class="sec" style="background:var(--bg);">
   <div class="wrap">
     <p class="sec-label rv">02 — Platform Features</p>
-    <h2 class="sec-h rv">누구를 위한 <span class="it">플랫폼</span>인가.</h2>
-    <p class="sec-sub rv">D-GIG는 구직자(청년)와 구인자(기업) 양측 모두에게 기존 플랫폼이 해결하지 못했던 문제를 해결합니다.</p>
+    <h2 class="sec-h rv">Platform <span class="it">architecture</span></h2>
+    <p class="sec-sub rv">Dual-sided value: supply (regional talent) and demand (enterprises + institutions) connected through verified records.</p>
 
     <div class="toggle-wrap rv" id="toggleWrap">
-      <button class="toggle-btn on" id="btnYouth" onclick="switchView('youth')">For Youth — 청년</button>
-      <button class="toggle-btn" id="btnBiz" onclick="switchView('biz')">For Business — 기업</button>
+      <button class="toggle-btn on" id="btnYouth" onclick="switchView('youth')">Supply side</button>
+      <button class="toggle-btn" id="btnBiz" onclick="switchView('biz')">Demand side</button>
     </div>
 
     <!-- YOUTH VIEW -->
@@ -210,20 +204,20 @@
       <div class="feat-card">
         <span class="feat-num">01</span>
         <div class="feat-idx">[ 01 ] — 탐색 및 매칭</div>
-        <div class="feat-title">로컬 Gig<br>탐색 & 매칭</div>
-        <p class="feat-desc">지역 내 숨어 있는 단기 실무 프로젝트를 조건별로 탐색하고 매칭합니다. 업종·기간·보상 조건을 필터링해 나에게 맞는 첫 Gig를 찾아보세요.</p>
+        <div class="feat-title">Local gig<br>marketplace</div>
+        <p class="feat-desc">Project intake from regional employers and institutions — scoped, short-cycle, outcome-defined.</p>
       </div>
       <div class="feat-card">
         <span class="feat-num">02</span>
         <div class="feat-idx">[ 02 ] — LER 인증</div>
-        <div class="feat-title">LER 인증<br>배지 획득</div>
-        <p class="feat-desc">업무 수행 후 블록체인/데이터 기반의 LER(학습·고용 기록) 인증 배지가 발급됩니다. 프로젝트 결과물, 평가, 스킬 레벨이 모두 기록으로 남습니다.</p>
+        <div class="feat-title">LER<br>verification</div>
+        <p class="feat-desc">Reviewer signals, deliverables, and skill tags become portable credentials — the core IP moat.</p>
       </div>
       <div class="feat-card">
         <span class="feat-num">03</span>
         <div class="feat-idx">[ 03 ] — 포트폴리오</div>
-        <div class="feat-title">글로벌 포트폴리오<br>자동 완성</div>
-        <p class="feat-desc">누적된 LER 데이터를 기반으로 글로벌·수도권 원격 근무용 포트폴리오가 자동으로 완성됩니다. 이력서 한 줄이 아닌, 검증된 데이터로 지원하세요.</p>
+        <div class="feat-title">Matching<br>layer</div>
+        <p class="feat-desc">Skills-based matching for remote and contract roles — API-ready for HR systems.</p>
       </div>
     </div>
 
@@ -232,20 +226,20 @@
       <div class="feat-card">
         <span class="feat-num">01</span>
         <div class="feat-idx">[ 01 ] — LER 기반 검색</div>
-        <div class="feat-title">실무 데이터<br>기반 인재 검색</div>
-        <p class="feat-desc">학력·자격증이 아닌 '실제 수행한 유사 프로젝트(LER)' 데이터를 기반으로 인재를 검색합니다. 채용 전 검증이 끝난 인재만 만납니다.</p>
+        <div class="feat-title">LER-based<br>talent search</div>
+        <p class="feat-desc">Search by verified project similarity — reducing screening cost and mis-hire risk.</p>
       </div>
       <div class="feat-card">
         <span class="feat-num">02</span>
         <div class="feat-idx">[ 02 ] — 유연한 조달</div>
-        <div class="feat-title">로컬 인재<br>유연 조달</div>
-        <p class="feat-desc">검증된 로컬 인재를 필요한 기간만큼 유연하게 조달합니다. 정규직 부담 없이 단기·프로젝트 단위 채용으로 비용을 최적화하세요.</p>
+        <div class="feat-title">Flexible<br>regional staffing</div>
+        <p class="feat-desc">Project-based talent deployment for enterprises and agencies — measurable utilization.</p>
       </div>
       <div class="feat-card">
         <span class="feat-num">03</span>
         <div class="feat-idx">[ 03 ] — 리스크 제로화</div>
-        <div class="feat-title">채용 리스크<br>제로화</div>
-        <p class="feat-desc">긱 워커의 이전 평가 및 업무 완수율 데이터를 통해 채용 리스크를 최소화합니다. LER 신뢰 점수 기반의 객관적 검증 시스템을 제공합니다.</p>
+        <div class="feat-title">Risk<br>reduction</div>
+        <p class="feat-desc">Trust scores aggregate completion, review, and skill verification — auditable for compliance.</p>
       </div>
     </div>
   </div>
@@ -255,32 +249,32 @@
 <section class="sec" style="background:var(--bg2);">
   <div class="wrap">
     <p class="sec-label rv">03 — How to Use</p>
-    <h2 class="sec-h rv">D-GIG <span class="it">이용 방법</span></h2>
-    <p class="sec-sub rv">4단계의 간단한 과정으로 첫 번째 LER을 기록하세요.</p>
+    <h2 class="sec-h rv">Go-to-market <span class="it">flywheel</span></h2>
+    <p class="sec-sub rv">Four steps from pilot project to portable credential.</p>
 
     <div class="steps rv">
       <div class="step">
         <div class="step-num">Step 01</div>
-        <div class="step-title">프로필 등록</div>
-        <p class="step-desc">기술 스택, 관심 분야, 가용 시간을 입력해 D-GIG 프로필을 생성합니다. 처음이어도 괜찮습니다.</p>
+        <div class="step-title">Onboard supply</div>
+        <p class="step-desc">Talent and enterprise profiles with skills, availability, and project constraints.</p>
         <div class="step-arr">→</div>
       </div>
       <div class="step">
         <div class="step-num">Step 02</div>
-        <div class="step-title">조건 맞춤형 긱 매칭</div>
-        <p class="step-desc">AI 매칭 알고리즘이 나의 스킬과 관심사에 맞는 로컬 Gig를 추천합니다. 업종·기간·보상 조건 필터링 가능.</p>
+        <div class="step-title">Match projects</div>
+        <p class="step-desc">Matching engine ranks fit by skills, geography, and outcome history.</p>
         <div class="step-arr">→</div>
       </div>
       <div class="step">
         <div class="step-num">Step 03</div>
-        <div class="step-title">스마트 계약 & 업무 수행</div>
-        <p class="step-desc">스마트 계약 기반의 투명한 계약 후 업무를 수행합니다. 진행 상황과 결과물이 모두 플랫폼에 기록됩니다.</p>
+        <div class="step-title">Execute & record</div>
+        <p class="step-desc">Work artifacts and milestones captured on-platform — source data for LER.</p>
         <div class="step-arr">→</div>
       </div>
       <div class="step">
         <div class="step-num">Step 04</div>
-        <div class="step-title">정산 및 LER 기록</div>
-        <p class="step-desc">프로젝트 완료 후 즉시 정산되며, 검증된 LER 인증 배지가 자동 발급됩니다. 내 커리어 자산이 하나씩 쌓입니다.</p>
+        <div class="step-title">Verify & match</div>
+        <p class="step-desc">Completion triggers LER issuance and unlocks downstream matching — network effects.</p>
       </div>
     </div>
   </div>
@@ -291,9 +285,9 @@
   <div class="wrap">
     <div class="cta-box rv">
       <div class="cta-ghost">LER</div>
-      <h2 class="cta-h">지금 바로 D-GIG MVP에서<br>당신의 첫 <span class="it">LER을 기록하세요.</span></h2>
-      <p class="cta-sub">포트폴리오가 없어도 됩니다. 첫 번째 로컬 Gig가 당신의 커리어 자산의 시작이 됩니다.</p>
-      <a href="experience.html" class="btn-wi">D-GIG 시작하기 →</a>
+      <h2 class="cta-h">MVP is live.<br><span class="it">Request a walkthrough.</span></h2>
+      <p class="cta-sub">Book a demo for investors and enterprise partners — including role-based MVP flows.</p>
+      <a href="experience.html" class="btn-wi">View MVP demo →</a>
     </div>
   </div>
 </section>
@@ -302,11 +296,11 @@
   <div class="foot-inner">
     <div class="foot-brand">GigCareer <span class="beta">BETA</span></div>
     <ul class="foot-nav">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="service.html">D-GIG</a></li>
-      <li><a href="insights.html">Insights</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index-en.html">Home</a></li>
+      <li><a href="about-en.html">About</a></li>
+      <li><a href="service-en.html">D-GIG</a></li>
+      <li><a href="insights-en.html">Insights</a></li>
+      <li><a href="contact-en.html">Contact</a></li>
     </ul>
     <span class="foot-copy">© 2025 GigCareer Inc.</span>
   </div>
