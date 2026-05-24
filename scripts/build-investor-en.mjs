@@ -99,6 +99,7 @@ const indexRepl = [
   ['D-GIG 파트너십 문의하기', 'Request investor deck'],
   ['노동시장 분석 리포트 →', 'Book a partnership call →'],
   ['Opportunity beyond Seoul.', 'Verified regional talent infrastructure.'],
+  ['(주)GigCareer &nbsp;|&nbsp; 파일럿 거점: 대전·충청 (원격 운영)<br>\n      이메일: rlgpdud5@gmail.com', 'GigCareer Inc. &nbsp;|&nbsp; Pilot market: Daejeon–Chungcheong (remote-first)<br>\n      contact@gigcareer.kr'],
   ['(주)GigCareer &nbsp;|&nbsp; 파일럿 거점: 대전·충청 (원격 운영)<br>\n      이메일: contact@gigcareer.kr', 'GigCareer Inc. &nbsp;|&nbsp; Pilot market: Daejeon–Chungcheong (remote-first)<br>\n      contact@gigcareer.kr'],
   ['(주)GigCareer &nbsp;|&nbsp; 대전광역시 유성구 [상세 주소]<br>\n      대표자: 김트리 &nbsp;|&nbsp; 사업자등록번호: 000-00-00000<br>\n      이메일: contact@gigcareer.kr', 'GigCareer Inc. &nbsp;|&nbsp; Pilot market: Daejeon–Chungcheong (remote-first)<br>\n      contact@gigcareer.kr'],
   ['© 2025 GigCareer Inc. All rights reserved.', '© 2026 GigCareer Inc. All rights reserved.'],
@@ -268,8 +269,12 @@ function buildEn(src, dest, extra) {
   html = html.replace(/은 AI가 대체합니다\.<br>\s*이제 시장이 요구하는 것은&nbsp;/g, ' are being automated.<br>\n      What employers need now:&nbsp;');
   html = html.replace(/LER portfolios<\/span>입니다\./g, 'LER portfolios</span>.');
   html = html.replace(
+    /\(주\)GigCareer &nbsp;\|&nbsp; 파일럿 거점: 대전·충청 \(원격 운영\)<br>\s*이메일: [^\n]+/g,
+    'GigCareer Inc. &nbsp;|&nbsp; Pilot market: Daejeon–Chungcheong (remote-first)<br>\n      contact@gigcareer.kr'
+  );
+  html = html.replace(
     /\(주\)GigCareer &nbsp;\|&nbsp; 대전광역시 유성구 \[상세 주소\]<br>\s*대표자: 김트리 &nbsp;\|&nbsp; 사업자등록번호: 000-00-00000<br>\s*이메일: rlgpdud5@gmail\.com/g,
-    'GigCareer Inc. &nbsp;|&nbsp; Pilot HQ: Daejeon, Korea<br>\n      Founder: Hye-Young Kim &nbsp;|&nbsp; rlgpdud5@gmail.com'
+    'GigCareer Inc. &nbsp;|&nbsp; Pilot market: Daejeon–Chungcheong (remote-first)<br>\n      contact@gigcareer.kr'
   );
   writeFileSync(path.join(enSourceDir, dest), html, 'utf8');
   console.log('wrote sources/en/' + dest);
