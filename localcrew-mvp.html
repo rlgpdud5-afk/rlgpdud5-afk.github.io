@@ -322,9 +322,14 @@ tr:hover td{background:var(--glass-3)}
 .tour-box h3{margin:0 0 10px;font-size:18px}
 .tour-box p{margin:0 0 20px;font-size:13px;color:var(--text-2);line-height:1.65}
 .tour-box .btn{position:relative;z-index:2;cursor:pointer}
-.tour-dots{display:flex;gap:6px;margin-bottom:18px}
-.tour-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
-.tour-dots span.on{background:var(--accent-warm)}
+.tour-dots{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
+.tour-dots button{width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text-3);font-size:10px;font-weight:600;cursor:pointer;padding:0}
+.tour-dots button.on{background:rgba(212,165,116,.3);border-color:var(--accent-warm);color:var(--accent-warm)}
+.tour-ler-box{margin:0 0 16px;padding:14px;border-radius:10px;background:rgba(212,165,116,.1);border:1px solid rgba(212,165,116,.25);font-size:12px;line-height:1.7;color:var(--text-2)}
+.tour-ler-box strong{color:var(--accent-warm);display:block;margin-bottom:8px;font-size:13px}
+.tour-ler-box ul{margin:8px 0 0;padding-left:18px}
+.tour-nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tour-step-num{font-size:11px;color:var(--text-3);margin-bottom:10px}
 .hl-demo{outline:2px solid var(--accent-warm);outline-offset:3px;border-radius:8px;animation:demoPulse 2s ease infinite}
 @keyframes demoPulse{0%,100%{outline-color:rgba(212,165,116,.5)}50%{outline-color:rgba(212,165,116,1)}}
 .flow-card{border:1px solid rgba(212,165,116,.35);background:rgba(212,165,116,.08)!important}
@@ -342,7 +347,7 @@ const Stars = ({v}) => <span style={{display:"inline-flex",alignItems:"center",g
 const PBar = ({v,c="var(--accent-warm)"}) => <div className="pbar"><div className="pfill" style={{width:`${v}%`,background:c}}/></div>;
 
 // ─── Demo UI ───
-function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds}) {
+function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds, onOpenTour}) {
   const steps = [
     {n:1,l:"제출",done:flow>=1},
     {n:2,l:"검수",done:flow>=2},
@@ -364,52 +369,68 @@ function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds}
         {flow===0&&role==="maker"&&<button className="btn btn-p btn-sm" onClick={onGoTasks}>① 과업 제출</button>}
         {flow===1&&role==="reviewer"&&<button className="btn btn-p btn-sm" onClick={onGoReview}>② 승인하기</button>}
         {flow>=2&&<button className="btn btn-p btn-sm" onClick={onGoCreds}>③ LER 보기</button>}
+        <button type="button" className="btn btn-s btn-sm" onClick={onOpenTour}>안내 다시보기</button>
       </div>
     </div>
   );
 }
 
 const TOUR_STEPS = [
-  {t:"LER 데모에 오신 것을 환영합니다",b:"Maker → Reviewer 순서로 클릭만 하면 LER(검증 배지)이 발급됩니다. 로그인·결제는 없습니다.",btn:"시작",action:"next"},
-  {t:"1단계 · 결과물 제출",b:"[내 과업]에서 '상품 카드 컴포넌트 제작'의 [결과물 제출]을 눌러 주세요.",btn:"과업 화면으로",action:"tasks"},
-  {t:"2단계 · Reviewer로 전환",b:"제출 후 상단 [역할 전환] → Reviewer를 선택하세요.",btn:"Reviewer로 전환",action:"switchReviewer",minFlow:1},
-  {t:"3단계 · 검수 승인",b:"[리뷰 대기]에서 [승인 및 LER 발급]을 누르면 검증 데이터가 생성됩니다.",btn:"리뷰 화면으로",action:"review",minFlow:1},
-  {t:"4단계 · LER 확인",b:"[크레덴셜]에서 검증 ID(VRF-…)를 확인하세요. 이력서가 아닌 증명 데이터입니다.",btn:"크레덴셜 보기",action:"credentials",minFlow:2},
-  {t:"체험 완료",b:"Client·Admin·인재 검색도 자유롭게 둘러보세요. 상단 바에서 언제든 LER 단계를 확인할 수 있습니다.",btn:"확인",action:"done"},
+  {short:"LER", t:"LER가 뭔가요?", b:"이 데모의 핵심입니다. 먼저 개념만 30초 읽어 보세요.", ler:true, btn:null, action:null},
+  {short:"시작", t:"데모 안내", b:"Maker가 일을 제출 → Reviewer가 승인 → LER(검증 배지)가 발급됩니다. 로그인·결제 없음.", btn:"체험 시작", action:"tasks"},
+  {short:"1", t:"1단계 · 결과물 제출", b:"[내 과업] → '상품 카드 컴포넌트 제작' → [결과물 제출] 버튼을 누르세요.", btn:"과업 화면으로", action:"tasks", needFlow:0},
+  {short:"2", t:"2단계 · Reviewer 전환", b:"제출이 끝나면 상단 [역할 전환]에서 Reviewer를 선택합니다.", btn:"Reviewer로 전환", action:"switchReviewer", needFlow:1},
+  {short:"3", t:"3단계 · 검수 승인", b:"[리뷰 대기]에서 [승인 및 LER 발급]을 누르면 검증 데이터(VRF ID)가 만들어집니다.", btn:"리뷰 화면으로", action:"review", needFlow:1},
+  {short:"4", t:"4단계 · LER 확인", b:"[크레덴셜] 메뉴에서 방금 발급된 배지와 검증 ID를 확인하세요.", btn:"크레덴셜 보기", action:"credentials", needFlow:2},
+  {short:"끝", t:"체험 완료", b:"Client·Admin·인재 검색도 둘러보세요. [← 이전] [다음 →]로 안내를 다시 볼 수 있습니다.", btn:"닫기", action:"done"},
 ];
 
-function tourStepFor(step, flow) {
-  let idx = Math.max(0, Math.min(step - 1, TOUR_STEPS.length - 1));
-  let cur = TOUR_STEPS[idx];
-  if(cur.minFlow && flow < cur.minFlow) {
-    if(flow < 1) { idx = 1; cur = TOUR_STEPS[1]; }
-    else if(flow < 2) { idx = 2; cur = TOUR_STEPS[2]; }
-  }
-  return { cur, idx };
+function LerExplainBox() {
+  return (
+    <div className="tour-ler-box">
+      <strong>LER = Learning & Employment Record (학습·고용 기록)</strong>
+      <ul>
+        <li><b>이력서</b>는 스스로 쓴 글 → 검증이 어렵습니다.</li>
+        <li><b>LER</b>는 실제 프로젝트 + Reviewer 승인 + 스킬이 담긴 <b>증명 데이터</b>입니다.</li>
+        <li>기업은 <b>VRF-xxxxx</b> 같은 ID로 “이 사람이 이 일을 했는지” 채용 전에 확인합니다.</li>
+        <li>이번 데모에서 3~6단계를 따라가면 LER 1건이 발급되는 과정을 그대로 봅니다.</li>
+      </ul>
+    </div>
+  );
 }
 
-function DemoTour({step, flow, onSkip, onAction}) {
-  if(!step) return null;
-  const { cur, idx } = tourStepFor(step, flow);
-  const handlePrimary = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onAction(cur.action);
-  };
-  const handleSkip = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onSkip();
-  };
+function DemoTour({tourIdx, flow, onPrev, onNext, onGoTo, onSkip, onAction}) {
+  if(tourIdx < 0) return null;
+  const idx = Math.max(0, Math.min(tourIdx, TOUR_STEPS.length - 1));
+  const cur = TOUR_STEPS[idx];
+  const flowOk = cur.needFlow == null || flow >= cur.needFlow;
+  const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
   return (
-    <div className="tour-ov" onClick={handleSkip}>
+    <div className="tour-ov" onClick={(e)=>{stop(e);onSkip();}}>
       <div className="tour-box" onClick={e=>e.stopPropagation()}>
-        <div className="tour-dots">{TOUR_STEPS.map((_,i)=><span key={i} className={i===idx?"on":""}/>)}</div>
+        <div className="tour-step-num">안내 {idx + 1} / {TOUR_STEPS.length} · {cur.short}</div>
+        <div className="tour-dots">
+          {TOUR_STEPS.map((s,i)=>(
+            <button key={i} type="button" className={i===idx?"on":""} title={s.t} onClick={(e)=>{stop(e);onGoTo(i);}}>{s.short}</button>
+          ))}
+        </div>
         <h3>{cur.t}</h3>
         <p>{cur.b}</p>
-        <div style={{display:"flex",gap:10}}>
-          <button type="button" className="btn btn-p" onClick={handlePrimary}>{cur.btn}</button>
-          <button type="button" className="btn btn-s" onClick={handleSkip}>건너뛰기</button>
+        {cur.ler && <LerExplainBox/>}
+        {!flowOk && cur.needFlow > 0 && (
+          <p style={{fontSize:12,color:"var(--warning)",margin:"0 0 12px"}}>
+            ⚠ 아직 {cur.needFlow === 1 ? "결과물 제출(1단계)" : "승인(3단계)"}이 필요합니다. 이전 단계를 먼저 진행하거나 [← 이전]으로 이동하세요.
+          </p>
+        )}
+        <div className="tour-nav">
+          <button type="button" className="btn btn-s" disabled={idx===0} onClick={(e)=>{stop(e);onPrev();}}>← 이전</button>
+          <button type="button" className="btn btn-s" disabled={idx>=TOUR_STEPS.length-1} onClick={(e)=>{stop(e);onNext();}}>다음 →</button>
+          {cur.action && (
+            <button type="button" className="btn btn-p" disabled={!flowOk && cur.needFlow > 0} onClick={(e)=>{stop(e);onAction(cur.action, idx);}}>
+              {cur.btn}
+            </button>
+          )}
+          <button type="button" className="btn btn-s" style={{marginLeft:"auto"}} onClick={(e)=>{stop(e);onSkip();}}>건너뛰기</button>
         </div>
       </div>
     </div>
@@ -545,9 +566,10 @@ function Creds({flow, highlightId}) {
     {flow>=2&&(
       <div className="pb" style={{paddingTop:0}}>
         <div className="glass flow-card ler-new" style={{padding:16,marginBottom:16}}>
-          <div style={{fontSize:12,color:"var(--accent-warm)",fontWeight:600,marginBottom:6}}>✓ LER 발급 완료 — 학습·고용 기록이 생성되었습니다</div>
+          <div style={{fontSize:12,color:"var(--accent-warm)",fontWeight:600,marginBottom:6}}>✓ LER 발급 완료 — Learning & Employment Record</div>
+          <div style={{fontSize:12,color:"var(--text-2)",marginBottom:8}}>실제 프로젝트 수행 + Reviewer 승인이 기록된 <b>검증 가능한 일 이력</b>입니다. (이력서 한 줄이 아님)</div>
           <div style={{fontFamily:"var(--mono)",fontSize:13}}>검증 ID: {DEMO_NEW_CRED.verifyId}</div>
-          <div style={{fontSize:11,color:"var(--text-3)",marginTop:6}}>이 데이터는 Enterprise 인재 검색·ATS 연동에 사용됩니다 (데모).</div>
+          <div style={{fontSize:11,color:"var(--text-3)",marginTop:6}}>Enterprise는 이 ID로 채용 전 실무 역량을 확인합니다 (데모).</div>
         </div>
       </div>
     )}
@@ -912,14 +934,14 @@ function App() {
   const [page,setPage]=useState("dashboard");
   const [selProj,setSelProj]=useState(null);
   const [flow,setFlow]=useState(0);
-  const [tour,setTour]=useState(0);
+  const [tourIdx,setTourIdx]=useState(-1);
   const user=role?MOCK_USERS[role]:null;
 
-  const startFlow = () => { setRole("maker"); setPage("tasks"); setFlow(0); setTour(1); };
-  const submitFlow = () => { setFlow(1); setTour(3); };
+  const startFlow = () => { setRole("maker"); setPage("tasks"); setFlow(0); setTourIdx(0); };
+  const submitFlow = () => { setFlow(1); setTourIdx(3); };
   const approveFlow = () => {
     setFlow(2);
-    setTour(5);
+    setTourIdx(5);
     setPage("credentials");
     setTimeout(() => {
       const el = document.getElementById(DEMO_NEW_CRED.verifyId);
@@ -932,13 +954,12 @@ function App() {
     else if(r==="maker") setPage(flow>=2?"credentials":"tasks");
     else setPage("dashboard");
   };
-  const tourAction = (act) => {
-    if(act==="next") setTour(2);
-    else if(act==="tasks") { setPage("tasks"); setTour(2); }
-    else if(act==="switchReviewer") { switchDemoRole("reviewer"); setTour(4); }
-    else if(act==="review") { setPage("review"); setTour(4); }
-    else if(act==="credentials") { setPage("credentials"); setTour(5); }
-    else if(act==="done") setTour(0);
+  const tourAction = (act, fromIdx) => {
+    if(act==="tasks") { setPage("tasks"); if(fromIdx < 2) setTourIdx(2); }
+    else if(act==="switchReviewer") { switchDemoRole("reviewer"); setTourIdx(3); }
+    else if(act==="review") { setPage("review"); setTourIdx(4); }
+    else if(act==="credentials") { setPage("credentials"); setTourIdx(5); }
+    else if(act==="done") setTourIdx(-1);
   };
 
   const navs={
@@ -966,17 +987,17 @@ function App() {
     }
   };
 
-  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setRole(r);setPage("dashboard");setTour(1);setFlow(0)}} onStartFlow={startFlow}/></>);
+  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setRole(r);setPage("dashboard");setTourIdx(0);setFlow(0)}} onStartFlow={startFlow}/></>);
 
   return (<><style>{css}</style>
     <div className="app">
-      <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTour(0)}} items={navs[role]||navs.maker}/>
+      <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTourIdx(-1)}} items={navs[role]||navs.maker}/>
       <div className="main">
-        <DemoBanner flow={flow} role={role} onSwitchRole={switchDemoRole} onGoTasks={()=>{setPage("tasks");setTour(2)}} onGoReview={()=>{switchDemoRole("reviewer")}} onGoCreds={()=>{setPage("credentials");setTour(0)}}/>
+        <DemoBanner flow={flow} role={role} onSwitchRole={switchDemoRole} onGoTasks={()=>{setPage("tasks");setTourIdx(2)}} onGoReview={()=>{switchDemoRole("reviewer");setTourIdx(4)}} onGoCreds={()=>{setPage("credentials");setTourIdx(5)}} onOpenTour={()=>setTourIdx(0)}/>
         {renderPage()}
       </div>
-      <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTour(0)}}/>
-      {tour>0&&<DemoTour step={tour} flow={flow} onSkip={()=>setTour(0)} onAction={tourAction}/>}
+      <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTourIdx(-1)}}/>
+      {tourIdx>=0&&<DemoTour tourIdx={tourIdx} flow={flow} onPrev={()=>setTourIdx(i=>Math.max(0,i-1))} onNext={()=>setTourIdx(i=>Math.min(TOUR_STEPS.length-1,i+1))} onGoTo={setTourIdx} onSkip={()=>setTourIdx(-1)} onAction={tourAction}/>}
     </div>
   </>);
 }
