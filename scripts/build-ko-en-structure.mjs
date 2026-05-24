@@ -117,7 +117,8 @@ for (const page of enPages) {
 
 for (const asset of ['experience.html', 'localcrew-mvp.html']) {
   copyFileSync(path.join(root, asset), path.join(koDir, asset));
-  copyFileSync(path.join(root, asset), path.join(enDir, asset));
+  const enAsset = path.join(enSourceDir, asset);
+  copyFileSync(existsSync(enAsset) ? enAsset : path.join(root, asset), path.join(enDir, asset));
 }
 
 writeFileSync(

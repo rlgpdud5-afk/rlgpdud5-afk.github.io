@@ -35,7 +35,7 @@
     }
 
     /* ── NAV ── */
-    nav {
+    nav.site-nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 500;
       height: 52px;
       display: flex; align-items: center;
@@ -651,7 +651,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 960px) {
-nav {
+nav.site-nav {
   padding: 0 12px;
 }
 .nav-links {
@@ -694,9 +694,9 @@ nav {
 <body>
 
 <!-- NAV -->
-<nav>
+<nav class="site-nav">
   <a href="index-en.html" class="logo">GigCareer <span class="beta-tag">BETA</span></a>
-  <nav class="lang-switch" aria-label="Language"><a href="index-en.html" class="is--on">KR</a><span>|</span><a href="../en/index.html">EN</a></nav>
+  <div class="lang-switch" aria-label="Language"><a href="index-en.html" class="is--on">KR</a><span>|</span><a href="../en/index.html">EN</a></div>
   <ul class="nav-links">
     <li><a href="about-en.html">About Us</a></li>
     <li><a href="service-en.html">D-GIG</a></li>
