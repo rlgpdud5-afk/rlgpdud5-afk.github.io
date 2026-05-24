@@ -239,6 +239,80 @@ const mvpRepl = [
   ['고급 React 개발', 'Advanced React'],
 ];
 
+const mvpUiRepl = [
+  ['name:"대시보드"', 'name:"Dashboard"'],
+  ['name:"내 과업"', 'name:"My tasks"'],
+  ['name:"크레덴셜"', 'name:"Credentials"'],
+  ['name:"포트폴리오"', 'name:"Portfolio"'],
+  ['name:"리뷰 대기"', 'name:"Review queue"'],
+  ['name:"프로젝트"', 'name:"Projects"'],
+  ['name:"리뷰 관리"', 'name:"Review queue"'],
+  ['name:"사용자 관리"', 'name:"User admin"'],
+  ['name:"인재 검색"', 'name:"Talent search"'],
+  ['{label:"운영",items:', '{label:"Operations",items:'],
+  ['{label:"관리",items:', '{label:"Admin",items:'],
+  ['company: "로컬테크"', 'company: "LocalTech"'],
+  ['세종시청', 'Sejong City Hall'],
+  ['Sejong시청', 'Sejong City Hall'],
+  ['넥스트랩', 'NextLab'],
+  ['에듀플러스', 'EduPlus'],
+  ['<h1>마이크로 크레덴셜</h1>', '<h1>Micro-credentials</h1>'],
+  ['<h1>내 과업</h1>', '<h1>My tasks</h1>'],
+  ['배정된 태스크 관리', 'Manage assigned tasks'],
+  ['배정된 Tasks 관리', 'Manage assigned tasks'],
+  ['<h1>리뷰 / 평가</h1>', '<h1>Review & rating</h1>'],
+  ['구조화된 항목으로 작업 결과 기록', 'Record outcomes with structured criteria'],
+  ['<h1>사용자 관리</h1>', '<h1>User admin</h1>'],
+  ['<th>프로젝트</th>', '<th>Project</th>'],
+  ['<th>프로젝트명</th>', '<th>Project</th>'],
+  ['<th>이름</th>', '<th>Name</th>'],
+  ['<th>등급</th>', '<th>Grade</th>'],
+  ['<th>지역</th>', '<th>Region</th>'],
+  ['<th>태스크</th>', '<th>Task</th>'],
+  ['<th>담당</th>', '<th>Assignee</th>'],
+  ['<th>난이도</th>', '<th>Level</th>'],
+  ['<th>상태</th>', '<th>Status</th>'],
+  ['<th>자동검증</th>', '<th>Auto-check</th>'],
+  ['<th>신뢰도</th>', '<th>Trust</th>'],
+  ['<th>마감률</th>', '<th>On-time</th>'],
+  ['<th>완료</th>', '<th>Done</th>'],
+  ['미통과', 'Not passed'],
+  ['QA 통과', 'QA passed'],
+  ['마감 준수', 'Deadline adherence'],
+  ['요구사항 충족도', 'Requirements met'],
+  ['수정 대응 속도', 'Revision turnaround'],
+  ['커뮤니케이션 성실도', 'Communication'],
+  ['규약 준수도', 'Guideline compliance'],
+  ['재작업 불발생', 'No rework needed'],
+  ['평가:', 'Review:'],
+  ['코멘트', 'Comments'],
+  ['작업 결과에 대한 의견', 'Feedback on deliverable quality'],
+  ['승인', 'Approve'],
+  ['나가기', 'Exit'],
+  ['대기', 'Pending'],
+  [' 대시보드</h1>', ' dashboard</h1>'],
+  ['difficulty: "중"', 'difficulty: "Medium"'],
+  ['difficulty: "상"', 'difficulty: "Hard"'],
+  ['difficulty==="중"', 'difficulty==="Medium"'],
+  ['difficulty==="상"', 'difficulty==="Hard"'],
+  ['교육 앱 QA 테스트', 'EdTech app QA'],
+  ['스타트업 IR 자료 디자인', 'Startup IR deck design'],
+  ['상품 카드 컴포넌트 제작', 'Product card component'],
+  ['반응형 레이아웃 적용', 'Responsive layout'],
+  ['고급 React 개발', 'Advanced React'],
+  ['검증된 수행 이력 배지', 'Verified work badges'],
+  ['대시보드', 'Dashboard'],
+  ['내 과업', 'My tasks'],
+  ['크레덴셜', 'Credentials'],
+  ['포트폴리오', 'Portfolio'],
+  ['리뷰 대기', 'Review queue'],
+  ['리뷰 관리', 'Review queue'],
+  ['사용자 관리', 'User admin'],
+  ['프로젝트', 'Projects'],
+  ['마이크로 크레덴셜', 'Micro-credentials'],
+  ['로컬테크', 'LocalTech'],
+];
+
 function apply(html, list) {
   const sorted = [...list, ...common].sort((a, b) => b[0].length - a[0].length);
   for (const [from, to] of sorted) html = html.split(from).join(to);
@@ -252,11 +326,13 @@ writeFileSync(
 );
 writeFileSync(
   path.join(outDir, 'localcrew-mvp.html'),
-  apply(readFileSync(path.join(root, 'localcrew-mvp.html'), 'utf8'), mvpRepl)
+  apply(readFileSync(path.join(root, 'localcrew-mvp.html'), 'utf8'), [...mvpRepl, ...mvpUiRepl, ...experienceRepl])
     .replace('d:"Youth contributor"', 'd:"Talent"')
     .replace('d:"Work reviewer"', 'd:"Project Assessor"')
     .replace('d:"Project client"', 'd:"Enterprise Client"')
-    .replace('d:"Platform operator"', 'd:"Platform Admin"'),
+    .replace('d:"Platform operator"', 'd:"Platform Admin"')
+    .replace('미Pass', 'Not passed')
+    .replace('Reviewer · Reviewer', 'Reviewer · Project Assessor'),
   'utf8'
 );
 

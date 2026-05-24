@@ -31,15 +31,15 @@ const { useState, useEffect, useCallback, useMemo } = React;
 const MOCK_USERS = {
   maker: { id: "u1", name: "Sarah Kim", role: "Maker", grade: "Verified", trustScore: 87, badges: 12, completedProjects: 8, deadlineRate: 96, avgRating: 4.7, skills: ["React", "Figma", "UX research", "HTML/CSS"], region: "Regional" },
   reviewer: { id: "u2", name: "Jun Lee", role: "Reviewer", grade: "Reviewer", trustScore: 94, badges: 28, completedProjects: 22, deadlineRate: 100, avgRating: 4.9, skills: ["Code review", "QA", "Frontend"], region: "Regional" },
-  client: { id: "u4", name: "LocalTech Inc.", role: "Client", company: "로컬테크", projects: 5, activeProjects: 2, totalSpent: "12,500,000 KRW" },
+  client: { id: "u4", name: "LocalTech Inc.", role: "Client", company: "LocalTech", projects: 5, activeProjects: 2, totalSpent: "12,500,000 KRW" },
   admin: { id: "u5", name: "Admin User", role: "Admin" },
 };
 
 const MOCK_PROJECTS = [
   { id: "p1", name: "Local food mall redesign", client: "LocalTech Inc.", status: "In progress", progress: 65, deadline: "2026-04-15", security: "Standard", budget: "3,500,000 KRW", tasks: 8, completedTasks: 5, modules: ["Landing page", "Product card UI", "Search filters"], description: "Modern frontend redesign for a local food marketplace" },
-  { id: "p2", name: "Tourism data cleanup", client: "Sejong시청", status: "In progress", progress: 40, deadline: "2026-04-30", security: "Standard", budget: "2,000,000 KRW", tasks: 6, completedTasks: 2, modules: ["Data collection", "Cleaning", "Visualization"], description: "Tourism data collection, cleanup, and visualization" },
-  { id: "p3", name: "Startup IR deck design", client: "넥스트랩", status: "In review", progress: 90, deadline: "2026-03-25", security: "High", budget: "1,800,000 KRW", tasks: 4, completedTasks: 4, modules: ["Slide design", "Infographic"], description: "Series A investor deck design" },
-  { id: "p4", name: "EdTech app QA", client: "에듀플러스", status: "Assigning", progress: 10, deadline: "2026-05-10", security: "Standard", budget: "1,200,000 KRW", tasks: 10, completedTasks: 1, modules: ["Functional QA", "UI QA", "Report"], description: "Full QA for an education app" },
+  { id: "p2", name: "Tourism data cleanup", client: "Sejong City Hall", status: "In progress", progress: 40, deadline: "2026-04-30", security: "Standard", budget: "2,000,000 KRW", tasks: 6, completedTasks: 2, modules: ["Data collection", "Cleaning", "Visualization"], description: "Tourism data collection, cleanup, and visualization" },
+  { id: "p3", name: "Startup IR deck design", client: "NextLab", status: "In review", progress: 90, deadline: "2026-03-25", security: "High", budget: "1,800,000 KRW", tasks: 4, completedTasks: 4, modules: ["Slide design", "Infographic"], description: "Series A investor deck design" },
+  { id: "p4", name: "EdTech app QA", client: "EduPlus", status: "Assigning", progress: 10, deadline: "2026-05-10", security: "Standard", budget: "1,200,000 KRW", tasks: 10, completedTasks: 1, modules: ["Functional QA", "UI QA", "Report"], description: "Full QA for an education app" },
   { id: "p5", name: "Marketing research report", client: "LocalTech Inc.", status: "Done", progress: 100, deadline: "2026-03-01", security: "Standard", budget: "800,000 KRW", tasks: 5, completedTasks: 5, modules: ["Survey design", "Data analysis", "Report"], description: "Regional consumer marketing research" },
 ];
 
@@ -427,13 +427,13 @@ function MakerDash({user}) {
 // ─── Credentials ───
 function Creds() {
   return (<div>
-    <div className="ph"><h1>마이크로 크레덴셜</h1><p>Verified work badges {MOCK_CREDENTIALS.length}</p></div>
+    <div className="ph"><h1>Micro-credentials</h1><p>Verified work badges {MOCK_CREDENTIALS.length}</p></div>
     <div className="pb"><div className="g2">
       {MOCK_CREDENTIALS.map((c,i) => (
         <div key={c.id} className="glass cred fade-up" style={{animationDelay:`${i*.06}s`}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div><div style={{fontSize:15,fontWeight:600}}>{c.project}</div><div style={{fontSize:12,color:"var(--text-2)",marginTop:2}}>{c.task}</div></div>
-            <span className={`badge ${c.qaPass?"b-gr":"b-rd"}`}>{c.qaPass?"QA Pass":"미Pass"}</span>
+            <span className={`badge ${c.qaPass?"b-gr":"b-rd"}`}>{c.qaPass?"QA passed":"Not passed"}</span>
           </div>
           <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:12}}>{c.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,margin:"12px 0"}}>
@@ -575,7 +575,7 @@ function AdminDash() {
   const active=MOCK_PROJECTS.filter(p=>p.status!=="Done");
   const risk=MOCK_PROJECTS.filter(p=>{const d=new Date(p.deadline);return d-new Date()<7*864e5&&p.status!=="Done"});
   return (<div>
-    <div className="ph"><h1>Ops dashboard</h1><p>Platform-wide overview</p></div>
+    <div className="ph"><h1>Operations dashboard</h1><p>Platform-wide overview</p></div>
     <div className="pb">
       <div className="stats">
         {[["All projects",MOCK_PROJECTS.length,`In progress ${active.length}`,"bl"],["At-risk deadlines",risk.length,"Within 7 days","or"],["Active contributors",MOCK_TALENTS.length,"Regional markets","gr"],["Credentials issued",47,"+12 this month","pu"]].map(([l,v,s,c],i)=>(
@@ -585,7 +585,7 @@ function AdminDash() {
       <div className="g2" style={{marginBottom:24}}>
         <div className="glass" style={{padding:20}}>
           <div className="ch"><span className="ct">Project status</span></div>
-          <table><thead><tr><th>프로젝트</th><th>Status</th><th>Progress</th><th>Due</th></tr></thead>
+          <table><thead><tr><th>Project</th><th>Status</th><th>Progress</th><th>Due</th></tr></thead>
           <tbody>{MOCK_PROJECTS.map(p=>(
             <tr key={p.id}><td style={{fontWeight:550,fontSize:13}}>{p.name}</td><td><StatusBadge s={p.status}/></td>
             <td><PBar v={p.progress} c={p.progress===100?"var(--success)":p.progress>70?"var(--accent-warm)":"var(--warning)"}/></td>
@@ -618,7 +618,7 @@ function AdminDash() {
           {t:"13:15",a:"Yuna Choi 'Responsive layout' submitted deliverable",c:"var(--warning)"},
           {t:"11:48",a:"'Startup IR deck design' review completed",c:"var(--success)"},
           {t:"10:22",a:"Min Park badge issued: Advanced React",c:"var(--purple)"},
-          {t:"09:05",a:"에듀플러스 'EdTech app QA' registered",c:"var(--accent-warm)"},
+          {t:"09:05",a:"EduPlus 'EdTech app QA' registered",c:"var(--accent-warm)"},
         ].map((l,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid var(--border)"}}>
             <span style={{fontFamily:"var(--mono)",fontSize:12,color:"var(--text-3)",minWidth:40}}>{l.t}</span>
@@ -680,7 +680,7 @@ function ProjectDetail({project:p,onBack}) {
           <tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td>{t.assignee}</td>
           <td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td>
           <td><StatusBadge s={t.status}/></td>
-          <td>{t.autoCheck?<span className="badge b-gr">Pass</span>:<span className="badge b-gy">대기</span>}</td>
+          <td>{t.autoCheck?<span className="badge b-gr">Pass</span>:<span className="badge b-gy">Pending</span>}</td>
           <td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td>
           <td>{t.reviewScore?<Stars v={t.reviewScore}/>:"-"}</td></tr>
         ))}</tbody></table>
@@ -692,12 +692,12 @@ function ProjectDetail({project:p,onBack}) {
 // ─── Review ───
 function Review() {
   const [sc,setSc]=useState({deadline:5,quality:4,speed:5,comm:4,guide:5,rework:5});
-  const items=[{k:"deadline",l:"Due 준수"},{k:"quality",l:"요구사항 충족도"},{k:"speed",l:"수정 대응 속도"},{k:"comm",l:"커뮤니케이션 성실도"},{k:"guide",l:"규약 준수도"},{k:"rework",l:"재작업 불발생"}];
+  const items=[{k:"deadline",l:"Deadline adherence"},{k:"quality",l:"Requirements met"},{k:"speed",l:"Revision turnaround"},{k:"comm",l:"Communication"},{k:"guide",l:"Guideline compliance"},{k:"rework",l:"No rework needed"}];
   return (<div>
-    <div className="ph"><h1>리뷰 / 평가</h1><p>구조화된 항목으로 작업 결과 기록</p></div>
+    <div className="ph"><h1>Review & rating</h1><p>Record outcomes with structured criteria</p></div>
     <div className="pb">
       <div className="glass" style={{padding:20,maxWidth:600}}>
-        <div className="ch"><span className="ct">평가: Hero section publishing</span><span className="badge b-bl">Sarah Kim</span></div>
+        <div className="ch"><span className="ct">Review: Hero section publishing</span><span className="badge b-bl">Sarah Kim</span></div>
         {items.map(it=>(
           <div className="rv-i" key={it.k}><span style={{fontSize:13}}>{it.l}</span>
             <div className="rv-dots">{[1,2,3,4,5].map(n=>(
@@ -705,8 +705,8 @@ function Review() {
             ))}</div>
           </div>
         ))}
-        <div style={{marginTop:16}}><div style={{fontSize:12,color:"var(--text-3)",marginBottom:6}}>코멘트</div><textarea className="input" rows={3} placeholder="작업 결과에 대한 의견" style={{resize:"vertical"}}/></div>
-        <div style={{display:"flex",gap:10,marginTop:16}}><button className="btn btn-p">승인</button><button className="btn btn-s" style={{borderColor:"var(--danger)",color:"var(--danger)"}}>Rejected</button></div>
+        <div style={{marginTop:16}}><div style={{fontSize:12,color:"var(--text-3)",marginBottom:6}}>Comments</div><textarea className="input" rows={3} placeholder="Feedback on deliverable quality" style={{resize:"vertical"}}/></div>
+        <div style={{display:"flex",gap:10,marginTop:16}}><button className="btn btn-p">Approve</button><button className="btn btn-s" style={{borderColor:"var(--danger)",color:"var(--danger)"}}>Rejected</button></div>
       </div>
     </div>
   </div>);
@@ -724,7 +724,7 @@ function MobileNav({page,onNav,items,onOut}) {
             {it.icon}<span>{it.name}</span>
           </div>
         )})}
-        <div className="mob-nav-item" onClick={onOut}>{I.out}<span>나가기</span></div>
+        <div className="mob-nav-item" onClick={onOut}>{I.out}<span>Exit</span></div>
       </div>
     </div>
   );
@@ -738,10 +738,10 @@ function App() {
   const user=role?MOCK_USERS[role]:null;
 
   const navs={
-    maker:[{items:[{id:"dashboard",name:"대시보드",icon:I.home},{id:"tasks",name:"내 과업",icon:I.check,badge:2},{id:"credentials",name:"크레덴셜",icon:I.badge},{id:"portfolio",name:"포트폴리오",icon:I.file}]}],
-    reviewer:[{items:[{id:"dashboard",name:"대시보드",icon:I.home},{id:"review",name:"리뷰 대기",icon:I.check,badge:3},{id:"credentials",name:"크레덴셜",icon:I.badge}]}],
-    client:[{items:[{id:"dashboard",name:"대시보드",icon:I.home},{id:"projects",name:"프로젝트",icon:I.folder},{id:"talent",name:"Talent search",icon:I.search}]}],
-    admin:[{label:"운영",items:[{id:"dashboard",name:"Ops dashboard",icon:I.chart},{id:"projects",name:"Project admin",icon:I.folder},{id:"review",name:"리뷰 관리",icon:I.badge}]},{label:"관리",items:[{id:"users",name:"사용자 관리",icon:I.users},{id:"talent",name:"Talent search",icon:I.search},{id:"credentials",name:"크레덴셜",icon:I.badge}]}],
+    maker:[{items:[{id:"dashboard",name:"Dashboard",icon:I.home},{id:"tasks",name:"My tasks",icon:I.check,badge:2},{id:"credentials",name:"Credentials",icon:I.badge},{id:"portfolio",name:"Portfolio",icon:I.file}]}],
+    reviewer:[{items:[{id:"dashboard",name:"Dashboard",icon:I.home},{id:"review",name:"Review queue",icon:I.check,badge:3},{id:"credentials",name:"Credentials",icon:I.badge}]}],
+    client:[{items:[{id:"dashboard",name:"Dashboard",icon:I.home},{id:"projects",name:"Projects",icon:I.folder},{id:"talent",name:"Talent search",icon:I.search}]}],
+    admin:[{label:"Operations",items:[{id:"dashboard",name:"Ops dashboard",icon:I.chart},{id:"projects",name:"Project admin",icon:I.folder},{id:"review",name:"Review queue",icon:I.badge}]},{label:"Admin",items:[{id:"users",name:"User admin",icon:I.users},{id:"talent",name:"Talent search",icon:I.search},{id:"credentials",name:"Credentials",icon:I.badge}]}],
   };
 
   const nav=id=>{setPage(id);setSelProj(null)};
@@ -752,12 +752,12 @@ function App() {
     switch(page){
       case "dashboard": return role==="admin"?<AdminDash/>:role==="client"?<ClientDash user={user}/>:<MakerDash user={user}/>;
       case "projects": return <Projects onSelect={setSelProj}/>;
-      case "tasks": return (<div><div className="ph"><h1>내 과업</h1><p>배정된 Tasks 관리</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>프로젝트</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={t.status}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
+      case "tasks": return (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={t.status}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
       case "credentials": return <Creds/>;
       case "portfolio": return <Portfolio user={user}/>;
       case "talent": return <TalentSearch/>;
       case "review": return <Review/>;
-      case "users": return (<div><div className="ph"><h1>사용자 관리</h1></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>이름</th><th>등급</th><th>Trust</th><th>Done</th><th>On-time</th><th>지역</th></tr></thead><tbody>{MOCK_TALENTS.map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td><GradeBadge g={t.grade}/></td><td style={{fontFamily:"var(--mono)"}}>{t.trustScore}</td><td>{t.projects}</td><td>{t.deadlineRate}%</td><td>{t.region}</td></tr>)}</tbody></table></div></div></div>);
+      case "users": return (<div><div className="ph"><h1>User admin</h1></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Name</th><th>Grade</th><th>Trust</th><th>Done</th><th>On-time</th><th>Region</th></tr></thead><tbody>{MOCK_TALENTS.map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td><GradeBadge g={t.grade}/></td><td style={{fontFamily:"var(--mono)"}}>{t.trustScore}</td><td>{t.projects}</td><td>{t.deadlineRate}%</td><td>{t.region}</td></tr>)}</tbody></table></div></div></div>);
       default: return <MakerDash user={user}/>;
     }
   };
