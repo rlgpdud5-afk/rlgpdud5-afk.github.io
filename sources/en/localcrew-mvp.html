@@ -317,8 +317,14 @@ tr:hover td{background:var(--glass-3)}
 .demo-role-sw{display:flex;gap:6px;align-items:center}
 .demo-role-sw button{padding:5px 10px;font-size:11px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text-2);cursor:pointer}
 .demo-role-sw button.on{border-color:var(--accent-warm);color:var(--accent-warm)}
-.tour-ov{position:fixed;inset:0;z-index:200;background:rgba(4,8,18,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
-.tour-box{max-width:420px;width:100%;padding:28px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+.tour-scrim{position:fixed;inset:0;z-index:180;background:rgba(4,8,18,.42);pointer-events:auto}
+.tour-ui{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none}
+.tour-shell{display:flex;align-items:center;gap:14px;max-width:min(96vw,720px);width:100%;pointer-events:auto}
+.tour-arrow{flex-shrink:0;width:52px;height:52px;border-radius:50%;border:1px solid rgba(212,165,116,.45);background:rgba(12,18,32,.92);color:var(--accent-warm);font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.tour-arrow:disabled{opacity:.25;cursor:not-allowed}
+.tour-arrow:not(:disabled):hover{background:rgba(212,165,116,.2)}
+.tour-box{flex:1;max-width:440px;padding:28px;border-radius:var(--radius);background:rgba(18,24,38,.97);border:1px solid rgba(212,165,116,.35);box-shadow:0 24px 80px rgba(0,0,0,.55)}
+.tour-bg-label{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:190;padding:8px 16px;border-radius:999px;background:rgba(12,18,32,.85);border:1px solid var(--border);font-size:11px;color:var(--accent-warm);letter-spacing:.06em;text-transform:uppercase;pointer-events:none}
 .tour-box h3{margin:0 0 10px;font-size:18px}
 .tour-box p{margin:0 0 20px;font-size:13px;color:var(--text-2);line-height:1.65}
 .tour-box .btn{position:relative;z-index:2;cursor:pointer}
@@ -376,14 +382,28 @@ function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds,
 }
 
 const TOUR_STEPS = [
-  {short:"LER", t:"What is LER?", b:"Core concept — read this first (30 sec).", ler:true, btn:null, action:null},
-  {short:"Start", t:"Demo guide", b:"Maker submits work → Reviewer approves → LER badge issued. No login or payment.", btn:"Start demo", action:"tasks"},
-  {short:"1", t:"Step 1 · Submit deliverable", b:"My tasks → Product card component → Submit work.", btn:"Go to tasks", action:"tasks", needFlow:0},
-  {short:"2", t:"Step 2 · Switch to Reviewer", b:"After submit, use Switch role → Reviewer at the top.", btn:"Switch to Reviewer", action:"switchReviewer", needFlow:1},
-  {short:"3", t:"Step 3 · Approve review", b:"On Review queue, click Approve & issue LER to create verified data (VRF ID).", btn:"Go to review", action:"review", needFlow:1},
-  {short:"4", t:"Step 4 · View LER", b:"Open Credentials to see the new badge and Verify ID.", btn:"View credentials", action:"credentials", needFlow:2},
-  {short:"End", t:"Demo complete", b:"Explore Client, Admin, and Talent search. Use ← Prev / Next → to revisit steps.", btn:"Close", action:"done"},
+  {short:"LER", t:"What is LER?", b:"Core concept — read this first (30 sec).", ler:true, btn:null, action:null, scene:{role:"maker",page:"dashboard",label:"Maker · Dashboard"}, previewFlow:0},
+  {short:"Start", t:"Demo guide", b:"Maker submits work → Reviewer approves → LER badge issued. No login or payment.", btn:"Start demo", action:"tasks", scene:{role:"maker",page:"tasks",label:"Maker · My tasks"}, previewFlow:0},
+  {short:"1", t:"Step 1 · Submit deliverable", b:"Background: My tasks. 'Product card component' → [Submit work]을 눌러 보세요.", btn:"Go to tasks", action:"tasks", needFlow:0, scene:{role:"maker",page:"tasks",label:"Maker · My tasks"}, previewFlow:0},
+  {short:"2", t:"Step 2 · Switch to Reviewer", b:"Background: Reviewer queue. Submit 후 이 화면에서 Approve합니다.", btn:"Switch to Reviewer", action:"switchReviewer", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review queue"}, previewFlow:1},
+  {short:"3", t:"Step 3 · Approve review", b:"[Approve & issue LER]을 누르면 검증 ID(VRF)가 생성됩니다.", btn:"Go to review", action:"review", needFlow:1, scene:{role:"reviewer",page:"review",label:"Reviewer · Review"}, previewFlow:1},
+  {short:"4", t:"Step 4 · View LER", b:"Background: Credentials. 발급된 배지와 검증 ID를 Verify하세요.", btn:"View credentials", action:"credentials", needFlow:2, scene:{role:"maker",page:"credentials",label:"Maker · Credentials"}, previewFlow:2},
+  {short:"End", t:"Demo complete", b:"Use ‹ › arrows and step buttons to jump anytime.", btn:"Close", action:"done", scene:{role:"maker",page:"credentials",label:"Done"}, previewFlow:2},
 ];
+
+function tourDisplayFlow(tourIdx, flow) {
+  if(tourIdx < 0) return flow;
+  const s = TOUR_STEPS[Math.min(tourIdx, TOUR_STEPS.length - 1)];
+  return Math.max(flow, s.previewFlow || 0);
+}
+
+function applyTourScene(idx, setRole, setPage, setSelProj) {
+  const s = TOUR_STEPS[Math.max(0, Math.min(idx, TOUR_STEPS.length - 1))].scene;
+  if(!s) return;
+  setRole(s.role);
+  setPage(s.page);
+  setSelProj(null);
+}
 
 function LerExplainBox() {
   return (
@@ -406,34 +426,40 @@ function DemoTour({tourIdx, flow, onPrev, onNext, onGoTo, onSkip, onAction}) {
   const flowOk = cur.needFlow == null || flow >= cur.needFlow;
   const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
   return (
-    <div className="tour-ov" onClick={(e)=>{stop(e);onSkip();}}>
-      <div className="tour-box" onClick={e=>e.stopPropagation()}>
-        <div className="tour-step-num">Guide {idx + 1} / {TOUR_STEPS.length} · {cur.short}</div>
-        <div className="tour-dots">
-          {TOUR_STEPS.map((s,i)=>(
-            <button key={i} type="button" className={i===idx?"on":""} title={s.t} onClick={(e)=>{stop(e);onGoTo(i);}}>{s.short}</button>
-          ))}
-        </div>
-        <h3>{cur.t}</h3>
-        <p>{cur.b}</p>
-        {cur.ler && <LerExplainBox/>}
-        {!flowOk && cur.needFlow > 0 && (
-          <p style={{fontSize:12,color:"var(--warning)",margin:"0 0 12px"}}>
-            ⚠ Please complete {cur.needFlow === 1 ? "Step 1 (submit work)" : "Step 3 (approve)"} first, or use ← Prev to go back.
-          </p>
-        )}
-        <div className="tour-nav">
-          <button type="button" className="btn btn-s" disabled={idx===0} onClick={(e)=>{stop(e);onPrev();}}>← Prev</button>
-          <button type="button" className="btn btn-s" disabled={idx>=TOUR_STEPS.length-1} onClick={(e)=>{stop(e);onNext();}}>Next →</button>
-          {cur.action && (
-            <button type="button" className="btn btn-p" disabled={!flowOk && cur.needFlow > 0} onClick={(e)=>{stop(e);onAction(cur.action, idx);}}>
-              {cur.btn}
-            </button>
-          )}
-          <button type="button" className="btn btn-s" style={{marginLeft:"auto"}} onClick={(e)=>{stop(e);onSkip();}}>Skip</button>
+    <>
+      <div className="tour-scrim" onClick={(e)=>{stop(e);onSkip();}} aria-hidden="true"/>
+      <div className="tour-bg-label">Preview · {cur.scene?.label}</div>
+      <div className="tour-ui">
+        <div className="tour-shell" onClick={e=>e.stopPropagation()}>
+          <button type="button" className="tour-arrow" disabled={idx===0} title="Previous step" onClick={(e)=>{stop(e);onPrev();}}>‹</button>
+          <div className="tour-box">
+            <div className="tour-step-num">Guide {idx + 1} / {TOUR_STEPS.length}</div>
+            <div className="tour-dots">
+              {TOUR_STEPS.map((s,i)=>(
+                <button key={i} type="button" className={i===idx?"on":""} title={s.t} onClick={(e)=>{stop(e);onGoTo(i);}}>{s.short}</button>
+              ))}
+            </div>
+            <h3>{cur.t}</h3>
+            <p>{cur.b}</p>
+            {cur.ler && <LerExplainBox/>}
+            {!flowOk && cur.needFlow > 0 && (
+              <p style={{fontSize:12,color:"var(--warning)",margin:"0 0 12px"}}>
+                ⚠ To complete for real: {cur.needFlow === 1 ? "Step 1 (submit work)" : "Step 3 (approve)"} — use ‹ › to preview other screens.
+              </p>
+            )}
+            <div className="tour-nav">
+              {cur.action && (
+                <button type="button" className="btn btn-p" disabled={!flowOk && cur.needFlow > 0} onClick={(e)=>{stop(e);onAction(cur.action, idx);}}>
+                  {cur.btn}
+                </button>
+              )}
+              <button type="button" className="btn btn-s" style={{marginLeft:"auto"}} onClick={(e)=>{stop(e);onSkip();}}>Skip</button>
+            </div>
+          </div>
+          <button type="button" className="tour-arrow" disabled={idx>=TOUR_STEPS.length-1} title="Next step" onClick={(e)=>{stop(e);onNext();}}>›</button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -937,12 +963,17 @@ function App() {
   const [tourIdx,setTourIdx]=useState(-1);
   const user=role?MOCK_USERS[role]:null;
 
-  const startFlow = () => { setRole("maker"); setPage("tasks"); setFlow(0); setTourIdx(0); };
-  const submitFlow = () => { setFlow(1); setTourIdx(3); };
+  const goTour = (idx) => {
+    const i = Math.max(0, Math.min(idx, TOUR_STEPS.length - 1));
+    setTourIdx(i);
+    applyTourScene(i, setRole, setPage, setSelProj);
+  };
+
+  const startFlow = () => { setFlow(0); goTour(0); };
+  const submitFlow = () => { setFlow(1); goTour(3); };
   const approveFlow = () => {
     setFlow(2);
-    setTourIdx(5);
-    setPage("credentials");
+    goTour(5);
     setTimeout(() => {
       const el = document.getElementById(DEMO_NEW_CRED.verifyId);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -954,11 +985,11 @@ function App() {
     else if(r==="maker") setPage(flow>=2?"credentials":"tasks");
     else setPage("dashboard");
   };
-  const tourAction = (act, fromIdx) => {
-    if(act==="tasks") { setPage("tasks"); if(fromIdx < 2) setTourIdx(2); }
-    else if(act==="switchReviewer") { switchDemoRole("reviewer"); setTourIdx(3); }
-    else if(act==="review") { setPage("review"); setTourIdx(4); }
-    else if(act==="credentials") { setPage("credentials"); setTourIdx(5); }
+  const tourAction = (act) => {
+    if(act==="tasks") goTour(2);
+    else if(act==="switchReviewer") { setFlow(f=>Math.max(f,1)); goTour(3); }
+    else if(act==="review") goTour(4);
+    else if(act==="credentials") goTour(5);
     else if(act==="done") setTourIdx(-1);
   };
 
@@ -971,33 +1002,35 @@ function App() {
 
   const nav=id=>{setPage(id);setSelProj(null)};
 
+  const displayFlow = tourDisplayFlow(tourIdx, flow);
+
   const renderPage=()=>{
     if(!user)return null;
     if(selProj)return <ProjectDetail project={selProj} onBack={()=>setSelProj(null)}/>;
     switch(page){
       case "dashboard": return role==="admin"?<AdminDash/>:role==="client"?<ClientDash user={user}/>:<MakerDash user={user}/>;
       case "projects": return <Projects onSelect={setSelProj}/>;
-      case "tasks": return role==="maker" ? <MakerTasks user={user} flow={flow} onSubmit={submitFlow}/> : (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={taskStatusForDemo(t,flow)}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
-      case "credentials": return <Creds flow={flow} highlightId={DEMO_NEW_CRED.verifyId}/>;
+      case "tasks": return role==="maker" ? <MakerTasks user={user} flow={displayFlow} onSubmit={submitFlow}/> : (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={taskStatusForDemo(t,displayFlow)}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
+      case "credentials": return <Creds flow={displayFlow} highlightId={displayFlow>=2?DEMO_NEW_CRED.verifyId:null}/>;
       case "portfolio": return <Portfolio user={user}/>;
       case "talent": return <TalentSearch/>;
-      case "review": return <Review flow={flow} onApprove={approveFlow}/>;
+      case "review": return <Review flow={displayFlow} onApprove={approveFlow}/>;
       case "users": return (<div><div className="ph"><h1>User admin</h1></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Name</th><th>Grade</th><th>Trust</th><th>Done</th><th>On-time</th><th>Region</th></tr></thead><tbody>{MOCK_TALENTS.map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td><GradeBadge g={t.grade}/></td><td style={{fontFamily:"var(--mono)"}}>{t.trustScore}</td><td>{t.projects}</td><td>{t.deadlineRate}%</td><td>{t.region}</td></tr>)}</tbody></table></div></div></div>);
       default: return <MakerDash user={user}/>;
     }
   };
 
-  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setRole(r);setPage("dashboard");setTourIdx(0);setFlow(0)}} onStartFlow={startFlow}/></>);
+  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setFlow(0);setRole(r);goTour(0)}} onStartFlow={startFlow}/></>);
 
   return (<><style>{css}</style>
     <div className="app">
       <Side user={user} page={page} onNav={nav} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTourIdx(-1)}} items={navs[role]||navs.maker}/>
       <div className="main">
-        <DemoBanner flow={flow} role={role} onSwitchRole={switchDemoRole} onGoTasks={()=>{setPage("tasks");setTourIdx(2)}} onGoReview={()=>{switchDemoRole("reviewer");setTourIdx(4)}} onGoCreds={()=>{setPage("credentials");setTourIdx(5)}} onOpenTour={()=>setTourIdx(0)}/>
+        <DemoBanner flow={flow} role={role} onSwitchRole={switchDemoRole} onGoTasks={()=>goTour(2)} onGoReview={()=>{setFlow(f=>Math.max(f,1));goTour(4)}} onGoCreds={()=>goTour(5)} onOpenTour={()=>goTour(0)}/>
         {renderPage()}
       </div>
       <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTourIdx(-1)}}/>
-      {tourIdx>=0&&<DemoTour tourIdx={tourIdx} flow={flow} onPrev={()=>setTourIdx(i=>Math.max(0,i-1))} onNext={()=>setTourIdx(i=>Math.min(TOUR_STEPS.length-1,i+1))} onGoTo={setTourIdx} onSkip={()=>setTourIdx(-1)} onAction={tourAction}/>}
+      {tourIdx>=0&&<DemoTour tourIdx={tourIdx} flow={flow} onPrev={()=>goTour(tourIdx-1)} onNext={()=>goTour(tourIdx+1)} onGoTo={goTour} onSkip={()=>setTourIdx(-1)} onAction={tourAction}/>}
     </div>
   </>);
 }

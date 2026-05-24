@@ -405,6 +405,21 @@ const mvpUiRepl = [
   ['Enterprise는 이 ID로 채용 전 실무 역량을 확인합니다 (데모).', 'Enterprises verify skills before hiring with this ID (demo).'],
   ['short:"시작"', 'short:"Start"'],
   ['short:"끝"', 'short:"End"'],
+  ['미리보기 · ', 'Preview · '],
+  ['Maker · 대시보드', 'Maker · Dashboard'],
+  ['Maker · 내 과업', 'Maker · My tasks'],
+  ['Reviewer · 리뷰 대기', 'Reviewer · Review queue'],
+  ['Reviewer · 검수', 'Reviewer · Review'],
+  ['Maker · 크레덴셜', 'Maker · Credentials'],
+  ['완료', 'Done'],
+  ['배경 화면: [내 과업].', 'Background: My tasks.'],
+  ['배경 화면: Reviewer [리뷰 대기].', 'Background: Reviewer queue.'],
+  ['배경 화면: [크레덴셜].', 'Background: Credentials.'],
+  ['좌우 화살표(‹ ›)와 상단 단계 버튼으로 언제든 이동할 수 있습니다.', 'Use ‹ › arrows and step buttons to jump anytime.'],
+  ['⚠ 실제 진행은 ', '⚠ To complete for real: '],
+  [' 후 가능합니다. ‹ › 로 다른 단계 화면은 미리 볼 수 있습니다.', ' — use ‹ › to preview other screens.'],
+  ['이전 단계', 'Previous step'],
+  ['다음 단계', 'Next step'],
 ];
 
 function apply(html, list) {
