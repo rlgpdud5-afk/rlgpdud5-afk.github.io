@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Role matching demo — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root{--bg:#0c1220;--card:rgba(17,24,39,.85);--border:rgba(255,255,255,.1);--text:#e8eaef;--muted:rgba(232,234,239,.5);--warm:#d4a574;--green:#34d399;--purple:#a78bfa}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    a{color:var(--warm);text-decoration:none}
+    .top{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(12,18,32,.95);position:sticky;top:0;z-index:50;flex-wrap:wrap}
+    .logo{font-weight:700;font-size:15px}
+    .beta{font-size:10px;background:var(--warm);color:#0c1220;padding:2px 6px;border-radius:4px;margin-left:6px}
+    .pill{padding:6px 12px;border-radius:999px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:transparent;color:var(--muted)}
+    .pill.on{border-color:var(--warm);color:var(--warm);background:rgba(212,165,116,.12)}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.grid2{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+    .card h2{font-size:15px;margin-bottom:12px}
+    .tag{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;background:rgba(255,255,255,.06);border:1px solid var(--border);margin:3px;cursor:pointer}
+    .tag.on{background:rgba(212,165,116,.2);border-color:var(--warm);color:var(--warm)}
+    .btn{padding:10px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+    .btn-p{background:linear-gradient(135deg,var(--warm),#e8b88a);color:#0c1220}
+    .btn-s{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)}
+    .btn-sm{padding:6px 12px;font-size:12px}
+    .input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.25);color:var(--text);font-size:13px;margin-bottom:10px}
+    .score{font-size:22px;font-weight:700;color:var(--green);font-family:monospace}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .gig-item{padding:14px 0;border-bottom:1px solid var(--border)}
+    .gig-item:last-child{border-bottom:none}
+    .muted{font-size:12px;color:var(--muted);line-height:1.6}
+    .stars{color:#f59e0b;font-size:13px}
+    .badge{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:600}
+    .b-applied{background:rgba(59,130,246,.2);color:#93c5fd}
+    .b-done{background:rgba(52,211,153,.2);color:var(--green)}
+    .notice{font-size:12px;color:var(--purple);padding:12px;border-radius:8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);margin-bottom:16px;line-height:1.65}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useMemo } = React;
+
+const STORAGE_KEY = 'gigcareer_match_v1';
+const ROLE_TAGS = ['바리스타','프론트엔드','UX 리서치','번역·통역','이벤트 스태프','데이터 정리','영상 편집','CS·응대','마케팅 보조','React'];
+const REGIONS = ['제주','부산','대전','세종','청주','서울','원격'];
+const DURATIONS = ['1주','2주','1개월','협의'];
+
+const SEED = {
+  workers: [
+    { id:'w1', name:'Sarah Kim', tags:['바리스타','English OK','CS·응대'], regions:['제주','원격'], duration:'2주', rating:4.7, completed:6,
+      reviews:[{from:'employer',rating:5,text:'매장 오픈 준비 완벽'}] },
+    { id:'w2', name:'Min Park', tags:['프론트엔드','React','데이터 정리'], regions:['대전','세종'], duration:'1개월', rating:4.5, completed:4, reviews:[] },
+    { id:'w3', name:'Ha-neul Lee', tags:['번역·통역','마케팅 보조'], regions:['부산','원격'], duration:'1주', rating:4.8, completed:9, reviews:[] },
+  ],
+  gigs: [
+    { id:'g1', employer:'Jeju Cafe Momo', title:'Barista 2-week gig (AM)', tags:['바리스타','CS·응대'], region:'제주', duration:'2주', pay:'₩12k/hr', status:'open', employerRating:4.6 },
+    { id:'g2', employer:'LocalTech', title:'Mall React UI · 3 weeks', tags:['프론트엔드','React'], region:'대전', duration:'1개월', pay:'₩3M', status:'open', employerRating:4.4 },
+    { id:'g3', employer:'Busan Festival', title:'Event staff · 1 week', tags:['이벤트 스태프','CS·응대'], region:'부산', duration:'1주', pay:'₩120k/day', status:'open', employerRating:4.2 },
+  ],
+  applications: [],
+};
+
+function loadDb() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(SEED));
+}
+function saveDb(db) { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+
+function matchScore(worker, gig) {
+  let s = 0;
+  const tags = worker.tags.filter(t => gig.tags.some(gt => gt.includes(t) || t.includes(gt)));
+  s += tags.length * 22;
+  if (worker.regions.includes(gig.region) || gig.region === '원격' || worker.regions.includes('원격')) s += 28;
+  if (worker.duration === gig.duration || gig.duration === '협의' || worker.duration === '협의') s += 12;
+  s += (worker.rating || 0) * 5;
+  s += Math.min((worker.completed || 0) * 2, 14);
+  return Math.round(Math.min(s, 100));
+}
+
+function uid(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+function TagPicker({ pool, selected, onToggle, label }) {
+  return (
+    <div style={{marginBottom:12}}>
+      <div className="muted" style={{marginBottom:8}}>{label}</div>
+      <div>{pool.map(t => (
+        <span key={t} className={'tag' + (selected.includes(t) ? ' on' : '')} onClick={() => onToggle(t)}>{t}</span>
+      ))}</div>
+    </div>
+  );
+}
+
+function WorkerApp({ db, setDb, activeWorker, setActiveWorker }) {
+  const [tab, setTab] = useState('gigs');
+  const w = db.workers.find(x => x.id === activeWorker) || db.workers[0];
+
+  const rankedGigs = useMemo(() =>
+    db.gigs.filter(g => g.status === 'open').map(g => ({ ...g, score: matchScore(w, g) })).sort((a, b) => b.score - a.score),
+  [db.gigs, w]);
+
+  const myApps = db.applications.filter(a => a.workerId === w.id);
+
+  const updateWorker = (patch) => {
+    const workers = db.workers.map(x => x.id === w.id ? { ...x, ...patch } : x);
+    const next = { ...db, workers };
+    setDb(next); saveDb(next);
+  };
+
+  const apply = (gig) => {
+    if (myApps.some(a => a.gigId === gig.id && a.status !== 'rejected')) return;
+    const app = { id: uid('a'), gigId: gig.id, workerId: w.id, status: 'applied', matchScore: matchScore(w, gig), reviews: {} };
+    const next = { ...db, applications: [...db.applications, app] };
+    setDb(next); saveDb(next);
+  };
+
+  const toggleTag = (t) => updateWorker({ tags: w.tags.includes(t) ? w.tags.filter(x => x !== t) : [...w.tags, t] });
+  const toggleRegion = (r) => updateWorker({ regions: w.regions.includes(r) ? w.regions.filter(x => x !== r) : [...w.regions, r] });
+
+  return (
+    <div className="wrap">
+      <div className="notice">
+        <b>Trust layer without LER</b> — 태그 매칭 + Done 후 리뷰가 평판을 쌓습니다. Data persists in this browser (localStorage).
+      </div>
+      <div className="row" style={{marginBottom:16}}>
+        <div>
+          <h1 style={{fontSize:20}}>Talent · {w.name}</h1>
+          <p className="muted">Rating {w.rating} · Done {w.completed} gigs</p>
+        </div>
+        <div>
+          <button className={'pill' + (tab === 'gigs' ? ' on' : '')} onClick={() => setTab('gigs')}>Matched gigs</button>
+          <button className={'pill' + (tab === 'profile' ? ' on' : '')} onClick={() => setTab('profile')}>My profile</button>
+          <button className={'pill' + (tab === 'apps' ? ' on' : '')} onClick={() => setTab('apps')}>Applications</button>
+        </div>
+      </div>
+
+      {tab === 'profile' && (
+        <div className="card">
+          <h2>Role tags · region · duration</h2>
+          <TagPicker pool={ROLE_TAGS} selected={w.tags} onToggle={toggleTag} label="Role tags (e.g. barista + English)" />
+          <TagPicker pool={REGIONS} selected={w.regions} onToggle={toggleRegion} label="Available regions" />
+          <div className="muted" style={{marginBottom:8}}>Availability</div>
+          {DURATIONS.map(d => (
+            <span key={d} className={'tag' + (w.duration === d ? ' on' : '')} onClick={() => updateWorker({ duration: d })}>{d}</span>
+          ))}
+        </div>
+      )}
+
+      {tab === 'gigs' && (
+        <div className="card">
+          <h2>Gigs ranked by tag overlap (no AI yet)</h2>
+          {rankedGigs.map(g => {
+            const applied = myApps.find(a => a.gigId === g.id);
+            return (
+              <div key={g.id} className="gig-item">
+                <div className="row">
+                  <div>
+                    <div style={{fontWeight:600}}>{g.title}</div>
+                    <div className="muted">{g.employer} · {g.region} · {g.duration} · {g.pay}</div>
+                    <div style={{marginTop:6}}>{g.tags.map(t => <span key={t} className="tag">{t}</span>)}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div className="score">{g.score}%</div>
+                    <div className="muted">Match</div>
+                    {applied ? <span className="badge b-applied">{applied.status}</span> :
+                      <button className="btn btn-p btn-sm" style={{marginTop:8}} onClick={() => apply(g)}>Apply</button>}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {tab === 'apps' && (
+        <div className="card">
+          <h2>My applications</h2>
+          {myApps.length === 0 && <p className="muted">No applications yet.</p>}
+          {myApps.map(a => {
+            const g = db.gigs.find(x => x.id === a.gigId);
+            return (
+              <div key={a.id} className="gig-item">
+                <div className="row">
+                  <div>
+                    <div style={{fontWeight:600}}>{g?.title}</div>
+                    <div className="muted">매칭 {a.matchScore}% · {a.status}</div>
+                  </div>
+                  {a.status === 'completed' && <span className="badge b-done">Completed + reviewed</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EmployerApp({ db, setDb }) {
+  const [form, setForm] = useState({ title:'', employer:'', tags:[], region:'제주', duration:'2주', pay:'' });
+  const [pickGig, setPickGig] = useState(null);
+
+  const postGig = () => {
+    if (!form.title || !form.employer) return;
+    const gig = { id: uid('g'), ...form, status: 'open', employerRating: 4.5 };
+    const next = { ...db, gigs: [gig, ...db.gigs] };
+    setDb(next); saveDb(next);
+    setForm({ title:'', employer:'', tags:[], region:'제주', duration:'2주', pay:'' });
+  };
+
+  const appsFor = (gigId) => db.applications.filter(a => a.gigId === gigId)
+    .map(a => ({ ...a, worker: db.workers.find(w => w.id === a.workerId) }))
+    .sort((a, b) => b.matchScore - a.matchScore);
+
+  const accept = (appId) => {
+    const applications = db.applications.map(a => a.id === appId ? { ...a, status: 'accepted' } : a);
+    setDb({ ...db, applications }); saveDb({ ...db, applications });
+  };
+
+  const complete = (appId, workerReview, empReview) => {
+    const app = db.applications.find(a => a.id === appId);
+    const worker = db.workers.find(w => w.id === app.workerId);
+    const newRating = workerReview ? ((worker.rating * worker.completed + workerReview.rating) / (worker.completed + 1)) : worker.rating;
+    const workers = db.workers.map(w => w.id === worker.id ? {
+      ...w,
+      completed: w.completed + 1,
+      rating: Math.round(newRating * 10) / 10,
+      reviews: workerReview ? [...(w.reviews || []), { from: 'employer', ...workerReview }] : w.reviews,
+    } : w);
+    const applications = db.applications.map(a => a.id === appId ? {
+      ...a, status: 'completed',
+      reviews: { worker: workerReview, employer: empReview },
+    } : a);
+    const gigs = db.gigs.map(g => g.id === app.gigId ? { ...g, status: 'filled' } : g);
+    const next = { ...db, workers, applications, gigs };
+    setDb(next); saveDb(next);
+    setPickGig(null);
+  };
+
+  const toggleFormTag = (t) => setForm(f => ({
+    ...f, tags: f.tags.includes(t) ? f.tags.filter(x => x !== t) : [...f.tags, t],
+  }));
+
+  const selectedGig = pickGig ? db.gigs.find(g => g.id === pickGig) : null;
+
+  return (
+    <div className="wrap">
+      <div className="notice">
+        <b>Employer</b> — Post gigs → applicants ranked by tags → accept → bilateral reviews.
+      </div>
+      <div className="grid2">
+        <div className="card">
+          <h2>Post a gig</h2>
+          <input className="input" placeholder="Job title" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+          <input className="input" placeholder="Company" value={form.employer} onChange={e => setForm({ ...form, employer: e.target.value })} />
+          <input className="input" placeholder="Pay (e.g. hourly rate)" value={form.pay} onChange={e => setForm({ ...form, pay: e.target.value })} />
+          <TagPicker pool={ROLE_TAGS} selected={form.tags} onToggle={toggleFormTag} label="Required role tags" />
+          <TagPicker pool={REGIONS} selected={[form.region]} onToggle={r => setForm({ ...form, region: r })} label="Region" />
+          <div className="muted" style={{marginBottom:8}}>Duration</div>
+          {DURATIONS.map(d => (
+            <span key={d} className={'tag' + (form.duration === d ? ' on' : '')} onClick={() => setForm({ ...form, duration: d })}>{d}</span>
+          ))}
+          <button className="btn btn-p" style={{marginTop:12}} onClick={postGig}>Publish</button>
+        </div>
+        <div className="card">
+          <h2>My postings</h2>
+          {db.gigs.map(g => (
+            <div key={g.id} className="gig-item">
+              <div className="row">
+                <div>
+                  <div style={{fontWeight:600}}>{g.title}</div>
+                  <div className="muted">{g.status} · {appsFor(g.id).length} applicants</div>
+                </div>
+                <button className="btn btn-s btn-sm" onClick={() => setPickGig(g.id)}>View applicants</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {selectedGig && (
+        <div className="card">
+          <h2>Applicants (by match) — {selectedGig.title}</h2>
+          {appsFor(selectedGig.id).length === 0 && <p className="muted">No applicants yet. Apply from the Talent view.</p>}
+          {appsFor(selectedGig.id).map(a => (
+            <div key={a.id} className="gig-item">
+              <div className="row">
+                <div>
+                  <div style={{fontWeight:600}}>{a.worker?.name}</div>
+                  <div className="muted">{a.worker?.tags?.join(' · ')}</div>
+                  <div className="stars">★ {a.worker?.rating} · Done {a.worker?.completed}</div>
+                </div>
+                <div style={{textAlign:'right'}}>
+                  <div className="score">{a.matchScore}%</div>
+                  {a.status === 'applied' && <button className="btn btn-p btn-sm" style={{marginTop:6}} onClick={() => accept(a.id)}>Accept</button>}
+                  {a.status === 'accepted' && (
+                    <button className="btn btn-s btn-sm" style={{marginTop:6}} onClick={() => complete(a.id,
+                      { rating: 5, text: '성실히 수행' },
+                      { rating: 5, text: '좋은 Employer' },
+                    )}>Complete + review</button>
+                  )}
+                  {a.status === 'completed' && <span className="badge b-done">Done</span>}
+                </div>
+              </div>
+            </div>
+          ))}
+          <button className="btn btn-s btn-sm" style={{marginTop:8}} onClick={() => setPickGig(null)}>Close</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  const [db, setDb] = useState(loadDb);
+  const [mode, setMode] = useState(null);
+  const [activeWorker, setActiveWorker] = useState('w1');
+
+  const reset = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setDb(JSON.parse(JSON.stringify(SEED)));
+    setMode(null);
+  };
+
+  if (!mode) {
+    return (
+      <>
+        <header className="top">
+          <a href="/ko/" className="logo">GigCareer <span className="beta">BETA</span></a>
+          <span className="muted">Role tags · matching v0 (live data demo)</span>
+        </header>
+        <div className="wrap" style={{paddingTop:48,textAlign:'center',maxWidth:520,margin:'0 auto'}}>
+          <h1 style={{fontSize:26,marginBottom:12}}>Matching without waiting for LER</h1>
+          <p className="muted" style={{marginBottom:28}}>
+            Match on tags, region, and duration; build trust with post-gig reviews.<br/>
+            (Steps 1–3 prototype · before Supabase)
+          </p>
+          <button className="btn btn-p" style={{width:'100%',marginBottom:10}} onClick={() => setMode('worker')}>Try as Talent</button>
+          <button className="btn btn-s" style={{width:'100%',marginBottom:10}} onClick={() => setMode('employer')}>Try as Employer</button>
+          <a href="/ko/localcrew-mvp.html" className="muted" style={{display:'block',marginTop:20}}>← LER flow demo</a>
+          <button className="btn btn-s btn-sm" style={{marginTop:24}} onClick={reset}>Reset data</button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <header className="top">
+        <a href="/ko/" className="logo">GigCareer</a>
+        <button className="pill" onClick={() => setMode(null)}>Switch role</button>
+        {mode === 'worker' && db.workers.map(w => (
+          <button key={w.id} className={'pill' + (activeWorker === w.id ? ' on' : '')} onClick={() => setActiveWorker(w.id)}>{w.name}</button>
+        ))}
+        <button className="pill" onClick={reset}>Reset</button>
+      </header>
+      {mode === 'worker' ? <WorkerApp db={db} setDb={setDb} activeWorker={activeWorker} setActiveWorker={setActiveWorker} /> :
+        <EmployerApp db={db} setDb={setDb} />}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

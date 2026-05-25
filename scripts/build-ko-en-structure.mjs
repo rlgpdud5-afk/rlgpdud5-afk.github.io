@@ -7,7 +7,7 @@ const koDir = path.join(root, 'ko');
 const enSourceDir = path.join(root, 'sources', 'en');
 const enDir = path.join(root, 'en');
 
-const koPages = ['index', 'about', 'service', 'insights', 'contact', 'experience', 'localcrew-mvp'];
+const koPages = ['index', 'about', 'service', 'insights', 'contact', 'experience', 'localcrew-mvp', 'gig-match'];
 const enPages = ['index', 'about', 'service', 'insights', 'contact'];
 
 const LANG_CSS = `
@@ -115,7 +115,7 @@ for (const page of enPages) {
   writeFileSync(path.join(enDir, `${page}.html`), html, 'utf8');
 }
 
-for (const asset of ['experience.html', 'localcrew-mvp.html']) {
+for (const asset of ['experience.html', 'localcrew-mvp.html', 'gig-match.html']) {
   copyFileSync(path.join(root, asset), path.join(koDir, asset));
   const enAsset = path.join(enSourceDir, asset);
   copyFileSync(existsSync(enAsset) ? enAsset : path.join(root, asset), path.join(enDir, asset));
