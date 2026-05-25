@@ -169,10 +169,41 @@
       opacity: 0; animation: fu .9s ease .46s forwards;
     }
 
+    .demo-entry {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 44px;
+      max-width: 560px;
+      opacity: 0;
+      animation: fu .9s ease .62s forwards;
+    }
+    .demo-btn {
+      font-family: var(--f-body);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      padding: 16px 18px;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1.35;
+      transition: opacity .16s, transform .14s;
+    }
+    .demo-btn:hover { opacity: .88; transform: translateY(-2px); }
+    .demo-btn--match {
+      background: var(--black);
+      color: var(--bg);
+    }
+    .demo-btn--platform {
+      background: transparent;
+      color: var(--black);
+      border: 2px solid var(--border-hi);
+    }
+
     .hero-btns {
       display: flex; gap: 12px; flex-wrap: wrap;
-      margin-top: 44px;
-      opacity: 0; animation: fu .9s ease .62s forwards;
+      margin-top: 20px;
+      opacity: 0; animation: fu .9s ease .72s forwards;
     }
 
     .btn-fill {
@@ -669,6 +700,7 @@ nav.site-nav {
 .nav-cta {
   display: none;
 }
+      .demo-entry { grid-template-columns: 1fr; }
       .hero-inner, .wrap { padding-left: 20px; padding-right: 20px; }
       .hero-stats { padding: 0 20px; grid-template-columns: 1fr 1fr; }
       .hs:nth-child(2) { border-right: none; }
@@ -721,9 +753,12 @@ nav.site-nav {
       물리적 거리가 기회의 한계가 되지 않도록.<br>
       지역의 잠재력과 청년의 역량을 데이터로 증명하는<br>새로운 생태계를 엽니다.
     </p>
+    <div class="demo-entry">
+      <a href="gig-match.html" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
+      <a href="localcrew-mvp.html" class="demo-btn demo-btn--platform">LER · 플랫폼 데모</a>
+    </div>
     <div class="hero-btns">
-      <a href="gig-match.html" class="btn-fill">역할 매칭 체험 (데이터 흐름)</a>
-      <a href="#solution" class="btn-line">D-GIG 서비스 알아보기</a>
+      <a href="service.html" class="btn-line">D-GIG 서비스 알아보기</a>
       <a href="#paradox" class="btn-line">인구 유출 리포트 →</a>
     </div>
   </div>
