@@ -53,7 +53,7 @@
     const hit = top.filter((t) => keys.some((k) => t.includes(k) || k.includes(t)));
     return (
       `[AI 맞춤 · ${gig.employer}] ${worker.name} — ` +
-      (hit.length ? hit.join(', ') + ' 역량을 공고 키워드(' + keys.slice(0, 4).join(', ') + ')에 맞게 상단 배치. ` : '') +
+      (hit.length ? hit.join(', ') + ' 역량을 공고 키워드(' + keys.slice(0, 4).join(', ') + ')에 맞게 상단 배치. ' : '') +
       `${gig.title}에 ${worker.completed || 0}건의 검증된 긱 수행·평점 ${worker.rating}으로 지원합니다.`
     );
   }
