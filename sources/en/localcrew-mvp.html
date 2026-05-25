@@ -354,6 +354,8 @@ const PBar = ({v,c="var(--accent-warm)"}) => <div className="pbar"><div classNam
 
 // ─── Demo UI ───
 function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds, onOpenTour}) {
+  const lerRole = role==="maker"||role==="reviewer";
+  const roleTag = {maker:"Maker",reviewer:"Reviewer",client:"Client · Enterprise",admin:"Admin/PM"}[role]||role;
   const steps = [
     {n:1,l:"Submit",done:flow>=1},
     {n:2,l:"Review",done:flow>=2},
@@ -363,19 +365,21 @@ function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds,
   return (
     <div className="demo-bar">
       <div>
-        <strong>Demo</strong> · Sample data · No login
-        <span style={{marginLeft:8,color:"var(--text-3)"}}>LER issuance flow</span>
+        <strong>Demo</strong> · <span style={{color:"var(--accent-warm)"}}>{roleTag}</span> · Sample data
+        <span style={{marginLeft:8,color:"var(--text-3)"}}>{lerRole?"LER issuance flow":"Role별 메뉴 · 화면 체험"}</span>
       </div>
-      <div className="flow-pills">{steps.map(s=><span key={s.n} className={"fp"+(s.done?" on":"")}>{s.n}. {s.l}</span>)}</div>
+      {lerRole&&<div className="flow-pills">{steps.map(s=><span key={s.n} className={"fp"+(s.done?" on":"")}>{s.n}. {s.l}</span>)}</div>}
       <div className="demo-role-sw">
-        <span style={{color:"var(--text-3)",fontSize:11}}>Switch role</span>
-        {["maker","reviewer"].map(r=>(
-          <button key={r} className={role===r?"on":""} onClick={()=>onSwitchRole(r)}>{r==="maker"?"Maker":"Reviewer"}</button>
-        ))}
-        {flow===0&&role==="maker"&&<button className="btn btn-p btn-sm" onClick={onGoTasks}>① Submit task</button>}
-        {flow===1&&role==="reviewer"&&<button className="btn btn-p btn-sm" onClick={onGoReview}>② Approve</button>}
-        {flow>=2&&<button className="btn btn-p btn-sm" onClick={onGoCreds}>③ View LER</button>}
-        <button type="button" className="btn btn-s btn-sm" onClick={onOpenTour}>Replay guide</button>
+        {lerRole&&<>
+          <span style={{color:"var(--text-3)",fontSize:11}}>Switch role</span>
+          {["maker","reviewer"].map(r=>(
+            <button key={r} className={role===r?"on":""} onClick={()=>onSwitchRole(r)}>{r==="maker"?"Maker":"Reviewer"}</button>
+          ))}
+          {flow===0&&role==="maker"&&<button className="btn btn-p btn-sm" onClick={onGoTasks}>① Submit task</button>}
+          {flow===1&&role==="reviewer"&&<button className="btn btn-p btn-sm" onClick={onGoReview}>② Approve</button>}
+          {flow>=2&&<button className="btn btn-p btn-sm" onClick={onGoCreds}>③ View LER</button>}
+          <button type="button" className="btn btn-s btn-sm" onClick={onOpenTour}>Replay guide</button>
+        </>}
       </div>
     </div>
   );
@@ -397,10 +401,11 @@ function tourDisplayFlow(tourIdx, flow) {
   return Math.max(flow, s.previewFlow || 0);
 }
 
-function applyTourScene(idx, setRole, setPage, setSelProj) {
+function applyTourScene(idx, setRole, setPage, setSelProj, opts) {
+  opts = opts || {};
   const s = TOUR_STEPS[Math.max(0, Math.min(idx, TOUR_STEPS.length - 1))].scene;
   if(!s) return;
-  setRole(s.role);
+  if(!opts.keepRole && s.role) setRole(s.role);
   setPage(s.page);
   setSelProj(null);
 }
@@ -579,6 +584,35 @@ function MakerDash({user}) {
       <div className="glass fade-up" style={{padding:20,animationDelay:".25s"}}>
         <div className="ct" style={{marginBottom:12}}>Skills</div>
         <div style={{display:"flex",flexWrap:"wrap",gap:6}}>{user.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
+      </div>
+    </div>
+  </div>);
+}
+
+// ─── Reviewer Dashboard ───
+function ReviewerDash({user, flow}) {
+  const pending = MOCK_TASKS.filter(t=>t.status==="Submitted"||t.status==="In review");
+  return (<div>
+    <div className="ph"><h1>Hello, {user.name}님</h1><p>Review·LER issued Pending 현황</p></div>
+    <div className="pb">
+      <div className="stats">
+        {[["Pending review",pending.length,"즉시 Verify","or"],["이번 달 Approve",22,"LER 18","gr"],["평균 Review 시간","1.2일","목표 2일 이내","bl"],["Trust",user.trustScore,"Reviewer","pu"]].map(([l,v,s,c],i)=>(
+          <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*.06}s`}}>
+            <div className="stat-l">{l}</div>
+            <div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div>
+            <div className="stat-s">{s}</div>
+          </div>
+        ))}
+      </div>
+      <div className="glass fade-up" style={{padding:20}}>
+        <div className="ch"><span className="ct">Review queue 목록</span><span className="badge b-or">{pending.length}</span></div>
+        {pending.slice(0,4).map(t=>(
+          <div key={t.id} style={{padding:"12px 0",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div><div style={{fontSize:13,fontWeight:550}}>{t.name}</div><div style={{fontSize:11,color:"var(--text-3)",marginTop:2}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name} · {t.assignee}</div></div>
+            <StatusBadge s={taskStatusForDemo(t, flow)}/>
+          </div>
+        ))}
+        {flow===1&&<p style={{fontSize:12,color:"var(--accent-warm)",marginTop:12}}>Demo: [Review queue] 메뉴에서 LER issued을 진행하세요.</p>}
       </div>
     </div>
   </div>);
@@ -963,13 +997,21 @@ function App() {
   const [tourIdx,setTourIdx]=useState(-1);
   const user=role?MOCK_USERS[role]:null;
 
-  const goTour = (idx) => {
+  const goTour = (idx, opts) => {
     const i = Math.max(0, Math.min(idx, TOUR_STEPS.length - 1));
     setTourIdx(i);
-    applyTourScene(i, setRole, setPage, setSelProj);
+    applyTourScene(i, setRole, setPage, setSelProj, opts);
   };
 
-  const startFlow = () => { setFlow(0); goTour(0); };
+  const enterRole = (r) => {
+    setFlow(0);
+    setSelProj(null);
+    setRole(r);
+    if(r==="maker"||r==="reviewer") goTour(0, {keepRole:true});
+    else { setTourIdx(-1); setPage("dashboard"); }
+  };
+
+  const startFlow = () => { setFlow(0); setRole("maker"); goTour(0); };
   const submitFlow = () => { setFlow(1); goTour(3); };
   const approveFlow = () => {
     setFlow(2);
@@ -1008,7 +1050,11 @@ function App() {
     if(!user)return null;
     if(selProj)return <ProjectDetail project={selProj} onBack={()=>setSelProj(null)}/>;
     switch(page){
-      case "dashboard": return role==="admin"?<AdminDash/>:role==="client"?<ClientDash user={user}/>:<MakerDash user={user}/>;
+      case "dashboard":
+        if(role==="admin") return <AdminDash/>;
+        if(role==="client") return <ClientDash user={user}/>;
+        if(role==="reviewer") return <ReviewerDash user={user} flow={displayFlow}/>;
+        return <MakerDash user={user}/>;
       case "projects": return <Projects onSelect={setSelProj}/>;
       case "tasks": return role==="maker" ? <MakerTasks user={user} flow={displayFlow} onSubmit={submitFlow}/> : (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={taskStatusForDemo(t,displayFlow)}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
       case "credentials": return <Creds flow={displayFlow} highlightId={displayFlow>=2?DEMO_NEW_CRED.verifyId:null}/>;
@@ -1020,7 +1066,7 @@ function App() {
     }
   };
 
-  if(!role)return(<><style>{css}</style><Login onLogin={r=>{setFlow(0);setRole(r);goTour(0)}} onStartFlow={startFlow}/></>);
+  if(!role)return(<><style>{css}</style><Login onLogin={enterRole} onStartFlow={startFlow}/></>);
 
   return (<><style>{css}</style>
     <div className="app">
