@@ -95,6 +95,14 @@
     .cta-sub{font-family:var(--fb);font-size:.97rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:480px;font-weight:300;position:relative;z-index:2;margin-bottom:44px;}
     .btn-wi{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg);color:var(--black);padding:15px 32px;text-decoration:none;display:inline-block;transition:opacity .16s,transform .14s;position:relative;z-index:2;}
     .btn-wi:hover{opacity:.88;transform:translateY(-1px);}
+    .demo-entry{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:620px;position:relative;z-index:2;}
+    .demo-entry--hero{margin-top:28px;max-width:100%;}
+    .demo-btn{font-family:var(--fb);font-size:.82rem;font-weight:600;letter-spacing:.02em;padding:17px 20px;text-decoration:none;display:block;text-align:center;transition:opacity .16s,transform .14s;line-height:1.35;}
+    .demo-btn:hover{opacity:.92;transform:translateY(-2px);}
+    .demo-btn--match{background:var(--bg);color:var(--black);}
+    .demo-btn--platform{background:transparent;color:var(--bg);border:2px solid rgba(244,242,238,.42);}
+    .demo-entry--light .demo-btn--match{background:var(--black);color:var(--bg);}
+    .demo-entry--light .demo-btn--platform{border-color:rgba(12,13,14,.28);color:var(--black);}
 
     /* FOOTER */
     footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
@@ -128,6 +136,7 @@
       .step{border-right:none;border-bottom:1px solid var(--border);}
       .step-arr{display:none;}
       .cta-box{padding:64px 24px;}
+      .demo-entry{grid-template-columns:1fr;}
     }
   
     .lang-switch{display:flex;align-items:center;align-items:center;gap:8px;margin-left:18px;flex-shrink:0;font-family:var(--f-body,var(--fb));font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
@@ -160,6 +169,10 @@
       <p class="hero-label">D-GIG Platform — Local Gig × LER × Global Match</p>
       <h1 class="hero-h">Proof-of-work<br>infrastructure<br><span class="it">for regions,</span><br>D-GIG</h1>
       <p class="hero-sub">A three-layer stack for investors: marketplace (Local Gig), verification (LER), and distribution (Global Match). Built to integrate with workforce agencies and enterprise hiring workflows.</p>
+      <div class="demo-entry demo-entry--hero">
+        <a href="gig-match.html" class="demo-btn demo-btn--match">Role tag matching demo</a>
+        <a href="localcrew-mvp.html" class="demo-btn demo-btn--platform">LER · platform demo</a>
+      </div>
     </div>
     <div class="hero-mockup">
       <div class="mockup-phone">
@@ -293,7 +306,10 @@
       <div class="cta-ghost">LER</div>
       <h2 class="cta-h">MVP is live.<br><span class="it">Request a walkthrough.</span></h2>
       <p class="cta-sub">Book a demo for investors and enterprise partners — including role-based MVP flows.</p>
-      <a href="experience.html" class="btn-wi">View MVP demo →</a>
+      <div class="demo-entry" style="max-width:640px;margin:0 auto">
+        <a href="gig-match.html" class="demo-btn demo-btn--match">Role tag matching demo</a>
+        <a href="localcrew-mvp.html" class="demo-btn demo-btn--platform">LER · platform demo</a>
+      </div>
     </div>
   </div>
 </section>

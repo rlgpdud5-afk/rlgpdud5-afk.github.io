@@ -169,10 +169,41 @@
       opacity: 0; animation: fu .9s ease .46s forwards;
     }
 
+    .demo-entry {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 44px;
+      max-width: 560px;
+      opacity: 0;
+      animation: fu .9s ease .62s forwards;
+    }
+    .demo-btn {
+      font-family: var(--f-body);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      padding: 16px 18px;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1.35;
+      transition: opacity .16s, transform .14s;
+    }
+    .demo-btn:hover { opacity: .88; transform: translateY(-2px); }
+    .demo-btn--match {
+      background: var(--black);
+      color: var(--bg);
+    }
+    .demo-btn--platform {
+      background: transparent;
+      color: var(--black);
+      border: 2px solid var(--border-hi);
+    }
+
     .hero-btns {
       display: flex; gap: 12px; flex-wrap: wrap;
-      margin-top: 44px;
-      opacity: 0; animation: fu .9s ease .62s forwards;
+      margin-top: 20px;
+      opacity: 0; animation: fu .9s ease .72s forwards;
     }
 
     .btn-fill {
@@ -669,6 +700,7 @@ nav.site-nav {
 .nav-cta {
   display: none;
 }
+      .demo-entry { grid-template-columns: 1fr; }
       .hero-inner, .wrap { padding-left: 20px; padding-right: 20px; }
       .hero-stats { padding: 0 20px; grid-template-columns: 1fr 1fr; }
       .hs:nth-child(2) { border-right: none; }
@@ -721,9 +753,13 @@ nav.site-nav {
     <p class="hero-sub">
       GigCareer builds proof-of-work infrastructure that turns regional project experience into portable, employer-trusted credentials — enabling remote-ready talent pipelines beyond capital-city hubs.
     </p>
+    <div class="demo-entry">
+      <a href="gig-match.html" class="demo-btn demo-btn--match">Role tag matching demo</a>
+      <a href="localcrew-mvp.html" class="demo-btn demo-btn--platform">LER · platform demo</a>
+    </div>
     <div class="hero-btns">
-      <a href="#solution" class="btn-fill">Explore the platform</a>
-      <a href="#paradox" class="btn-line">View market thesis →</a>
+      <a href="service-en.html" class="btn-line">Explore D-GIG platform</a>
+      <a href="#paradox" class="btn-line">인구 유출 리포트 →</a>
     </div>
   </div>
 
