@@ -19,6 +19,9 @@
     a{color:var(--warm);text-decoration:none}
     .top{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(12,18,32,.95);position:sticky;top:0;z-index:50;flex-wrap:wrap}
     .logo{font-weight:700;font-size:15px}
+    .lang{font-size:11px;color:var(--muted);margin-left:auto}
+    .lang a{opacity:.5;margin:0 4px}
+    .lang a.on{opacity:1;color:var(--warm)}
     .beta{font-size:10px;background:var(--warm);color:#0c1220;padding:2px 6px;border-radius:4px;margin-left:6px}
     .pill{padding:6px 12px;border-radius:999px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:transparent;color:var(--muted)}
     .pill.on{border-color:var(--warm);color:var(--warm);background:rgba(212,165,116,.12)}
@@ -351,6 +354,7 @@ function App() {
         <header className="top">
           <a href="/ko/" className="logo">GigCareer <span className="beta">BETA</span></a>
           <span className="muted">매칭 v1 · {storageMode==='cloud'?'Supabase':'localStorage'}</span>
+          <span className="lang"><a href="gig-match.html" className="on">KR</a><span>|</span><a href="../en/gig-match.html">EN</a></span>
         </header>
         <div className="wrap" style={{paddingTop:40,maxWidth:520,margin:'0 auto'}}>
           <h1 style={{fontSize:26,marginBottom:12}}>역할 태그 매칭 플랫폼</h1>
@@ -377,6 +381,7 @@ function App() {
       <header className="top">
         <a href="/ko/" className="logo">GigCareer</a>
         <span className="muted">{storageMode==='cloud'?'☁ Supabase':'💾 Local'}</span>
+        <span className="lang"><a href="../ko/gig-match.html" className="on">KR</a><span>|</span><a href="../en/gig-match.html">EN</a></span>
         <button className="pill" onClick={()=>setMode(null)}>← 메인</button>
         {mode==='worker'&&db.workers.map(w=>(
           <button key={w.id} className={'pill'+(activeWorker===w.id?' on':'')} onClick={()=>setActiveWorker(w.id)}>{w.name}</button>
