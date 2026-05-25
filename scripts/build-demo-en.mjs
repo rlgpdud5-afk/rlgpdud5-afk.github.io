@@ -420,6 +420,13 @@ const mvpUiRepl = [
   [' 후 가능합니다. ‹ › 로 다른 단계 화면은 미리 볼 수 있습니다.', ' — use ‹ › to preview other screens.'],
   ['이전 단계', 'Previous step'],
   ['다음 단계', 'Next step'],
+  ['역할별 메뉴 · 화면 체험', 'Role-based menus & screens'],
+  ['Client · Enterprise', 'Client · Enterprise'],
+  ['Admin/PM', 'Admin/PM'],
+  ['안녕하세요, {user.name}님</h1><p>검수·LER 발급 대기 현황</p>', 'Hello, {user.name}</h1><p>Review queue & LER issuance</p>'],
+  ['["검수 대기",pending.length,"즉시 확인","or"],["이번 달 승인",22,"LER 18건","gr"],["평균 검수 시간","1.2일","목표 2일 이내","bl"]', '["Pending review",pending.length,"Review now","or"],["Approved this month",22,"18 LERs","gr"],["Avg review time","1.2 days","Target under 2 days","bl"]'],
+  ['리뷰 대기 목록', 'Review queue'],
+  ['데모: [리뷰 대기] 메뉴에서 LER 발급을 진행하세요.', 'Demo: open Review queue to issue LER.'],
   // Full tour rows — must stay longer than partial fragments (결과물 제출, 배경 화면, etc.)
   [
     '{short:"1", t:"1단계 · 결과물 제출", b:"배경 화면: [내 과업]. \'상품 카드 컴포넌트 제작\' → [결과물 제출]을 눌러 보세요.", btn:"과업 화면으로", action:"tasks", needFlow:0, scene:{role:"maker",page:"tasks",label:"Maker · 내 과업"}, previewFlow:0}',

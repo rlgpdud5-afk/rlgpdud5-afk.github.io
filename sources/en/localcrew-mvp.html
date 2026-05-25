@@ -366,7 +366,7 @@ function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds,
     <div className="demo-bar">
       <div>
         <strong>Demo</strong> · <span style={{color:"var(--accent-warm)"}}>{roleTag}</span> · Sample data
-        <span style={{marginLeft:8,color:"var(--text-3)"}}>{lerRole?"LER issuance flow":"Role별 메뉴 · 화면 체험"}</span>
+        <span style={{marginLeft:8,color:"var(--text-3)"}}>{lerRole?"LER issuance flow":"Role-based menus & screens"}</span>
       </div>
       {lerRole&&<div className="flow-pills">{steps.map(s=><span key={s.n} className={"fp"+(s.done?" on":"")}>{s.n}. {s.l}</span>)}</div>}
       <div className="demo-role-sw">
@@ -593,10 +593,10 @@ function MakerDash({user}) {
 function ReviewerDash({user, flow}) {
   const pending = MOCK_TASKS.filter(t=>t.status==="Submitted"||t.status==="In review");
   return (<div>
-    <div className="ph"><h1>Hello, {user.name}님</h1><p>Review·LER issued Pending 현황</p></div>
+    <div className="ph"><h1>Hello, {user.name}</h1><p>Review queue & LER issuance</p></div>
     <div className="pb">
       <div className="stats">
-        {[["Pending review",pending.length,"즉시 Verify","or"],["이번 달 Approve",22,"LER 18","gr"],["평균 Review 시간","1.2일","목표 2일 이내","bl"],["Trust",user.trustScore,"Reviewer","pu"]].map(([l,v,s,c],i)=>(
+        {[["Pending review",pending.length,"Review now","or"],["Approved this month",22,"18 LERs","gr"],["Avg review time","1.2 days","Target under 2 days","bl"],["Trust",user.trustScore,"Reviewer","pu"]].map(([l,v,s,c],i)=>(
           <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*.06}s`}}>
             <div className="stat-l">{l}</div>
             <div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div>
@@ -605,14 +605,14 @@ function ReviewerDash({user, flow}) {
         ))}
       </div>
       <div className="glass fade-up" style={{padding:20}}>
-        <div className="ch"><span className="ct">Review queue 목록</span><span className="badge b-or">{pending.length}</span></div>
+        <div className="ch"><span className="ct">Review queue</span><span className="badge b-or">{pending.length}</span></div>
         {pending.slice(0,4).map(t=>(
           <div key={t.id} style={{padding:"12px 0",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div><div style={{fontSize:13,fontWeight:550}}>{t.name}</div><div style={{fontSize:11,color:"var(--text-3)",marginTop:2}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name} · {t.assignee}</div></div>
             <StatusBadge s={taskStatusForDemo(t, flow)}/>
           </div>
         ))}
-        {flow===1&&<p style={{fontSize:12,color:"var(--accent-warm)",marginTop:12}}>Demo: [Review queue] 메뉴에서 LER issued을 진행하세요.</p>}
+        {flow===1&&<p style={{fontSize:12,color:"var(--accent-warm)",marginTop:12}}>Demo: open Review queue to issue LER.</p>}
       </div>
     </div>
   </div>);
