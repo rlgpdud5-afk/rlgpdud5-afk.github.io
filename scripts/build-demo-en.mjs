@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { applyPortfolioEn } from './portfolio-section.en.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = path.join(root, 'sources', 'en');
@@ -473,9 +474,10 @@ writeFileSync(
   apply(readFileSync(path.join(root, 'experience.html'), 'utf8'), experienceRepl),
   'utf8'
 );
+const mvpKo = readFileSync(path.join(root, 'localcrew-mvp.html'), 'utf8');
 writeFileSync(
   path.join(outDir, 'localcrew-mvp.html'),
-  apply(readFileSync(path.join(root, 'localcrew-mvp.html'), 'utf8'), [...mvpRepl, ...mvpUiRepl, ...experienceRepl])
+  apply(applyPortfolioEn(mvpKo), [...mvpRepl, ...mvpUiRepl, ...experienceRepl])
     .replace('d:"Youth contributor"', 'd:"Talent"')
     .replace('d:"Work reviewer"', 'd:"Project Assessor"')
     .replace('d:"Project client"', 'd:"Enterprise Client"')
