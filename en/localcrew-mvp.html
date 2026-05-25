@@ -300,8 +300,55 @@ tr:hover td{background:var(--glass-3)}
 .sf-d.cur{border-color:var(--accent-warm);animation:glowPulse 2s infinite}
 .sf-l{width:24px;height:2px;background:rgba(255,255,255,0.08)}.sf-l.done{background:var(--success)}
 
-/* Portfolio */
-.port{padding:32px;max-width:700px}
+/* Portfolio builder */
+.port-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.port-tabs button{padding:10px 18px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text-2);font-size:13px;cursor:pointer;font-family:var(--font)}
+.port-tabs button.on{border-color:var(--accent-warm);color:var(--accent-warm);background:rgba(212,165,116,.12);font-weight:600}
+.port-layout{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:20px;align-items:start}
+@media(max-width:1024px){.port-layout{grid-template-columns:1fr}}
+.port-side{display:flex;flex-direction:column;gap:16px}
+.port-tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.port-tpl-card{padding:14px;border-radius:12px;border:2px solid var(--border);cursor:pointer;transition:all .2s;background:rgba(255,255,255,.03);text-align:left}
+.port-tpl-card:hover{border-color:rgba(212,165,116,.4)}
+.port-tpl-card.on{border-color:var(--accent-warm);background:rgba(212,165,116,.1);box-shadow:0 0 24px var(--accent-glow)}
+.port-tpl-card .pt-name{font-size:13px;font-weight:700;margin-bottom:4px}
+.port-tpl-card .pt-desc{font-size:11px;color:var(--text-3);line-height:1.5}
+.port-tpl-mini{height:52px;border-radius:6px;margin-bottom:10px;border:1px solid var(--border);overflow:hidden}
+.port-tpl-mini--project{background:linear-gradient(135deg,#1a2744 0%,#0f172a 50%),repeating-linear-gradient(90deg,rgba(212,165,116,.15) 0 33%,transparent 33% 66%,rgba(59,130,246,.12) 66% 100%)}
+.port-tpl-mini--resume{background:#fff;color:#111;display:flex}.port-tpl-mini--resume::before{content:'';width:28%;background:#e8e4df}.port-tpl-mini--resume::after{content:'';flex:1;background:linear-gradient(#ddd 8px,transparent 8px) 12px 10px/80% 10px no-repeat}
+.port-tpl-mini--career{background:#faf9f6;border:1px solid #ccc;background-image:linear-gradient(#333 1px,transparent 1px),linear-gradient(90deg,#333 1px,transparent 1px);background-size:100% 12px,33% 100%;background-position:0 20px,0 0}
+.port-tpl-mini--proposal{background:linear-gradient(180deg,#fff 0 18%,#f4f2ee 18%);border-color:#d4cfc4}
+.port-preview-wrap{position:sticky;top:72px}
+.port-preview-label{font-size:11px;color:var(--text-3);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.port-doc{background:#fff;color:#1a1d24;border-radius:4px;box-shadow:0 24px 80px rgba(0,0,0,.45);overflow:hidden;max-height:min(78vh,920px);overflow-y:auto}
+.port-doc-inner{padding:0}
+.port-doc--project{background:#0f1419;color:#e8eaef}.port-doc--project .pd-hero{padding:28px 32px;background:linear-gradient(135deg,#1e3a5f,#0f1419)}
+.port-doc--project .pd-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:20px 24px 28px}
+.port-doc--project .pd-card{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:16px;background:rgba(255,255,255,.04)}
+.port-doc--resume .pd-split{display:grid;grid-template-columns:200px 1fr;min-height:520px}
+.port-doc--resume .pd-side{background:#2d3748;color:#fff;padding:24px 18px}
+.port-doc--resume .pd-main{padding:28px 32px;font-size:13px;line-height:1.65}
+.port-doc--resume .pd-photo{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent-warm),#8b7355);margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#0c1220}
+.port-doc--career{padding:32px 36px;font-size:12px;line-height:1.7}
+.port-doc--career table{width:100%;border-collapse:collapse;margin:12px 0 20px}
+.port-doc--career th,.port-doc--career td{border:1px solid #333;padding:8px 10px;text-align:left;vertical-align:top}
+.port-doc--career th{background:#f0ede8;font-weight:700}
+.port-doc--proposal{padding:36px 40px;font-size:13px;line-height:1.75;color:#222}
+.port-doc--proposal .pp-cover{border-bottom:3px solid #0c1220;padding-bottom:24px;margin-bottom:28px}
+.port-doc--proposal .pp-sec{margin-bottom:22px}
+.port-doc--proposal .pp-sec h4{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;color:#0c1220}
+.port-ai-jobs{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto}
+.port-ai-job{padding:12px 14px;border-radius:10px;border:1px solid var(--border);cursor:pointer;background:rgba(255,255,255,.03);text-align:left}
+.port-ai-job.on{border-color:var(--purple);background:rgba(139,92,246,.12)}
+.port-ai-job .aj-co{font-size:11px;color:var(--accent-warm);font-weight:600}
+.port-ai-job .aj-ti{font-size:13px;font-weight:600;margin-top:4px}
+.port-ai-diff{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+@media(max-width:768px){.port-ai-diff{grid-template-columns:1fr}}
+.port-ai-col{padding:14px;border-radius:10px;border:1px solid var(--border);font-size:12px;line-height:1.65}
+.port-ai-col.tailored{border-color:rgba(139,92,246,.45);background:rgba(139,92,246,.08)}
+.port-ai-col h5{font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;color:var(--text-3)}
+.port-ai-kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.port-ai-kw span{font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(139,92,246,.2);color:#c4b5fd}
 .port-sec{margin-bottom:24px}
 .port-sec h3{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent-warm);margin-bottom:12px;font-weight:600}
 
@@ -653,60 +700,261 @@ function Creds({flow, highlightId}) {
   </div>);
 }
 
-// ─── Portfolio ───
-function Portfolio({user}) {
-  const [tpl,setTpl] = useState("project");
-  const [gen,setGen] = useState(false);
-  const [done,setDone] = useState(false);
-  const go = () => {setGen(true);setTimeout(()=>{setGen(false);setDone(true)},1200)};
-  return (<div>
-    <div className="ph"><h1>Portfolio builder</h1><p>Auto portfolio from verified work data</p></div>
-    <div className="pb">
-      <div className="glass" style={{padding:20,marginBottom:20}}>
-        <div className="ct" style={{marginBottom:14}}>Choose template</div>
-        <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          {[["project","Project"],["resume","Application"],["career","Career summary"],["proposal","Proposal"]].map(([k,v])=>(
-            <button key={k} className={`btn ${tpl===k?"btn-p":"btn-s"}`} onClick={()=>{setTpl(k);setDone(false)}}>{v}</button>
+// ─── Portfolio templates & AI tailor (demo) ───
+const PORT_TEMPLATES = [
+  {k:"project",name:"Project",desc:"Behance·노션 스타일 케이스 스터디. 시각적 Projects 카드 Medium심.",mini:"port-tpl-mini--project"},
+  {k:"resume",name:"Application",desc:"잡코리아· KRW티드형 1페이지 Resume. 사진·요약·경력 bullet.",mini:"port-tpl-mini--resume"},
+  {k:"career",name:"Career summary",desc:"공공·Pending업 Submit용 Career summary. 표·Assignee업무·성과 구조.",mini:"port-tpl-mini--career"},
+  {k:"proposal",name:"Proposal",desc:"프리랜서·B2B 제안서. 과업·일정·검증 이력·견적.",mini:"port-tpl-mini--proposal"},
+];
+const MOCK_APPLY_JOBS = [
+  {id:"j1",company:"LocalTech Inc.",title:"Frontend 개발 (React)",keywords:["React","HTML/CSS","컴포넌트","Responsive"],summary:"로컬 커머스 리뉴얼 Projects의 Hard품 UI·Responsive 구현 경험을 최Hard단에 배치하고, React 기반 Publishing 역량을 강조합니다.",reorder:["c-demo","c1","c2"],emphasis:"Frontend · UI 구현"},
+  {id:"j2",company:"EduPlus",title:"UX research·기획 보조",keywords:["UX research","Interviews","사용자 조사","Analysis"],summary:"EdTech UX research·Interviews 정리 경험을 lead로 올리고, 정성·정량 Analysis 스킬을 키워드에 맞게 재작성합니다.",reorder:["c3","c2","c1"],emphasis:"UX research · 사용자 인사이트"},
+  {id:"j3",company:"Sejong City Hall",title:"Data cleanup·Visualization 인턴",keywords:["Data analysis","Excel","Research","Report"],summary:"마케팅 Research·설문 Analysis Projects를 강조하고, 공공 데이터 Cleaning·Report 작성 적합성을 부각합니다.",reorder:["c2","c3","c1"],emphasis:"데이터 · Research"},
+];
+
+function PortDocProject({user,creds}) {
+  return (
+    <div className="port-doc port-doc--project">
+      <div className="port-doc-inner">
+        <div className="pd-hero">
+          <div style={{fontSize:10,letterSpacing:2,color:"var(--accent-warm)",marginBottom:8}}>PROJECT PORTFOLIO</div>
+          <div style={{fontSize:26,fontWeight:800,marginBottom:8}}>{user.name}</div>
+          <div style={{fontSize:13,color:"rgba(232,234,239,.65)",maxWidth:420}}>검증된 LER 기반 실무 Portfolio · {user.region} · Trust {user.trustScore}</div>
+          <div style={{display:"flex",gap:8,marginTop:16,flexWrap:"wrap"}}>{user.skills.map(s=><span key={s} style={{fontSize:11,padding:"4px 10px",borderRadius:6,background:"rgba(212,165,116,.2)",color:"#E8D5B5"}}>{s}</span>)}</div>
+        </div>
+        <div className="pd-grid">
+          {creds.map(c=>(
+            <div key={c.id} className="pd-card">
+              <div style={{fontSize:10,color:"var(--accent-warm)",marginBottom:6}}>CASE · {c.verifyId}</div>
+              <div style={{fontSize:15,fontWeight:700,marginBottom:6}}>{c.project}</div>
+              <div style={{fontSize:12,color:"rgba(255,255,255,.55)",marginBottom:10}}>{c.task}</div>
+              <div style={{height:4,background:"rgba(255,255,255,.08)",borderRadius:2,marginBottom:10}}><div style={{width:`${c.rating*20}%`,height:"100%",background:"var(--accent-warm)",borderRadius:2}}/></div>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:11}}><Stars v={c.rating}/><span style={{color:"var(--success)"}}>QA Pass</span></div>
+            </div>
           ))}
         </div>
       </div>
-      <div className="glass" style={{padding:20,marginBottom:20}}>
-        <div className="ct" style={{marginBottom:14}}>Featured projects</div>
-        {MOCK_CREDENTIALS.map(c=>(
-          <label key={c.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid var(--border)",cursor:"pointer"}}>
-            <input type="checkbox" defaultChecked style={{accentColor:"var(--accent-warm)"}}/>
-            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:550}}>{c.project}</div><div style={{fontSize:11,color:"var(--text-3)"}}>{c.task}</div></div>
-            <Stars v={c.rating}/>
-          </label>
-        ))}
-      </div>
-      <button className="btn btn-p" onClick={go} disabled={gen} style={{marginBottom:24}}>{gen?"Generating...":"Portfolio builder"}</button>
-      {done && (
-        <div className="glass port fade-up">
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
-            <div>
-              <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:1.2,color:"var(--accent-warm)",marginBottom:4}}>PORTFOLIO</div>
-              <div style={{fontSize:22,fontWeight:700}}>{user.name}</div>
-              <div style={{fontSize:13,color:"var(--text-2)"}}>{user.skills.join(" · ")}</div>
+    </div>
+  );
+}
+
+function PortDocResume({user,creds}) {
+  return (
+    <div className="port-doc port-doc--resume">
+      <div className="port-doc-inner pd-split">
+        <div className="pd-side">
+          <div className="pd-photo">{user.name[0]}</div>
+          <div style={{fontSize:16,fontWeight:700,marginBottom:4}}>{user.name}</div>
+          <div style={{fontSize:11,opacity:.75,marginBottom:20}}>Talent · {user.region}</div>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:1,opacity:.6,marginBottom:8}}>Contact</div>
+          <div style={{fontSize:11,marginBottom:16}}>demo@localcrew.kr<br/>Verified LER</div>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:1,opacity:.6,marginBottom:8}}>Skills</div>
+          {user.skills.map(s=><div key={s} style={{fontSize:11,marginBottom:4}}>· {s}</div>)}
+          <div style={{marginTop:20,fontSize:10,opacity:.6}}>Trust {user.trustScore} · On-time {user.deadlineRate}%</div>
+        </div>
+        <div className="pd-main">
+          <div style={{fontSize:11,color:"#666",marginBottom:4}}>지 KRW 동기 / 요약</div>
+          <p style={{marginBottom:20,color:"#333"}}>LER로 검증된 Projects 수행 이력을 바탕으로, <b>{creds[0]?.project}</b> 등 {user.completedProjects}의 실무를 Done했습니다. 협업·On-time rate {user.deadlineRate}%.</p>
+          <div style={{fontSize:12,fontWeight:800,borderBottom:"2px solid #1a1d24",paddingBottom:6,marginBottom:12}}>경력 · Projects</div>
+          {creds.map(c=>(
+            <div key={c.id} style={{marginBottom:16}}>
+              <div style={{display:"flex",justifyContent:"space-between"}}><b>{c.project}</b><span style={{color:"#666",fontSize:11}}>{c.period}</span></div>
+              <div style={{color:"#444",fontSize:12,margin:"4px 0 6px"}}>{c.task} · {c.role}</div>
+              <ul style={{margin:0,paddingLeft:18,color:"#333",fontSize:12}}>
+                <li>Assignee 업무 수행 후 Reviewer Review Pass (VRF {c.verifyId})</li>
+                <li>핵심 스킬: {c.skills.join(", ")} · Rating {c.rating}</li>
+              </ul>
             </div>
-            <div style={{display:"flex",gap:8}}><button className="btn btn-s btn-sm">{I.dl} PDF</button><button className="btn btn-s btn-sm">{I.link} URL</button></div>
-          </div>
-          <div className="port-sec"><h3>Core skills</h3><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{user.skills.map(s=><span key={s} className="tag" style={{padding:"5px 12px",fontSize:12}}>{s}</span>)}</div></div>
-          <div className="port-sec"><h3>Track record</h3>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16}}>
-              {[["Done",user.completedProjects],["On-time",`${user.deadlineRate}%`],["Rating",user.avgRating],["Trust",user.trustScore]].map(([l,v])=>(
-                <div key={l} style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:700,fontFamily:"var(--mono)"}}>{v}</div><div style={{fontSize:11,color:"var(--text-3)"}}>{l}</div></div>
+          ))}
+          <div style={{fontSize:12,fontWeight:800,borderBottom:"2px solid #1a1d24",paddingBottom:6,marginTop:8,marginBottom:8}}>학력 · 기타</div>
+          <div style={{fontSize:12,color:"#444"}}>○○대학교 컴퓨터공학 (재학/졸업) · LocalCrew Talent Program</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PortDocCareer({user,creds}) {
+  return (
+    <div className="port-doc port-doc--career">
+      <div className="port-doc-inner">
+        <div style={{textAlign:"center",marginBottom:24}}>
+          <div style={{fontSize:20,fontWeight:800}}>경 력 기 술 서</div>
+          <div style={{fontSize:14,marginTop:8}}>성 명 : {user.name} &nbsp;&nbsp; 작성일 : 2026.03.24</div>
+        </div>
+        <table><tbody>
+          <tr><th style={{width:100}}>성명</th><td>{user.name}</td><th style={{width:80}}>지역</th><td>{user.region}</td></tr>
+          <tr><th>핵심역량</th><td colSpan={3}>{user.skills.join(" · ")}</td></tr>
+          <tr><th>신뢰지표</th><td colSpan={3}>Trust {user.trustScore} · Due준수 {user.deadlineRate}% · 평균Rating {user.avgRating} (LER 검증)</td></tr>
+        </tbody></table>
+        <div style={{fontWeight:700,margin:"20px 0 8px"}}>1. 경력 요약</div>
+        <table><thead><tr><th>기간</th><th>Projects/기관</th><th>Assignee업무</th><th>성과·검증</th></tr></thead>
+        <tbody>{creds.map(c=>(
+          <tr key={c.id}>
+            <td>{c.period}</td>
+            <td>{c.project}</td>
+            <td>{c.task}<br/><span style={{fontSize:11,color:"#555"}}>{c.skills.join(", ")}</span></td>
+            <td>Rating {c.rating} · {c.verifyId}<br/>{c.qaPass?"QA passed":"—"}</td>
+          </tr>
+        ))}</tbody></table>
+        <div style={{fontWeight:700,margin:"16px 0 8px"}}>2. 자기소개 (실무 Medium심)</div>
+        <p style={{margin:0,textAlign:"justify"}}>지역 Projects 플랫폼 LocalCrew를 통해 {user.completedProjects}의 과업을 수행하였으며, 모든 이력은 Learning & Employment Record(LER)로 검증됩니다. 성실한 커뮤니케이션과 Deadline adherence를 강점으로 합니다.</p>
+      </div>
+    </div>
+  );
+}
+
+function PortDocProposal({user,creds}) {
+  const total = creds.length * 850000;
+  return (
+    <div className="port-doc port-doc--proposal">
+      <div className="port-doc-inner">
+        <div className="pp-cover">
+          <div style={{fontSize:11,color:"#666",letterSpacing:2}}>PROJECT PROPOSAL</div>
+          <div style={{fontSize:22,fontWeight:800,marginTop:8}}>실무 인력 제안서 — {user.name}</div>
+          <div style={{fontSize:13,color:"#444",marginTop:8}}>제안 대Hard: Projects 의뢰사 · LocalCrew 검증 Talent</div>
+        </div>
+        <div className="pp-sec"><h4>1. 제안 개요</h4><p>본 제안서는 LER(검증 이력) 기반 Talent {user.name}의 투입을 제안합니다. Trust {user.trustScore}, Projects completed {user.completedProjects}.</p></div>
+        <div className="pp-sec"><h4>2. 검증된 수행 이력</h4>
+          {creds.map(c=><div key={c.id} style={{marginBottom:10,paddingLeft:12,borderLeft:"3px solid #D4A574"}}><b>{c.project}</b> — {c.task} ({c.period})<br/><span style={{fontSize:12,color:"#555"}}>검증 ID {c.verifyId} · {c.skills.join(", ")}</span></div>)}
+        </div>
+        <div className="pp-sec"><h4>3. 수행 일정 · 산출물</h4>
+          <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr style={{background:"#f0ede8"}}><th style={{border:"1px solid #ccc",padding:8}}>단계</th><th style={{border:"1px solid #ccc",padding:8}}>기간</th><th style={{border:"1px solid #ccc",padding:8}}>산출물</th></tr></thead>
+          <tbody><tr><td style={{border:"1px solid #ccc",padding:8}}>착수·키오프</td><td style={{border:"1px solid #ccc",padding:8}}>1주</td><td style={{border:"1px solid #ccc",padding:8}}>과업 정의서</td></tr>
+          <tr><td style={{border:"1px solid #ccc",padding:8}}>실행</td><td style={{border:"1px solid #ccc",padding:8}}>3~4주</td><td style={{border:"1px solid #ccc",padding:8}}>Medium간·최종 결과물</td></tr>
+          <tr><td style={{border:"1px solid #ccc",padding:8}}>Review·LER</td><td style={{border:"1px solid #ccc",padding:8}}>1주</td><td style={{border:"1px solid #ccc",padding:8}}>Reviewer Approve · VRF 발급</td></tr></tbody></table>
+        </div>
+        <div className="pp-sec"><h4>4. 제안 금액 (참고)</h4><p style={{fontSize:18,fontWeight:700}}>₩ {total.toLocaleString()} <span style={{fontSize:12,fontWeight:400,color:"#666"}}>(VAT 별도 · Demo 견적)</span></p></div>
+      </div>
+    </div>
+  );
+}
+
+function PortPreview({tpl,user,creds}) {
+  if(tpl==="resume") return <PortDocResume user={user} creds={creds}/>;
+  if(tpl==="career") return <PortDocCareer user={user} creds={creds}/>;
+  if(tpl==="proposal") return <PortDocProposal user={user} creds={creds}/>;
+  return <PortDocProject user={user} creds={creds}/>;
+}
+
+function Portfolio({user}) {
+  const [tab,setTab]=useState("builder");
+  const [tpl,setTpl]=useState("project");
+  const [sel,setSel]=useState(()=>MOCK_CREDENTIALS.map(c=>c.id));
+  const [gen,setGen]=useState(false);
+  const [done,setDone]=useState(false);
+  const [aiJob,setAiJob]=useState(MOCK_APPLY_JOBS[0].id);
+  const [aiGen,setAiGen]=useState(false);
+  const [aiDone,setAiDone]=useState(false);
+
+  const toggleCred=(id)=>setSel(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
+  const creds=MOCK_CREDENTIALS.filter(c=>sel.includes(c.id));
+  const job=MOCK_APPLY_JOBS.find(j=>j.id===aiJob)||MOCK_APPLY_JOBS[0];
+  const aiCreds=[...creds].sort((a,b)=>job.reorder.indexOf(a.id)-job.reorder.indexOf(b.id));
+
+  const go=()=>{setGen(true);setTimeout(()=>{setGen(false);setDone(true)},1400)};
+  const goAi=()=>{setAiGen(true);setTimeout(()=>{setAiGen(false);setAiDone(true)},1600)};
+
+  return (<div>
+    <div className="ph"><h1>Portfolio · 지 KRW서</h1><p>LER 검증 데이터로 양식별 문서 생성 · 채용공고 맞춤 AI 재구성 (Demo)</p></div>
+    <div className="pb">
+      <div className="port-tabs">
+        <button type="button" className={tab==="builder"?"on":""} onClick={()=>setTab("builder")}>양식별 Portfolio</button>
+        <button type="button" className={tab==="ai"?"on":""} onClick={()=>setTab("ai")}>AI 맞춤 지 KRW서</button>
+      </div>
+
+      {tab==="builder"&&(
+        <div className="port-layout fade-up">
+          <div className="port-side">
+            <div className="glass" style={{padding:18}}>
+              <div className="ct" style={{marginBottom:12}}>템플릿 (양식마다 레이아웃 다름)</div>
+              <div className="port-tpl-grid">
+                {PORT_TEMPLATES.map(t=>(
+                  <button key={t.k} type="button" className={"port-tpl-card"+(tpl===t.k?" on":"")} onClick={()=>{setTpl(t.k);setDone(false)}}>
+                    <div className={"port-tpl-mini "+t.mini}/>
+                    <div className="pt-name">{t.name}</div>
+                    <div className="pt-desc">{t.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="glass" style={{padding:18}}>
+              <div className="ct" style={{marginBottom:12}}>포함할 LER Projects</div>
+              {MOCK_CREDENTIALS.map(c=>(
+                <label key={c.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid var(--border)",cursor:"pointer"}}>
+                  <input type="checkbox" checked={sel.includes(c.id)} onChange={()=>{toggleCred(c.id);setDone(false)}} style={{accentColor:"var(--accent-warm)"}}/>
+                  <div style={{flex:1}}><div style={{fontSize:13,fontWeight:550}}>{c.project}</div><div style={{fontSize:11,color:"var(--text-3)"}}>{c.task}</div></div>
+                  <Stars v={c.rating}/>
+                </label>
               ))}
             </div>
+            <button type="button" className="btn btn-p" onClick={go} disabled={gen||!sel.length}>{gen?"생성 Medium…":"미리보기 생성"}</button>
+            {done&&<div style={{display:"flex",gap:8}}><button type="button" className="btn btn-s btn-sm">{I.dl} PDF</button><button type="button" className="btn btn-s btn-sm">{I.link} 공유 URL</button></div>}
           </div>
-          <div className="port-sec"><h3>Project history</h3>
-            {MOCK_CREDENTIALS.map(c=>(
-              <div key={c.id} style={{padding:"14px 0",borderBottom:"1px solid var(--border)"}}>
-                <div style={{display:"flex",justifyContent:"space-between"}}><div style={{fontWeight:600,fontSize:14}}>{c.project}</div><Stars v={c.rating}/></div>
-                <div style={{fontSize:12,color:"var(--text-2)",marginTop:4}}>{c.task} | {c.role} | {c.period}</div>
-                <div style={{display:"flex",gap:4,marginTop:6}}>{c.skills.map(s=><span key={s} className="tag">{s}</span>)}</div>
+          <div className="port-preview-wrap">
+            <div className="port-preview-label">
+              <span>실시간 Preview · {PORT_TEMPLATES.find(t=>t.k===tpl)?.name}</span>
+              {!done&&<span style={{color:"var(--text-3)"}}>생성 버튼을 누르면 최종 렌더</span>}
+            </div>
+            {(done||!gen)&&<PortPreview tpl={tpl} user={user} creds={creds.length?creds:MOCK_CREDENTIALS}/>}
+            {gen&&<div className="glass" style={{padding:40,textAlign:"center"}}>LER 데이터 매핑 Medium…</div>}
+          </div>
+        </div>
+      )}
+
+      {tab==="ai"&&(
+        <div className="port-layout fade-up">
+          <div className="port-side">
+            <div className="glass" style={{padding:18}}>
+              <div className="ct" style={{marginBottom:8}}>① 지 KRW할 공고 선택</div>
+              <p style={{fontSize:12,color:"var(--text-2)",marginBottom:14,lineHeight:1.6}}>GlobalWork· KRW티드처럼 <b>공고(JD)마다</b> 같은 LER 이력도 강조 포인트를 바꿉니다. (실서비스: LLM + RAG)</p>
+              <div className="port-ai-jobs">
+                {MOCK_APPLY_JOBS.map(j=>(
+                  <button key={j.id} type="button" className={"port-ai-job"+(aiJob===j.id?" on":"")} onClick={()=>{setAiJob(j.id);setAiDone(false)}}>
+                    <div className="aj-co">{j.company}</div>
+                    <div className="aj-ti">{j.title}</div>
+                  </button>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="glass" style={{padding:18}}>
+              <div className="ct" style={{marginBottom:8}}>② 기본 양식</div>
+              <select className="input" value={tpl} onChange={e=>setTpl(e.target.value)} style={{width:"100%"}}>
+                {PORT_TEMPLATES.map(t=><option key={t.k} value={t.k}>{t.name}</option>)}
+              </select>
+            </div>
+            <button type="button" className="btn btn-p" style={{background:"linear-gradient(135deg,#7c3aed,#a78bfa)"}} onClick={goAi} disabled={aiGen}>{aiGen?"AI 재구성 Medium…":"이 공고에 맞게 AI 생성"}</button>
+            <p style={{fontSize:11,color:"var(--text-3)",lineHeight:1.55}}>Demo: 키워드·Projects 순서를 공고별로 미리 정의해 시뮬레이션합니다. 프로덕션에서는 PDF/Portfolio 업로드 + JD 파싱 → LLM이 bullet·순서·요약을 생성합니다.</p>
+          </div>
+          <div>
+            {aiDone?(
+              <>
+                <div className="glass" style={{padding:16,marginBottom:16,border:"1px solid rgba(139,92,246,.35)"}}>
+                  <div style={{fontSize:12,color:"#c4b5fd",fontWeight:600,marginBottom:6}}>AI 맞춤 요약 · {job.emphasis}</div>
+                  <p style={{fontSize:13,color:"var(--text-2)",margin:0,lineHeight:1.65}}>{job.summary}</p>
+                  <div className="port-ai-kw">{job.keywords.map(k=><span key={k}>{k}</span>)}</div>
+                </div>
+                <div className="port-ai-diff">
+                  <div className="port-ai-col">
+                    <h5>기본 (전체 LER)</h5>
+                    <p>Projects 나열 순: 시간순 · 모든 스킬 동일 비Medium.</p>
+                    <PortPreview tpl={tpl} user={user} creds={creds.length?creds:MOCK_CREDENTIALS}/>
+                  </div>
+                  <div className="port-ai-col tailored">
+                    <h5>AI 맞춤 ({job.company})</h5>
+                    <p>공고 키워드 반영 · 관련 Projects Hard단 · bullet 톤 조정.</p>
+                    <PortPreview tpl={tpl} user={user} creds={aiCreds.length?aiCreds:MOCK_CREDENTIALS}/>
+                  </div>
+                </div>
+              </>
+            ):(
+              <div className="port-preview-wrap">
+                <div className="port-preview-label">기본 LER Portfolio (맞춤 전)</div>
+                <PortPreview tpl={tpl} user={user} creds={creds.length?creds:MOCK_CREDENTIALS}/>
+                {aiGen&&<div className="glass" style={{padding:24,marginTop:12,textAlign:"center",color:"#c4b5fd"}}>JD Analysis → LER 매칭 → 문장 재작성 시뮬레이션…</div>}
+              </div>
+            )}
           </div>
         </div>
       )}
