@@ -8,6 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js" onerror="void 0"></script>
+  <script src="js/gig-match-store.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     :root{--bg:#0c1220;--card:rgba(17,24,39,.85);--border:rgba(255,255,255,.1);--text:#e8eaef;--muted:rgba(232,234,239,.5);--warm:#d4a574;--green:#34d399;--purple:#a78bfa}
@@ -41,54 +44,33 @@
     .b-applied{background:rgba(59,130,246,.2);color:#93c5fd}
     .b-done{background:rgba(52,211,153,.2);color:var(--green)}
     .notice{font-size:12px;color:var(--purple);padding:12px;border-radius:8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);margin-bottom:16px;line-height:1.65}
+    .notice.ok{color:var(--green);border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08)}
+    .toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;background:#1e293b;border:1px solid var(--border);border-radius:10px;font-size:13px;z-index:200;max-width:320px}
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
+    .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:400px;width:100%}
+    .loading{padding:40px;text-align:center;color:var(--muted)}
   </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useCallback } = React;
 
-const STORAGE_KEY = 'gigcareer_match_v1';
-const ROLE_TAGS = ['바리스타','프론트엔드','UX 리서치','번역·통역','이벤트 스태프','데이터 정리','영상 편집','CS·응대','마케팅 보조','React'];
+const ROLE_TAGS = ['바리스타','프론트엔드','UX 리서치','번역·통역','이벤트 스태프','데이터 정리','영상 편집','CS·응대','마케팅 보조','React','영어 가능'];
 const REGIONS = ['제주','부산','대전','세종','청주','서울','원격'];
 const DURATIONS = ['1주','2주','1개월','협의'];
 
-const SEED = {
-  workers: [
-    { id:'w1', name:'김서연', tags:['바리스타','영어 가능','CS·응대'], regions:['제주','원격'], duration:'2주', rating:4.7, completed:6,
-      reviews:[{from:'employer',rating:5,text:'매장 오픈 준비 완벽'}] },
-    { id:'w2', name:'박민수', tags:['프론트엔드','React','데이터 정리'], regions:['대전','세종'], duration:'1개월', rating:4.5, completed:4, reviews:[] },
-    { id:'w3', name:'이하은', tags:['번역·통역','마케팅 보조'], regions:['부산','원격'], duration:'1주', rating:4.8, completed:9, reviews:[] },
-  ],
-  gigs: [
-    { id:'g1', employer:'제주 카페 모모', title:'바리스타 2주 긱 (오전)', tags:['바리스타','CS·응대'], region:'제주', duration:'2주', pay:'시급 1.2만', status:'open', employerRating:4.6 },
-    { id:'g2', employer:'로컬테크', title:'쇼핑몰 React UI 3주', tags:['프론트엔드','React'], region:'대전', duration:'1개월', pay:'300만', status:'open', employerRating:4.4 },
-    { id:'g3', employer:'부산 페스티벌', title:'현장 스태프 1주', tags:['이벤트 스태프','CS·응대'], region:'부산', duration:'1주', pay:'일당 12만', status:'open', employerRating:4.2 },
-  ],
-  applications: [],
-};
-
-function loadDb() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return JSON.parse(JSON.stringify(SEED));
-}
-function saveDb(db) { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+const store = new GigMatchStore();
 
 function matchScore(worker, gig) {
   let s = 0;
-  const tags = worker.tags.filter(t => gig.tags.some(gt => gt.includes(t) || t.includes(gt)));
-  s += tags.length * 22;
-  if (worker.regions.includes(gig.region) || gig.region === '원격' || worker.regions.includes('원격')) s += 28;
-  if (worker.duration === gig.duration || gig.duration === '협의' || worker.duration === '협의') s += 12;
-  s += (worker.rating || 0) * 5;
-  s += Math.min((worker.completed || 0) * 2, 14);
+  const overlap = (worker.tags||[]).filter(t => (gig.tags||[]).some(gt => gt.includes(t)||t.includes(gt)));
+  s += overlap.length * 22;
+  if ((worker.regions||[]).includes(gig.region) || gig.region==='원격' || (worker.regions||[]).includes('원격')) s += 28;
+  if (worker.duration===gig.duration || gig.duration==='협의' || worker.duration==='협의') s += 12;
+  s += (worker.rating||0)*5 + Math.min((worker.completed||0)*2, 14);
   return Math.round(Math.min(s, 100));
 }
-
-function uid(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
 function TagPicker({ pool, selected, onToggle, label }) {
   return (
@@ -101,102 +83,101 @@ function TagPicker({ pool, selected, onToggle, label }) {
   );
 }
 
-function WorkerApp({ db, setDb, activeWorker, setActiveWorker }) {
+function WorkerApp({ db, refresh, storageMode, activeWorker, setActiveWorker, toast }) {
   const [tab, setTab] = useState('gigs');
+  const [filter, setFilter] = useState('');
+  const [busy, setBusy] = useState(false);
   const w = db.workers.find(x => x.id === activeWorker) || db.workers[0];
 
-  const rankedGigs = useMemo(() =>
-    db.gigs.filter(g => g.status === 'open').map(g => ({ ...g, score: matchScore(w, g) })).sort((a, b) => b.score - a.score),
-  [db.gigs, w]);
+  const rankedGigs = useMemo(() => {
+    let list = db.gigs.filter(g => g.status === 'open');
+    if (filter) list = list.filter(g => g.region.includes(filter) || g.title.includes(filter) || (g.tags||[]).some(t => t.includes(filter)));
+    return list.map(g => ({ ...g, score: matchScore(w, g) })).sort((a, b) => b.score - a.score);
+  }, [db.gigs, w, filter]);
 
   const myApps = db.applications.filter(a => a.workerId === w.id);
 
-  const updateWorker = (patch) => {
-    const workers = db.workers.map(x => x.id === w.id ? { ...x, ...patch } : x);
-    const next = { ...db, workers };
-    setDb(next); saveDb(next);
-  };
+  const run = async (fn) => { setBusy(true); try { await fn(); await refresh(); } catch(e) { toast('오류: '+e.message); } setBusy(false); };
 
-  const apply = (gig) => {
-    if (myApps.some(a => a.gigId === gig.id && a.status !== 'rejected')) return;
-    const app = { id: uid('a'), gigId: gig.id, workerId: w.id, status: 'applied', matchScore: matchScore(w, gig), reviews: {} };
-    const next = { ...db, applications: [...db.applications, app] };
-    setDb(next); saveDb(next);
-  };
-
-  const toggleTag = (t) => updateWorker({ tags: w.tags.includes(t) ? w.tags.filter(x => x !== t) : [...w.tags, t] });
-  const toggleRegion = (r) => updateWorker({ regions: w.regions.includes(r) ? w.regions.filter(x => x !== r) : [...w.regions, r] });
+  const patchWorker = (patch) => run(() => store.updateWorker({ ...w, ...patch }));
+  const apply = (gig, withAi) => run(() => store.apply(w.id, gig.id, withAi));
+  const toggleTag = (t) => patchWorker({ tags: (w.tags||[]).includes(t) ? w.tags.filter(x=>x!==t) : [...(w.tags||[]), t] });
+  const toggleRegion = (r) => patchWorker({ regions: (w.regions||[]).includes(r) ? w.regions.filter(x=>x!==r) : [...(w.regions||[]), r] });
 
   return (
     <div className="wrap">
-      <div className="notice">
-        <b>LER 없이 동작하는 신뢰 레이어</b> — 태그 매칭 + 완료 후 리뷰가 평판을 쌓습니다. 데이터는 이 브라우저에 저장됩니다 (localStorage).
+      <div className={'notice' + (storageMode==='cloud'?' ok':'')}>
+        <b>{storageMode==='cloud'?'Supabase 연동됨':'로컬 데모'}</b> — 태그 매칭 · AI 맞춤 지원 · 완료 후 리뷰 평판 (LER 프리미엄 레이어는 이후 연동)
       </div>
       <div className="row" style={{marginBottom:16}}>
         <div>
           <h1 style={{fontSize:20}}>긱워커 · {w.name}</h1>
-          <p className="muted">평점 {w.rating} · 완료 {w.completed}건</p>
+          <p className="muted">평점 {w.rating} · 완료 {w.completed}건 · {w.tags?.slice(0,3).join(', ')}</p>
         </div>
         <div>
-          <button className={'pill' + (tab === 'gigs' ? ' on' : '')} onClick={() => setTab('gigs')}>매칭 공고</button>
-          <button className={'pill' + (tab === 'profile' ? ' on' : '')} onClick={() => setTab('profile')}>내 프로필</button>
-          <button className={'pill' + (tab === 'apps' ? ' on' : '')} onClick={() => setTab('apps')}>지원 현황</button>
+          {['gigs','profile','apps'].map(t => (
+            <button key={t} className={'pill'+(tab===t?' on':'')} onClick={()=>setTab(t)}>
+              {t==='gigs'?'매칭 공고':t==='profile'?'프로필':'지원 현황'}
+            </button>
+          ))}
         </div>
       </div>
 
-      {tab === 'profile' && (
+      {tab==='profile'&&(
         <div className="card">
-          <h2>역할 태그 · 지역 · 기간</h2>
-          <TagPicker pool={ROLE_TAGS} selected={w.tags} onToggle={toggleTag} label="역할 태그 (예: 바리스타 + 영어 가능)" />
-          <TagPicker pool={REGIONS} selected={w.regions} onToggle={toggleRegion} label="가능 지역" />
-          <div className="muted" style={{marginBottom:8}}>가능 기간</div>
-          {DURATIONS.map(d => (
-            <span key={d} className={'tag' + (w.duration === d ? ' on' : '')} onClick={() => updateWorker({ duration: d })}>{d}</span>
-          ))}
+          <h2>프로필 (매칭에 반영)</h2>
+          <TagPicker pool={ROLE_TAGS} selected={w.tags||[]} onToggle={toggleTag} label="역할 태그" />
+          <TagPicker pool={REGIONS} selected={w.regions||[]} onToggle={toggleRegion} label="가능 지역" />
+          <div className="muted" style={{marginBottom:8}}>가능 기간 (클릭 시 저장)</div>
+          {DURATIONS.map(d=><span key={d} className={'tag'+(w.duration===d?' on':'')} onClick={()=>patchWorker({ duration:d })}>{d}</span>)}
         </div>
       )}
 
-      {tab === 'gigs' && (
-        <div className="card">
-          <h2>태그 매칭 순 공고 (AI 없음 — 겹치는 태그 점수)</h2>
-          {rankedGigs.map(g => {
-            const applied = myApps.find(a => a.gigId === g.id);
-            return (
-              <div key={g.id} className="gig-item">
-                <div className="row">
-                  <div>
-                    <div style={{fontWeight:600}}>{g.title}</div>
-                    <div className="muted">{g.employer} · {g.region} · {g.duration} · {g.pay}</div>
-                    <div style={{marginTop:6}}>{g.tags.map(t => <span key={t} className="tag">{t}</span>)}</div>
-                  </div>
-                  <div style={{textAlign:'right'}}>
-                    <div className="score">{g.score}%</div>
-                    <div className="muted">매칭도</div>
-                    {applied ? <span className="badge b-applied">{applied.status}</span> :
-                      <button className="btn btn-p btn-sm" style={{marginTop:8}} onClick={() => apply(g)}>지원</button>}
+      {tab==='gigs'&&(
+        <>
+          <input className="input" placeholder="지역·키워드 필터 (예: 제주, React)" value={filter} onChange={e=>setFilter(e.target.value)} />
+          <div className="card">
+            <h2>매칭 점수순 공고</h2>
+            {rankedGigs.map(g=>{
+              const applied = myApps.find(a=>a.gigId===g.id&&a.status!=='rejected');
+              return (
+                <div key={g.id} className="gig-item">
+                  <div className="row">
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontWeight:600}}>{g.title}</div>
+                      <div className="muted">{g.employer} · {g.region} · {g.duration} · {g.pay}</div>
+                      <div style={{marginTop:6}}>{(g.tags||[]).map(t=><span key={t} className="tag">{t}</span>)}</div>
+                      {g.jdText&&<p className="muted" style={{marginTop:8}}>{g.jdText}</p>}
+                    </div>
+                    <div style={{textAlign:'right'}}>
+                      <div className="score">{g.score}%</div>
+                      {applied ? <span className="badge b-applied">{applied.status}</span> : (
+                        <>
+                          <button className="btn btn-p btn-sm" style={{marginTop:6,display:'block'}} disabled={busy} onClick={()=>apply(g,false)}>지원</button>
+                          <button className="btn btn-s btn-sm" style={{marginTop:4,display:'block'}} disabled={busy} onClick={()=>apply(g,true)}>AI 맞춤 지원</button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
-      {tab === 'apps' && (
+      {tab==='apps'&&(
         <div className="card">
-          <h2>내 지원 · 리뷰</h2>
-          {myApps.length === 0 && <p className="muted">아직 지원한 공고가 없습니다.</p>}
-          {myApps.map(a => {
-            const g = db.gigs.find(x => x.id === a.gigId);
+          <h2>지원 · AI 맞춤 요약</h2>
+          {myApps.length===0&&<p className="muted">지원 내역 없음</p>}
+          {myApps.map(a=>{
+            const g = db.gigs.find(x=>x.id===a.gigId);
             return (
               <div key={a.id} className="gig-item">
-                <div className="row">
-                  <div>
-                    <div style={{fontWeight:600}}>{g?.title}</div>
-                    <div className="muted">매칭 {a.matchScore}% · {a.status}</div>
-                  </div>
-                  {a.status === 'completed' && <span className="badge b-done">완료 + 리뷰 반영</span>}
-                </div>
+                <div style={{fontWeight:600}}>{g?.title} · {g?.employer}</div>
+                <div className="muted">매칭 {a.matchScore}% · {a.status}</div>
+                {a.tailoredSummary&&<p style={{fontSize:12,marginTop:8,padding:10,background:'rgba(139,92,246,.1)',borderRadius:8,lineHeight:1.6}}>{a.tailoredSummary}</p>}
+                {a.employerReview&&<p className="muted" style={{marginTop:6}}>고용주 리뷰: ★{a.employerReview.rating} {a.employerReview.text}</p>}
               </div>
             );
           })}
@@ -206,166 +187,207 @@ function WorkerApp({ db, setDb, activeWorker, setActiveWorker }) {
   );
 }
 
-function EmployerApp({ db, setDb }) {
-  const [form, setForm] = useState({ title:'', employer:'', tags:[], region:'제주', duration:'2주', pay:'' });
+function ReviewModal({ onClose, onSubmit }) {
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState('');
+  return (
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <h2 style={{fontSize:16,marginBottom:12}}>긱 완료 · 리뷰</h2>
+        <div className="muted" style={{marginBottom:10}}>평점 (1–5)</div>
+        {[1,2,3,4,5].map(n=><span key={n} className={'tag'+(rating===n?' on':'')} onClick={()=>setRating(n)}>★{n}</span>)}
+        <textarea className="input" rows={3} placeholder="한 줄 코멘트" value={text} onChange={e=>setText(e.target.value)} style={{marginTop:12}}/>
+        <div style={{display:'flex',gap:8,marginTop:12}}>
+          <button className="btn btn-p" onClick={()=>onSubmit({ rating, text })}>완료 처리</button>
+          <button className="btn btn-s" onClick={onClose}>취소</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmployerApp({ db, refresh, storageMode, toast }) {
+  const [form, setForm] = useState({ title:'', employer:'', tags:[], region:'제주', duration:'2주', pay:'', jdText:'' });
   const [pickGig, setPickGig] = useState(null);
+  const [reviewApp, setReviewApp] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const run = async (fn) => { setBusy(true); try { await fn(); await refresh(); toast('저장됨'); } catch(e) { toast('오류: '+e.message); } setBusy(false); };
 
   const postGig = () => {
-    if (!form.title || !form.employer) return;
-    const gig = { id: uid('g'), ...form, status: 'open', employerRating: 4.5 };
-    const next = { ...db, gigs: [gig, ...db.gigs] };
-    setDb(next); saveDb(next);
-    setForm({ title:'', employer:'', tags:[], region:'제주', duration:'2주', pay:'' });
+    if (!form.title || !form.employer) return toast('제목·업체명 필수');
+    run(async () => { await store.postGig(form); setForm({ title:'', employer:'', tags:[], region:'제주', duration:'2주', pay:'', jdText:'' }); });
   };
 
   const appsFor = (gigId) => db.applications.filter(a => a.gigId === gigId)
     .map(a => ({ ...a, worker: db.workers.find(w => w.id === a.workerId) }))
     .sort((a, b) => b.matchScore - a.matchScore);
 
-  const accept = (appId) => {
-    const applications = db.applications.map(a => a.id === appId ? { ...a, status: 'accepted' } : a);
-    setDb({ ...db, applications }); saveDb({ ...db, applications });
-  };
-
-  const complete = (appId, workerReview, empReview) => {
-    const app = db.applications.find(a => a.id === appId);
-    const worker = db.workers.find(w => w.id === app.workerId);
-    const newRating = workerReview ? ((worker.rating * worker.completed + workerReview.rating) / (worker.completed + 1)) : worker.rating;
-    const workers = db.workers.map(w => w.id === worker.id ? {
-      ...w,
-      completed: w.completed + 1,
-      rating: Math.round(newRating * 10) / 10,
-      reviews: workerReview ? [...(w.reviews || []), { from: 'employer', ...workerReview }] : w.reviews,
-    } : w);
-    const applications = db.applications.map(a => a.id === appId ? {
-      ...a, status: 'completed',
-      reviews: { worker: workerReview, employer: empReview },
-    } : a);
-    const gigs = db.gigs.map(g => g.id === app.gigId ? { ...g, status: 'filled' } : g);
-    const next = { ...db, workers, applications, gigs };
-    setDb(next); saveDb(next);
-    setPickGig(null);
-  };
-
-  const toggleFormTag = (t) => setForm(f => ({
-    ...f, tags: f.tags.includes(t) ? f.tags.filter(x => x !== t) : [...f.tags, t],
-  }));
-
   const selectedGig = pickGig ? db.gigs.find(g => g.id === pickGig) : null;
 
   return (
     <div className="wrap">
-      <div className="notice">
-        <b>고용주</b> — 공고 등록 → 지원자는 태그 매칭 점수 순 · 수락 후 완료 시 양방향 리뷰로 평판 축적.
+      <div className={'notice'+(storageMode==='cloud'?' ok':'')}>
+        <b>고용주</b> — 공고(JD) 등록 → 매칭순 지원자 → 수락/거절 → 완료·리뷰 시 Talent 평점 반영
       </div>
       <div className="grid2">
         <div className="card">
-          <h2>긱 공고 올리기</h2>
-          <input className="input" placeholder="공고 제목" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
-          <input className="input" placeholder="업체명" value={form.employer} onChange={e => setForm({ ...form, employer: e.target.value })} />
-          <input className="input" placeholder="급여 (예: 시급 1.2만)" value={form.pay} onChange={e => setForm({ ...form, pay: e.target.value })} />
-          <TagPicker pool={ROLE_TAGS} selected={form.tags} onToggle={toggleFormTag} label="필요 역할 태그" />
-          <TagPicker pool={REGIONS} selected={[form.region]} onToggle={r => setForm({ ...form, region: r })} label="지역 (1개)" />
-          <div className="muted" style={{marginBottom:8}}>기간</div>
-          {DURATIONS.map(d => (
-            <span key={d} className={'tag' + (form.duration === d ? ' on' : '')} onClick={() => setForm({ ...form, duration: d })}>{d}</span>
-          ))}
-          <button className="btn btn-p" style={{marginTop:12}} onClick={postGig}>공고 등록</button>
+          <h2>긱 공고 + JD (AI 맞춤용)</h2>
+          <input className="input" placeholder="공고 제목" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} />
+          <input className="input" placeholder="업체명" value={form.employer} onChange={e=>setForm({...form,employer:e.target.value})} />
+          <input className="input" placeholder="급여" value={form.pay} onChange={e=>setForm({...form,pay:e.target.value})} />
+          <textarea className="input" rows={3} placeholder="채용 공고(JD) 텍스트 — AI 맞춤 지원에 사용" value={form.jdText} onChange={e=>setForm({...form,jdText:e.target.value})} />
+          <TagPicker pool={ROLE_TAGS} selected={form.tags} onToggle={t=>setForm(f=>({...f,tags:f.tags.includes(t)?f.tags.filter(x=>x!==t):[...f.tags,t]}))} label="필요 역할 태그" />
+          <TagPicker pool={REGIONS} selected={[form.region]} onToggle={r=>setForm({...form,region:r})} label="지역" />
+          {DURATIONS.map(d=><span key={d} className={'tag'+(form.duration===d?' on':'')} onClick={()=>setForm({...form,duration:d})}>{d}</span>)}
+          <button className="btn btn-p" style={{marginTop:12}} disabled={busy} onClick={postGig}>공고 등록</button>
         </div>
         <div className="card">
           <h2>내 공고</h2>
-          {db.gigs.map(g => (
+          {db.gigs.map(g=>(
             <div key={g.id} className="gig-item">
               <div className="row">
-                <div>
-                  <div style={{fontWeight:600}}>{g.title}</div>
-                  <div className="muted">{g.status} · {appsFor(g.id).length}명 지원</div>
-                </div>
-                <button className="btn btn-s btn-sm" onClick={() => setPickGig(g.id)}>지원자 보기</button>
+                <div><div style={{fontWeight:600}}>{g.title}</div><div className="muted">{g.status} · {appsFor(g.id).length}명</div></div>
+                <button className="btn btn-s btn-sm" onClick={()=>setPickGig(g.id)}>지원자</button>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {selectedGig && (
+      {selectedGig&&(
         <div className="card">
-          <h2>지원자 (매칭순) — {selectedGig.title}</h2>
-          {appsFor(selectedGig.id).length === 0 && <p className="muted">지원자 없음. 긱워커 탭에서 지원해 보세요.</p>}
-          {appsFor(selectedGig.id).map(a => (
+          <h2>지원자 — {selectedGig.title}</h2>
+          {appsFor(selectedGig.id).map(a=>(
             <div key={a.id} className="gig-item">
               <div className="row">
-                <div>
+                <div style={{flex:1}}>
                   <div style={{fontWeight:600}}>{a.worker?.name}</div>
-                  <div className="muted">{a.worker?.tags?.join(' · ')}</div>
-                  <div className="stars">★ {a.worker?.rating} · 완료 {a.worker?.completed}</div>
+                  <div className="muted">{(a.worker?.tags||[]).join(' · ')}</div>
+                  <div className="stars">★ {a.worker?.rating} · {a.worker?.completed}건</div>
+                  {a.tailoredSummary&&<p style={{fontSize:11,marginTop:8,color:'#c4b5fd'}}>{a.tailoredSummary}</p>}
                 </div>
                 <div style={{textAlign:'right'}}>
                   <div className="score">{a.matchScore}%</div>
-                  {a.status === 'applied' && <button className="btn btn-p btn-sm" style={{marginTop:6}} onClick={() => accept(a.id)}>수락</button>}
-                  {a.status === 'accepted' && (
-                    <button className="btn btn-s btn-sm" style={{marginTop:6}} onClick={() => complete(a.id,
-                      { rating: 5, text: '성실히 수행' },
-                      { rating: 5, text: '좋은 고용주' },
-                    )}>완료 + 리뷰</button>
-                  )}
-                  {a.status === 'completed' && <span className="badge b-done">완료</span>}
+                  {a.status==='applied'&&<>
+                    <button className="btn btn-p btn-sm" style={{marginTop:4}} disabled={busy} onClick={()=>run(()=>store.setApplicationStatus(a.id,'accepted'))}>수락</button>
+                    <button className="btn btn-s btn-sm" style={{marginTop:4}} disabled={busy} onClick={()=>run(()=>store.setApplicationStatus(a.id,'rejected'))}>거절</button>
+                  </>}
+                  {a.status==='accepted'&&<button className="btn btn-p btn-sm" style={{marginTop:4}} onClick={()=>setReviewApp(a)}>완료·리뷰</button>}
+                  {a.status==='completed'&&<span className="badge b-done">완료</span>}
                 </div>
               </div>
             </div>
           ))}
-          <button className="btn btn-s btn-sm" style={{marginTop:8}} onClick={() => setPickGig(null)}>닫기</button>
+          <button className="btn btn-s btn-sm" style={{marginTop:8}} onClick={()=>setPickGig(null)}>닫기</button>
         </div>
+      )}
+
+      {reviewApp&&(
+        <ReviewModal
+          onClose={()=>setReviewApp(null)}
+          onSubmit={(rev)=>run(async()=>{
+            await store.setApplicationStatus(reviewApp.id,'completed',{
+              workerId: reviewApp.workerId,
+              employerReview: rev,
+              workerReview: { rating: rev.rating, text: '고용주와 원활히 협업했습니다.' },
+            });
+            setReviewApp(null);
+          })}
+        />
       )}
     </div>
   );
 }
 
 function App() {
-  const [db, setDb] = useState(loadDb);
+  const [db, setDb] = useState(null);
   const [mode, setMode] = useState(null);
-  const [activeWorker, setActiveWorker] = useState('w1');
+  const [activeWorker, setActiveWorker] = useState(null);
+  const [storageMode, setStorageMode] = useState('local');
+  const [loading, setLoading] = useState(true);
+  const [msg, setMsg] = useState('');
 
-  const reset = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setDb(JSON.parse(JSON.stringify(SEED)));
+  const refresh = useCallback(async () => {
+    const data = await store.load();
+    setDb(data);
+    if (data.workers?.length && !activeWorker) setActiveWorker(data.workers[0].id);
+    return data;
+  }, [activeWorker]);
+
+  useEffect(() => {
+    (async () => {
+      const { mode: m } = await store.init();
+      setStorageMode(m);
+      await refresh();
+      setLoading(false);
+    })();
+    return store.subscribe(() => { refresh(); });
+  }, []);
+
+  const toast = (t) => { setMsg(t); setTimeout(() => setMsg(''), 2800); };
+
+  const reset = async () => {
+    const data = await store.reset();
+    setDb(data);
     setMode(null);
+    toast('데이터 초기화');
   };
+
+  const addWorker = async () => {
+    const name = prompt('새 긱워커 이름');
+    if (!name) return;
+    const { workerId } = await store.createWorker(name);
+    setActiveWorker(workerId);
+    await refresh();
+    toast(name + ' 추가됨');
+  };
+
+  if (loading) return <div className="loading">데이터 연결 중…</div>;
 
   if (!mode) {
     return (
       <>
         <header className="top">
           <a href="/ko/" className="logo">GigCareer <span className="beta">BETA</span></a>
-          <span className="muted">역할 태그 매칭 · v0 (데이터 흐름 데모)</span>
+          <span className="muted">매칭 v1 · {storageMode==='cloud'?'Supabase':'localStorage'}</span>
         </header>
-        <div className="wrap" style={{paddingTop:48,textAlign:'center',maxWidth:520,margin:'0 auto'}}>
-          <h1 style={{fontSize:26,marginBottom:12}}>LER 전에도 굴러가는 매칭</h1>
-          <p className="muted" style={{marginBottom:28}}>
-            태그 + 지역 + 기간으로 매칭하고, 완료 후 리뷰로 신뢰를 쌓습니다.<br/>
-            (STEP 1~3 프로토타입 · Supabase 연동 전)
+        <div className="wrap" style={{paddingTop:40,maxWidth:520,margin:'0 auto'}}>
+          <h1 style={{fontSize:26,marginBottom:12}}>역할 태그 매칭 플랫폼</h1>
+          <p className="muted" style={{marginBottom:20,lineHeight:1.7}}>
+            STEP 1 프로필·공고 · STEP 2 태그 매칭 · STEP 3 리뷰 평판.<br/>
+            LER는 이후 프리미엄 검증 레이어로 연결합니다.
           </p>
-          <button className="btn btn-p" style={{width:'100%',marginBottom:10}} onClick={() => setMode('worker')}>긱워커로 체험</button>
-          <button className="btn btn-s" style={{width:'100%',marginBottom:10}} onClick={() => setMode('employer')}>고용주로 체험</button>
-          <a href="/ko/localcrew-mvp.html" className="muted" style={{display:'block',marginTop:20}}>← 기존 LER 플로우 데모</a>
-          <button className="btn btn-s btn-sm" style={{marginTop:24}} onClick={reset}>데이터 초기화</button>
+          <button className="btn btn-p" style={{width:'100%',marginBottom:8}} onClick={()=>setMode('worker')}>긱워커 (Talent)</button>
+          <button className="btn btn-s" style={{width:'100%',marginBottom:8}} onClick={()=>setMode('employer')}>고용주 (공고)</button>
+          <button className="btn btn-s" style={{width:'100%',marginBottom:8}} onClick={addWorker}>+ 새 워커 프로필</button>
+          <a href="localcrew-mvp.html" className="muted" style={{display:'block',marginTop:16}}>LER 발급 데모 →</a>
+          <p className="muted" style={{marginTop:20,fontSize:11}}>Supabase: config.example.js → config.js 후 schema.sql 실행</p>
+          <button className="btn btn-s btn-sm" style={{marginTop:12}} onClick={reset}>전체 초기화</button>
         </div>
+        {msg&&<div className="toast">{msg}</div>}
       </>
     );
   }
+
+  if (!db) return null;
 
   return (
     <>
       <header className="top">
         <a href="/ko/" className="logo">GigCareer</a>
-        <button className="pill" onClick={() => setMode(null)}>역할 다시 선택</button>
-        {mode === 'worker' && db.workers.map(w => (
-          <button key={w.id} className={'pill' + (activeWorker === w.id ? ' on' : '')} onClick={() => setActiveWorker(w.id)}>{w.name}</button>
+        <span className="muted">{storageMode==='cloud'?'☁ Supabase':'💾 Local'}</span>
+        <button className="pill" onClick={()=>setMode(null)}>← 메인</button>
+        {mode==='worker'&&db.workers.map(w=>(
+          <button key={w.id} className={'pill'+(activeWorker===w.id?' on':'')} onClick={()=>setActiveWorker(w.id)}>{w.name}</button>
         ))}
+        <button className="pill" onClick={refresh}>새로고침</button>
         <button className="pill" onClick={reset}>초기화</button>
       </header>
-      {mode === 'worker' ? <WorkerApp db={db} setDb={setDb} activeWorker={activeWorker} setActiveWorker={setActiveWorker} /> :
-        <EmployerApp db={db} setDb={setDb} />}
+      {mode==='worker'
+        ? <WorkerApp db={db} refresh={refresh} storageMode={storageMode} activeWorker={activeWorker} setActiveWorker={setActiveWorker} toast={toast} />
+        : <EmployerApp db={db} refresh={refresh} storageMode={storageMode} toast={toast} />}
+      {msg&&<div className="toast">{msg}</div>}
     </>
   );
 }

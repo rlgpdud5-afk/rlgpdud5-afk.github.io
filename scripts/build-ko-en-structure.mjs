@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, cpSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -119,6 +119,15 @@ for (const asset of ['experience.html', 'localcrew-mvp.html', 'gig-match.html'])
   copyFileSync(path.join(root, asset), path.join(koDir, asset));
   const enAsset = path.join(enSourceDir, asset);
   copyFileSync(existsSync(enAsset) ? enAsset : path.join(root, asset), path.join(enDir, asset));
+}
+
+if (existsSync(path.join(root, 'js'))) {
+  cpSync(path.join(root, 'js'), path.join(koDir, 'js'), { recursive: true });
+  cpSync(path.join(root, 'js'), path.join(enDir, 'js'), { recursive: true });
+}
+if (existsSync(path.join(root, 'config.example.js'))) {
+  copyFileSync(path.join(root, 'config.example.js'), path.join(koDir, 'config.example.js'));
+  copyFileSync(path.join(root, 'config.example.js'), path.join(enDir, 'config.example.js'));
 }
 
 writeFileSync(
