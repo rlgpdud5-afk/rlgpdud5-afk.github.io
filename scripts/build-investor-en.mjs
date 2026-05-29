@@ -57,6 +57,7 @@ const indexRepl = [
   ['역할 태그 매칭 체험', 'Role tag matching demo'],
   ['LER · 플랫폼 데모', 'LER · platform demo'],
   ['D-GIG 서비스 알아보기', 'Explore D-GIG platform'],
+  ['인구 유출 리포트 →', 'Youth outflow report →'],
   ['인구 유출 심층 리포트 보기 →', 'View market thesis →'],
   ['대전 대졸자 타 지역 유출률', 'Pilot: graduate outflow rate'],
   ['인문·사회계열 일자리당 경쟁자', 'Pilot: jobs per candidate'],
@@ -279,6 +280,8 @@ function buildEn(src, dest, extra) {
     /\(주\)GigCareer &nbsp;\|&nbsp; 대전광역시 유성구 \[상세 주소\]<br>\s*대표자: 김트리 &nbsp;\|&nbsp; 사업자등록번호: 000-00-00000<br>\s*이메일: rlgpdud5@gmail\.com/g,
     'GigCareer Inc. &nbsp;|&nbsp; Pilot market: Daejeon–Chungcheong (remote-first)<br>\n      contact@gigcareer.kr'
   );
+  html = html.replace(/인구 유출 리포트\s*→/g, 'Youth outflow report →');
+  html = html.replace(/인구 유출 심층 리포트 보기\s*→/g, 'View market thesis →');
   writeFileSync(path.join(enSourceDir, dest), html, 'utf8');
   console.log('wrote sources/en/' + dest);
 }

@@ -35,7 +35,7 @@ const MOCK_USERS = {
   admin: { id: "u5", name: "Admin User", role: "Admin" },
 };
 
-const MOCK_PROJECTS = [
+const INITIAL_PROJECTS = [
   { id: "p1", name: "Local food mall redesign", client: "LocalTech Inc.", status: "In progress", progress: 65, deadline: "2026-04-15", security: "Standard", budget: "3,500,000 KRW", tasks: 8, completedTasks: 5, modules: ["Landing page", "Product card UI", "Search filters"], description: "Modern frontend redesign for a local food marketplace" },
   { id: "p2", name: "Tourism data cleanup", client: "Sejong City Hall", status: "In progress", progress: 40, deadline: "2026-04-30", security: "Standard", budget: "2,000,000 KRW", tasks: 6, completedTasks: 2, modules: ["Data collection", "Cleaning", "Visualization"], description: "Tourism data collection, cleanup, and visualization" },
   { id: "p3", name: "Startup IR deck design", client: "NextLab", status: "In review", progress: 90, deadline: "2026-03-25", security: "High", budget: "1,800,000 KRW", tasks: 4, completedTasks: 4, modules: ["Slide design", "Infographic"], description: "Series A investor deck design" },
@@ -388,6 +388,14 @@ tr:hover td{background:var(--glass-3)}
 .flow-card{border:1px solid rgba(212,165,116,.35);background:rgba(212,165,116,.08)!important}
 .ler-new{animation:lerPop .5s ease}
 @keyframes lerPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.modal-bg{position:fixed;inset:0;z-index:220;background:rgba(4,8,18,.65);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-box{width:100%;max-width:440px;padding:24px;border-radius:var(--radius);background:rgba(18,24,38,.98);border:1px solid var(--border);box-shadow:var(--shadow)}
+.modal-box h3{margin:0 0 16px;font-size:17px}
+.talent-suggest{position:relative;flex:1;min-width:200px}
+.talent-ac{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;background:rgba(18,24,38,.98);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.talent-ac button{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;color:var(--text-1);font-size:13px;cursor:pointer;font-family:var(--font)}
+.talent-ac button:hover{background:rgba(212,165,116,.12);color:var(--accent-warm)}
+.search-hint{font-size:11px;color:var(--text-3);margin-top:8px}
 `;
 
 // ─── Helpers ───
@@ -398,6 +406,68 @@ const StatusBadge = ({s}) => {
 const GradeBadge = ({g}) => <span className="badge" style={{background:`${gradeColors[g]}22`,color:gradeColors[g]}}>{g}</span>;
 const Stars = ({v}) => <span style={{display:"inline-flex",alignItems:"center",gap:2}}>{I.star}<span style={{fontFamily:"var(--mono)",fontWeight:600,fontSize:13}}>{v}</span></span>;
 const PBar = ({v,c="var(--accent-warm)"}) => <div className="pbar"><div className="pfill" style={{width:`${v}%`,background:c}}/></div>;
+
+function matchTalentQuery(t, q) {
+  if (!q || !q.trim()) return true;
+  const raw = q.trim();
+  const lower = raw.toLowerCase();
+  if (t.name.includes(raw)) return true;
+  if (t.region.includes(raw)) return true;
+  if (t.grade.toLowerCase().includes(lower)) return true;
+  return t.skills.some(s => s.toLowerCase().includes(lower) || s.includes(raw));
+}
+
+function talentSuggestions(query) {
+  const q = (query || "").trim();
+  if (!q) return [];
+  const lower = q.toLowerCase();
+  const names = MOCK_TALENTS.filter(t => t.name.includes(q)).map(t => t.name);
+  const skills = [...new Set(MOCK_TALENTS.flatMap(t => t.skills).filter(s => s.toLowerCase().includes(lower) || s.includes(q)))];
+  const regions = [...new Set(MOCK_TALENTS.map(t => t.region).filter(r => r.includes(q)))];
+  return [...new Set([...names, ...skills, ...regions])].slice(0, 8);
+}
+
+function ProjectCreateModal({ open, onClose, onSubmit, clientLabel }) {
+  const [form, setForm] = useState({ name: "", deadline: "", budget: "", security: "Standard", description: "" });
+  const [err, setErr] = useState("");
+  if (!open) return null;
+  const submit = () => {
+    if (!form.name.trim()) { setErr("Enter a project name."); return; }
+    const budgetRaw = form.budget.trim();
+    const budget = budgetRaw ? (budgetRaw.includes(" KRW") ? budgetRaw : budgetRaw + " KRW") : "협의";
+    onSubmit({
+      name: form.name.trim(),
+      deadline: form.deadline || "2026-06-30",
+      budget,
+      security: form.security,
+      description: form.description.trim(),
+      client: clientLabel || "LocalTech Inc.",
+    });
+    setForm({ name: "", deadline: "", budget: "", security: "Standard", description: "" });
+    setErr("");
+    onClose();
+  };
+  return (
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
+        <h3>New project brief</h3>
+        {err && <p style={{ color: "var(--danger)", fontSize: 12, margin: "0 0 10px" }}>{err}</p>}
+        <input className="input" placeholder="Project name *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+        <input className="input" placeholder="Due date (e.g. 2026-06-30)" value={form.deadline} onChange={e => setForm({ ...form, deadline: e.target.value })} />
+        <input className="input" placeholder="Budget (e.g. 2,000,000 KRW)" value={form.budget} onChange={e => setForm({ ...form, budget: e.target.value })} />
+        <select className="input" value={form.security} onChange={e => setForm({ ...form, security: e.target.value })}>
+          <option value="Standard">Security: standard</option>
+          <option value="High">Security: high</option>
+        </select>
+        <textarea className="input" rows={3} placeholder="Project description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ resize: "vertical" }} />
+        <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <button type="button" className="btn btn-p" onClick={submit}>Create</button>
+          <button type="button" className="btn btn-s" onClick={onClose}>취소</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Demo UI ───
 function DemoBanner({flow, role, onSwitchRole, onGoTasks, onGoReview, onGoCreds, onOpenTour}) {
@@ -963,22 +1033,24 @@ function Portfolio({user}) {
 }
 
 // ─── Client Dashboard ───
-function ClientDash({user}) {
+function ClientDash({ user, projects, onCreate }) {
+  const clientName = user.name || (user.company ? `(주)${user.company}` : "LocalTech Inc.");
+  const mine = projects.filter(p => p.client === clientName);
   return (<div>
     <div className="ph"><h1>{user.company} dashboard</h1><p>Project progress overview</p></div>
     <div className="pb">
       <div className="stats">
-        {[["Total projects",user.projects,"","bl"],["In progress",user.activeProjects,"","gr"],["Pending review",1,"1 needs review","or"],["Total spend",`12.5M`," KRW","pu"]].map(([l,v,s,c],i)=>(
-          <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*.06}s`}}><div className="stat-l">{l}</div><div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div>{s&&<div className="stat-s">{s}</div>}</div>
+        {[["Total projects", mine.length, "", "bl"], ["In progress", mine.filter(p => p.status === "In progress" || p.status === "Assigning").length, "", "gr"], ["Pending review", 1, "1 needs review", "or"], ["Total spend", `12.5M`, " KRW", "pu"]].map(([l, v, s, c], i) => (
+          <div key={i} className={`glass stat ${c} fade-up`} style={{ animationDelay: `${i * .06}s` }}><div className="stat-l">{l}</div><div className="stat-v" style={{ color: c === "bl" ? "#60A5FA" : c === "gr" ? "#34D399" : c === "pu" ? "#A78BFA" : "var(--accent-warm)" }}>{v}</div>{s && <div className="stat-s">{s}</div>}</div>
         ))}
       </div>
-      <div className="glass" style={{padding:20}}>
-        <div className="ch"><span className="ct">Project list</span><button className="btn btn-p btn-sm">{I.plus} New brief</button></div>
+      <div className="glass" style={{ padding: 20 }}>
+        <div className="ch"><span className="ct">Project list</span><button type="button" className="btn btn-p btn-sm" onClick={onCreate}>{I.plus} New brief</button></div>
         <table><thead><tr><th>Project</th><th>Status</th><th>Progress</th><th>Due</th><th>Budget</th></tr></thead>
-        <tbody>{MOCK_PROJECTS.filter(p=>p.client==="LocalTech Inc.").map(p=>(
-          <tr key={p.id}><td style={{fontWeight:550}}>{p.name}</td><td><StatusBadge s={p.status}/></td>
-          <td style={{minWidth:120}}><PBar v={p.progress} c={p.progress===100?"var(--success)":"var(--accent-warm)"}/><span style={{fontSize:11,color:"var(--text-3)"}}>{p.progress}%</span></td>
-          <td style={{fontSize:12,color:"var(--text-2)"}}>{p.deadline}</td><td style={{fontFamily:"var(--mono)",fontSize:12}}>{p.budget}</td></tr>
+        <tbody>{mine.map(p => (
+          <tr key={p.id}><td style={{ fontWeight: 550 }}>{p.name}</td><td><StatusBadge s={p.status} /></td>
+            <td style={{ minWidth: 120 }}><PBar v={p.progress} c={p.progress === 100 ? "var(--success)" : "var(--accent-warm)"} /><span style={{ fontSize: 11, color: "var(--text-3)" }}>{p.progress}%</span></td>
+            <td style={{ fontSize: 12, color: "var(--text-2)" }}>{p.deadline}</td><td style={{ fontFamily: "var(--mono)", fontSize: 12 }}>{p.budget}</td></tr>
         ))}</tbody></table>
       </div>
     </div>
@@ -987,20 +1059,49 @@ function ClientDash({user}) {
 
 // ─── Talent Search ───
 function TalentSearch() {
-  const [sf,setSf]=useState("");
-  const [gf,setGf]=useState("all");
-  const filtered=MOCK_TALENTS.filter(t=>{if(gf!=="all"&&t.grade!==gf)return false;if(sf&&!t.skills.some(s=>s.toLowerCase().includes(sf.toLowerCase())))return false;return true});
+  const [sf, setSf] = useState("");
+  const [gf, setGf] = useState("all");
+  const [showAc, setShowAc] = useState(false);
+  const suggestions = useMemo(() => talentSuggestions(sf), [sf]);
+  const filtered = MOCK_TALENTS.filter(t => {
+    if (gf !== "all" && t.grade !== gf) return false;
+    return matchTalentQuery(t, sf);
+  });
+  const pickSuggestion = (v) => { setSf(v); setShowAc(false); };
   return (<div>
     <div className="ph"><h1>Talent search</h1><p>Search talent by verified work history</p></div>
     <div className="pb">
-      <div className="glass" style={{padding:16,marginBottom:20}}>
-        <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-          <input className="input" placeholder="Search skills (e.g. React, Python)" value={sf} onChange={e=>setSf(e.target.value)} style={{flex:1,minWidth:200}}/>
-          <select className="input" value={gf} onChange={e=>setGf(e.target.value)} style={{width:140}}><option value="all">All grades</option><option value="Starter">Starter</option><option value="Verified">Verified</option><option value="Advanced">Advanced</option></select>
+      <div className="glass" style={{ padding: 16, marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <div className="talent-suggest">
+            <input
+              className="input"
+              placeholder="Search by name, skill, or region (e.g. Kim, React, Daejeon)"
+              value={sf}
+              onChange={e => { setSf(e.target.value); setShowAc(true); }}
+              onFocus={() => setShowAc(true)}
+              onBlur={() => setTimeout(() => setShowAc(false), 150)}
+              style={{ width: "100%" }}
+            />
+            {showAc && suggestions.length > 0 && (
+              <div className="talent-ac">
+                {suggestions.map(s => (
+                  <button type="button" key={s} onMouseDown={e => e.preventDefault()} onClick={() => pickSuggestion(s)}>{s}</button>
+                ))}
+              </div>
+            )}
+          </div>
+          <select className="input" value={gf} onChange={e => setGf(e.target.value)} style={{ width: 140 }}><option value="all">All grades</option><option value="Starter">Starter</option><option value="Verified">Verified</option><option value="Advanced">Advanced</option></select>
         </div>
+        <p className="search-hint">이름·기술·지역 일부만 입력해도 검색됩니다. 예: &quot;김&quot;, &quot;React&quot;, &quot;Regional&quot;</p>
       </div>
+      {filtered.length === 0 && (
+        <div className="glass" style={{ padding: 24, textAlign: "center", color: "var(--text-3)", fontSize: 13 }}>
+          No matching talent. Shorten your query or adjust the grade filter.
+        </div>
+      )}
       <div className="g3">
-        {filtered.map((t,i)=>(
+        {filtered.map((t, i) => (
           <div key={t.id} className="glass tc fade-up" style={{animationDelay:`${i*.06}s`}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
               <div style={{display:"flex",gap:12,alignItems:"center"}}>
@@ -1024,14 +1125,14 @@ function TalentSearch() {
 }
 
 // ─── Admin Dashboard ───
-function AdminDash() {
-  const active=MOCK_PROJECTS.filter(p=>p.status!=="Done");
-  const risk=MOCK_PROJECTS.filter(p=>{const d=new Date(p.deadline);return d-new Date()<7*864e5&&p.status!=="Done"});
+function AdminDash({ projects }) {
+  const active = projects.filter(p => p.status !== "Done");
+  const risk = projects.filter(p => { const d = new Date(p.deadline); return d - new Date() < 7 * 864e5 && p.status !== "Done"; });
   return (<div>
     <div className="ph"><h1>Operations dashboard</h1><p>Platform-wide overview</p></div>
     <div className="pb">
       <div className="stats">
-        {[["All projects",MOCK_PROJECTS.length,`In progress ${active.length}`,"bl"],["At-risk deadlines",risk.length,"Within 7 days","or"],["Active contributors",MOCK_TALENTS.length,"Regional markets","gr"],["Credentials issued",47,"+12 this month","pu"]].map(([l,v,s,c],i)=>(
+        {[["All projects", projects.length, `In progress ${active.length}`, "bl"], ["At-risk deadlines", risk.length, "Within 7 days", "or"], ["Active contributors", MOCK_TALENTS.length, "Regional markets", "gr"], ["Credentials issued", 47, "+12 this month", "pu"]].map(([l, v, s, c], i) => (
           <div key={i} className={`glass stat ${c} fade-up`} style={{animationDelay:`${i*.06}s`}}><div className="stat-l">{l}</div><div className="stat-v" style={{color:c==="bl"?"#60A5FA":c==="gr"?"#34D399":c==="pu"?"#A78BFA":"var(--accent-warm)"}}>{v}</div><div className="stat-s">{s}</div></div>
         ))}
       </div>
@@ -1039,7 +1140,7 @@ function AdminDash() {
         <div className="glass" style={{padding:20}}>
           <div className="ch"><span className="ct">Project status</span></div>
           <table><thead><tr><th>Project</th><th>Status</th><th>Progress</th><th>Due</th></tr></thead>
-          <tbody>{MOCK_PROJECTS.map(p=>(
+          <tbody>{projects.map(p=>(
             <tr key={p.id}><td style={{fontWeight:550,fontSize:13}}>{p.name}</td><td><StatusBadge s={p.status}/></td>
             <td><PBar v={p.progress} c={p.progress===100?"var(--success)":p.progress>70?"var(--accent-warm)":"var(--warning)"}/></td>
             <td style={{fontSize:12,color:"var(--text-2)"}}>{p.deadline}</td></tr>
@@ -1085,11 +1186,11 @@ function AdminDash() {
 }
 
 // ─── Projects ───
-function Projects({onSelect}) {
+function Projects({ projects, onSelect, onCreate }) {
   return (<div>
-    <div className="ph"><div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h1>Project admin</h1><p>View and manage all projects</p></div><button className="btn btn-p">{I.plus} Add project</button></div></div>
+    <div className="ph"><div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><h1>Project admin</h1><p>View and manage all projects</p></div><button type="button" className="btn btn-p" onClick={onCreate}>{I.plus} Add project</button></div></div>
     <div className="pb">
-      {MOCK_PROJECTS.map((p,i)=>(
+      {projects.map((p,i)=>(
         <div key={p.id} className="glass fade-up" style={{padding:20,marginBottom:12,cursor:"pointer",animationDelay:`${i*.04}s`}} onClick={()=>onSelect(p)}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div style={{flex:1}}>
@@ -1174,8 +1275,9 @@ function Review({flow, onApprove}) {
 }
 
 // ─── Maker Tasks (demo flow) ───
-function MakerTasks({user, flow, onSubmit}) {
-  const tasks = MOCK_TASKS.filter(t=>t.assignee===user.name);
+function MakerTasks({ user, flow, onSubmit, projects }) {
+  const tasks = MOCK_TASKS.filter(t => t.assignee === user.name);
+  const projName = (id) => projects.find(p => p.id === id)?.name || "—";
   const flowTask = tasks.find(t=>t.id===FLOW_TASK_ID);
   return (<div>
     <div className="ph"><h1>My tasks</h1><p>Assigned tasks · LER demo</p></div>
@@ -1205,7 +1307,7 @@ function MakerTasks({user, flow, onSubmit}) {
           return (
             <tr key={t.id} className={isFlow&&flow===0?"hl-demo":""}>
               <td style={{fontWeight:550}}>{t.name}</td>
-              <td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td>
+              <td style={{ fontSize: 12, color: "var(--text-2)" }}>{projName(t.projectId)}</td>
               <td><StatusBadge s={st}/></td>
               <td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td>
               <td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td>
@@ -1243,7 +1345,29 @@ function App() {
   const [selProj,setSelProj]=useState(null);
   const [flow,setFlow]=useState(0);
   const [tourIdx,setTourIdx]=useState(-1);
+  const [projects,setProjects]=useState(()=>INITIAL_PROJECTS.map(p=>({...p})));
+  const [projModal,setProjModal]=useState(false);
   const user=role?MOCK_USERS[role]:null;
+  const clientLabel = user?.name || (user?.company ? `(주)${user.company}` : "LocalTech Inc.");
+
+  const addProject = (form) => {
+    setProjects(prev => [...prev, {
+      id: "p" + Date.now(),
+      name: form.name,
+      client: form.client || clientLabel,
+      status: "Assigning",
+      progress: 0,
+      deadline: form.deadline,
+      security: form.security,
+      budget: form.budget,
+      tasks: 0,
+      completedTasks: 0,
+      modules: ["신규"],
+      description: form.description || "",
+    }]);
+  };
+
+  const openProjectModal = () => setProjModal(true);
 
   const goTour = (idx, opts) => {
     const i = Math.max(0, Math.min(idx, TOUR_STEPS.length - 1));
@@ -1296,15 +1420,16 @@ function App() {
 
   const renderPage=()=>{
     if(!user)return null;
+    const projName = (id) => projects.find(p => p.id === id)?.name || "—";
     if(selProj)return <ProjectDetail project={selProj} onBack={()=>setSelProj(null)}/>;
     switch(page){
       case "dashboard":
-        if(role==="admin") return <AdminDash/>;
-        if(role==="client") return <ClientDash user={user}/>;
+        if(role==="admin") return <AdminDash projects={projects}/>;
+        if(role==="client") return <ClientDash user={user} projects={projects} onCreate={openProjectModal}/>;
         if(role==="reviewer") return <ReviewerDash user={user} flow={displayFlow}/>;
         return <MakerDash user={user}/>;
-      case "projects": return <Projects onSelect={setSelProj}/>;
-      case "tasks": return role==="maker" ? <MakerTasks user={user} flow={displayFlow} onSubmit={submitFlow}/> : (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{MOCK_PROJECTS.find(p=>p.id===t.projectId)?.name}</td><td><StatusBadge s={taskStatusForDemo(t,displayFlow)}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
+      case "projects": return <Projects projects={projects} onSelect={setSelProj} onCreate={openProjectModal}/>;
+      case "tasks": return role==="maker" ? <MakerTasks user={user} flow={displayFlow} onSubmit={submitFlow} projects={projects}/> : (<div><div className="ph"><h1>My tasks</h1><p>Manage assigned tasks</p></div><div className="pb"><div className="glass" style={{padding:20}}><table><thead><tr><th>Task</th><th>Project</th><th>Status</th><th>Level</th><th>Due</th></tr></thead><tbody>{(role==="admin"?MOCK_TASKS:MOCK_TASKS.filter(t=>t.assignee===user.name)).map(t=><tr key={t.id}><td style={{fontWeight:550}}>{t.name}</td><td style={{fontSize:12,color:"var(--text-2)"}}>{projName(t.projectId)}</td><td><StatusBadge s={taskStatusForDemo(t,displayFlow)}/></td><td><span className={`badge ${t.difficulty==="Hard"?"b-rd":"b-or"}`}>{t.difficulty}</span></td><td style={{fontSize:12,color:"var(--text-2)"}}>{t.deadline}</td></tr>)}</tbody></table></div></div></div>);
       case "credentials": return <Creds flow={displayFlow} highlightId={displayFlow>=2?DEMO_NEW_CRED.verifyId:null}/>;
       case "portfolio": return <Portfolio user={user}/>;
       case "talent": return <TalentSearch/>;
@@ -1325,6 +1450,7 @@ function App() {
       </div>
       <MobileNav page={page} onNav={nav} items={navs[role]||navs.maker} onOut={()=>{setRole(null);setPage("dashboard");setFlow(0);setTourIdx(-1)}}/>
       {tourIdx>=0&&<DemoTour tourIdx={tourIdx} flow={flow} onPrev={()=>goTour(tourIdx-1)} onNext={()=>goTour(tourIdx+1)} onGoTo={goTour} onSkip={()=>setTourIdx(-1)} onAction={tourAction}/>}
+      <ProjectCreateModal open={projModal} onClose={()=>setProjModal(false)} onSubmit={addProject} clientLabel={clientLabel} />
     </div>
   </>);
 }
