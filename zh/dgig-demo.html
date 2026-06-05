@@ -117,12 +117,13 @@
       <a href="?view=home" data-view="home">D-GIG 首页</a>
       <a href="?view=crew" data-view="crew">LER</a>
       <a href="?view=match" data-view="match">匹配</a>
-      <a href="?view=workspace" data-view="workspace" class="tab-workspace">封闭网工作空间</a>
+      <a href="?view=workspace" data-view="workspace" class="tab-workspace">我的工作台</a>
     </nav>
     <span class="demo-lang">
       <a href="../ko/dgig-demo.html" data-locale="ko">KO</a>
       <a href="../en/dgig-demo.html" data-locale="en">EN</a>
       <a href="../zh/dgig-demo.html" data-locale="zh" class="on">中文</a>
+      <a href="../es/index.html" data-locale="es">ES</a>
     </span>
   </header>
   <div class="demo-frame-wrap">
@@ -130,7 +131,7 @@
   </div>
   <script>
     (function () {
-      var BUILD = '20260604-i18n';
+      var BUILD = '20260604-zh-ppt';
       var routes = { home: '/', crew: '/crew', match: '/match', workspace: '/workspace' };
       var view = new URLSearchParams(location.search).get('view') || 'home';
       if (!routes[view]) view = 'home';

@@ -41,10 +41,12 @@ export function Home() {
           </div>
           <h1 className="home-fit-title">
             <span className="home-fit-title-line">{t('home.heroLine1')}</span>
-            <span className="home-fit-title-line">
-              <em>{t('home.heroEm')}</em>
-              {t('home.heroLine2')}
-            </span>
+            {(t('home.heroEm') || t('home.heroLine2')) ? (
+              <span className="home-fit-title-line">
+                <em>{t('home.heroEm')}</em>
+                {t('home.heroLine2')}
+              </span>
+            ) : null}
           </h1>
           <p className="home-fit-lead">
             <span className="home-fit-lead-line">{t('home.heroLeadLine1')}</span>
