@@ -95,14 +95,16 @@
     .cta-sub{font-family:var(--fb);font-size:.97rem;line-height:1.78;color:rgba(244,242,238,.5);max-width:480px;font-weight:300;position:relative;z-index:2;margin-bottom:44px;}
     .btn-wi{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg);color:var(--black);padding:15px 32px;text-decoration:none;display:inline-block;transition:opacity .16s,transform .14s;position:relative;z-index:2;}
     .btn-wi:hover{opacity:.88;transform:translateY(-1px);}
-    .demo-entry{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:620px;position:relative;z-index:2;}
+    .demo-entry{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:760px;position:relative;z-index:2;}
     .demo-entry--hero{margin-top:28px;max-width:100%;}
     .demo-btn{font-family:var(--fb);font-size:.82rem;font-weight:600;letter-spacing:.02em;padding:17px 20px;text-decoration:none;display:block;text-align:center;transition:opacity .16s,transform .14s;line-height:1.35;}
     .demo-btn:hover{opacity:.92;transform:translateY(-2px);}
     .demo-btn--match{background:var(--bg);color:var(--black);}
     .demo-btn--platform{background:transparent;color:var(--bg);border:2px solid rgba(244,242,238,.42);}
+    .demo-btn--program{background:var(--green);color:#fff;}
     .demo-entry--light .demo-btn--match{background:var(--black);color:var(--bg);}
     .demo-entry--light .demo-btn--platform{border-color:rgba(12,13,14,.28);color:var(--black);}
+    .demo-entry--light .demo-btn--program{background:var(--green);color:#fff;}
 
     /* FOOTER */
     footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
@@ -169,8 +171,9 @@
       <h1 class="hero-h">실무 경험이<br>스펙이 되는<br><span class="it">로컬 긱 플랫폼,</span><br>D-GIG</h1>
       <p class="hero-sub">크몽도, 잡코리아도 해결하지 못한 '포트폴리오 부재'와 '스펙 중심 필터링'의 한계를 넘어섭니다. 로컬에서 쌓은 실무 경험이 글로벌 커리어 자산이 됩니다.</p>
       <div class="demo-entry demo-entry--hero">
-        <a href="gig-match.html" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
-        <a href="localcrew-mvp.html" class="demo-btn demo-btn--platform">LER · 플랫폼 데모</a>
+        <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
+        <a href="dgig-demo.html?view=crew" class="demo-btn demo-btn--platform">LER · 플랫폼 데모</a>
+        <a href="dgig-demo.html?view=workspace" class="demo-btn demo-btn--program">D-GIG 프로그램 데모</a>
       </div>
     </div>
     <div class="hero-mockup">
@@ -306,8 +309,9 @@
       <h2 class="cta-h">지금 바로 D-GIG MVP에서<br>당신의 첫 <span class="it">LER을 기록하세요.</span></h2>
       <p class="cta-sub">포트폴리오가 없어도 됩니다. 첫 번째 로컬 Gig가 당신의 커리어 자산의 시작이 됩니다.</p>
       <div class="demo-entry" style="max-width:640px;margin:0 auto">
-        <a href="gig-match.html" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
-        <a href="localcrew-mvp.html" class="demo-btn demo-btn--platform">LER · 플랫폼 데모</a>
+        <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
+        <a href="dgig-demo.html?view=crew" class="demo-btn demo-btn--platform">LER · 플랫폼 데모</a>
+        <a href="dgig-demo.html?view=workspace" class="demo-btn demo-btn--program">D-GIG 프로그램 데모</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D-GIG Platform Demo — GigCareer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F4F2EE;
+      --black: #0C0D0E;
+      --mid: rgba(12,13,14,0.55);
+      --border: rgba(12,13,14,0.12);
+      --green: #16B85A;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .demo-chrome {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 0 16px;
+      height: 52px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(244,242,238,0.98);
+    }
+    .demo-chrome a {
+      color: var(--black);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .demo-chrome a:hover { opacity: 0.7; }
+    .demo-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .demo-tabs {
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+    .demo-tabs a {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.68rem;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .demo-tabs a.on {
+      background: var(--black);
+      color: #fff;
+      border-color: var(--black);
+    }
+    .demo-lang { font-size: 0.65rem; color: var(--mid); }
+    .demo-lang a { margin: 0 4px; opacity: 0.45; text-transform: uppercase; }
+    .demo-lang a.on { opacity: 1; color: var(--green); }
+    .demo-frame-wrap {
+      flex: 1;
+      min-height: 0;
+      background: #0a0c10;
+    }
+    #dgig-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header class="demo-chrome">
+    <a href="index.html">← GigCareer</a>
+    <span class="demo-title">D-GIG Demo</span>
+    <nav class="demo-tabs" aria-label="Demo modules">
+      <a href="?view=match" data-view="match">Match</a>
+      <a href="?view=crew" data-view="crew">LER</a>
+      <a href="?view=workspace" data-view="workspace">Workspace</a>
+      <a href="?view=home" data-view="home">Home</a>
+    </nav>
+    <span class="demo-lang">
+      <a href="../ko/dgig-demo.html">KO</a>
+      <a href="../en/dgig-demo.html" class="on">EN</a>
+      <a href="../zh/dgig-demo.html">中文</a>
+    </span>
+  </header>
+  <div class="demo-frame-wrap">
+    <iframe id="dgig-frame" title="D-GIG platform demo" allow="clipboard-write"></iframe>
+  </div>
+  <script>
+    (function () {
+      var routes = {
+        match: '/match',
+        crew: '/crew',
+        workspace: '/workspace',
+        home: '/'
+      };
+      var view = new URLSearchParams(location.search).get('view') || 'match';
+      if (!routes[view]) view = 'match';
+      document.querySelectorAll('.demo-tabs a').forEach(function (a) {
+        a.classList.toggle('on', a.getAttribute('data-view') === view);
+      });
+      document.getElementById('dgig-frame').src =
+        'dgig-app/index.html?embed=1&lang=en#' + routes[view];
+    })();
+  </script>
+</body>
+</html>
