@@ -410,3 +410,91 @@ html.demo-dark .demo-lang::-webkit-scrollbar-thumb {
     min-height: 40px;
   }
 }
+
+/* ── Cursor-reactive background glow ── */
+html.gc-cursor-on {
+  --gc-cx: 50%;
+  --gc-cy: 35%;
+}
+
+html.gc-cursor-on::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      560px circle at var(--gc-cx) var(--gc-cy),
+      rgba(232, 201, 138, 0.16) 0%,
+      rgba(255, 255, 255, 0.07) 32%,
+      transparent 68%
+    ),
+    radial-gradient(
+      380px circle at calc(var(--gc-cx) + 12%) calc(var(--gc-cy) + 8%),
+      rgba(12, 13, 14, 0.035) 0%,
+      transparent 58%
+    );
+}
+
+html.gc-cursor-on.demo-dark::before {
+  background: radial-gradient(
+    520px circle at var(--gc-cx) var(--gc-cy),
+    rgba(232, 201, 138, 0.11) 0%,
+    rgba(120, 160, 220, 0.07) 38%,
+    transparent 70%
+  );
+}
+
+html.gc-cursor-on.experience-page::before {
+  background: radial-gradient(
+    500px circle at var(--gc-cx) var(--gc-cy),
+    rgba(232, 201, 138, 0.08) 0%,
+    rgba(80, 120, 200, 0.06) 40%,
+    transparent 72%
+  );
+}
+
+.gc-hero-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    520px circle at var(--gc-cx) var(--gc-cy),
+    rgba(232, 201, 138, 0.12) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    transparent 64%
+  );
+}
+
+#hero.hero-light .gc-hero-spotlight {
+  background: radial-gradient(
+    560px circle at var(--gc-cx) var(--gc-cy),
+    rgba(232, 201, 138, 0.18) 0%,
+    rgba(255, 255, 255, 0.08) 34%,
+    transparent 68%
+  );
+}
+
+.hero-grid,
+.hero-grid-bg {
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.gc-cursor-on::before {
+    display: none;
+  }
+
+  .gc-hero-spotlight {
+    display: none;
+  }
+
+  .hero-grid,
+  .hero-grid-bg {
+    transform: none !important;
+    transition: none;
+  }
+}
