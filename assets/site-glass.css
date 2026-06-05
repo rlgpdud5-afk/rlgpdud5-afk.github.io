@@ -1,0 +1,412 @@
+/* GigCareer marketing site — glass scrollbars + responsive enhancements */
+
+:root {
+  --gc-scroll-size: 8px;
+  --gc-scroll-thumb: rgba(12, 13, 14, 0.2);
+  --gc-scroll-thumb-hover: rgba(12, 13, 14, 0.34);
+  --gc-scroll-gold: rgba(160, 120, 48, 0.42);
+  --gc-glass-blur: 12px;
+}
+
+/* ── Light pages (beige marketing) ── */
+html:not(.demo-dark):not(.experience-page) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gc-scroll-thumb) transparent;
+}
+
+html:not(.demo-dark):not(.experience-page)::-webkit-scrollbar {
+  width: var(--gc-scroll-size);
+  height: var(--gc-scroll-size);
+}
+
+html:not(.demo-dark):not(.experience-page)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html:not(.demo-dark):not(.experience-page)::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    var(--gc-scroll-thumb) 48%,
+    rgba(12, 13, 14, 0.1) 100%
+  );
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    0 1px 6px rgba(12, 13, 14, 0.06);
+}
+
+html:not(.demo-dark):not(.experience-page)::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 248, 235, 0.95) 0%,
+    var(--gc-scroll-thumb-hover) 52%,
+    var(--gc-scroll-gold) 100%
+  );
+  background-clip: padding-box;
+}
+
+html:not(.demo-dark):not(.experience-page)::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── Dark experience pages ── */
+html.experience-page {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
+}
+
+html.experience-page::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(148, 163, 184, 0.3) 55%,
+    rgba(8, 13, 25, 0.6) 100%
+  );
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.gig-scroll,
+.nav-links,
+.gnav-links {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(12, 13, 14, 0.18) transparent;
+}
+
+.gig-scroll::-webkit-scrollbar,
+.nav-links::-webkit-scrollbar,
+.gnav-links::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.gig-scroll::-webkit-scrollbar-thumb,
+.nav-links::-webkit-scrollbar-thumb,
+.gnav-links::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.7),
+    rgba(12, 13, 14, 0.22)
+  );
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ── Dark demo chrome (dgig-demo) ── */
+html.demo-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
+}
+
+html.demo-dark::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(148, 163, 184, 0.32) 50%,
+    rgba(15, 23, 41, 0.55) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+html.demo-dark .demo-tabs,
+html.demo-dark .demo-lang {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+}
+
+html.demo-dark .demo-tabs::-webkit-scrollbar,
+html.demo-dark .demo-lang::-webkit-scrollbar {
+  height: 4px;
+}
+
+html.demo-dark .demo-tabs::-webkit-scrollbar-thumb,
+html.demo-dark .demo-lang::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    90deg,
+    rgba(232, 201, 138, 0.25),
+    rgba(148, 163, 184, 0.35)
+  );
+  border-radius: 999px;
+}
+
+/* ── Responsive: navigation ── */
+@media (max-width: 1100px) {
+  nav.site-nav,
+  nav.gnav,
+  nav {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    height: auto;
+    min-height: 52px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .lang-switch {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 0.66rem !important;
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 960px) {
+  nav.site-nav,
+  nav.gnav,
+  nav {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .logo {
+    flex: 0 1 auto;
+    min-width: 0;
+    font-size: 0.72rem !important;
+  }
+
+  .nav-links,
+  .gnav-links {
+    display: flex !important;
+    flex: 1 1 100%;
+    order: 10;
+    margin-left: 0 !important;
+    margin-top: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    /* show glass mini scrollbar instead of hiding */
+    scrollbar-width: thin;
+  }
+
+  .nav-links::-webkit-scrollbar,
+  .gnav-links::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+
+  .nav-cta,
+  .gnav-cta {
+    display: none !important;
+  }
+
+  .nav-links a,
+  .gnav-links a {
+    padding: 0 12px !important;
+    font-size: 0.64rem !important;
+    height: 40px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .lang-switch {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0 !important;
+    padding: 4px 0 2px;
+    border-top: 1px solid rgba(12, 13, 14, 0.06);
+  }
+
+  html.demo-dark .lang-switch {
+    border-top-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ── Responsive: homepage & sections ── */
+@media (max-width: 960px) {
+  .hero-inner,
+  .wrap {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .hero-sub {
+    max-width: 100% !important;
+    font-size: 0.94rem !important;
+  }
+
+  .hero-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-btns .btn-fill,
+  .hero-btns .btn-line {
+    text-align: center;
+  }
+
+  .demo-entry {
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr 1fr !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .hs:nth-child(2) {
+    border-right: none !important;
+  }
+
+  .sec {
+    padding: 72px 0 !important;
+  }
+
+  .sec-h {
+    font-size: clamp(1.85rem, 8vw, 3.2rem) !important;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 14vw, 5.5rem) !important;
+    line-height: 0.98 !important;
+  }
+
+  .paradox-grid,
+  .shift-facts,
+  .val-split,
+  .mv-grid,
+  .story-layout,
+  .values-grid,
+  .loc-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .paradox-full {
+    grid-column: span 1 !important;
+  }
+
+  .sol-steps {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sol-arr {
+    display: none !important;
+  }
+
+  .pdata,
+  .vc,
+  .sf,
+  .sol-step {
+    padding: 32px 24px !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .f-bottom {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 16px;
+  }
+
+  .f-links {
+    flex-wrap: wrap;
+    gap: 16px !important;
+  }
+
+  .cta-box {
+    padding: 56px 24px !important;
+  }
+
+  .cta-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cta-btns a {
+    text-align: center;
+  }
+
+  .shift-quote {
+    font-size: clamp(1.15rem, 4.5vw, 1.75rem) !important;
+  }
+
+  .terminal {
+    max-width: 100% !important;
+    padding: 20px 16px !important;
+    overflow-x: auto;
+  }
+
+  .t-line {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hs {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(12, 13, 14, 0.1);
+  }
+
+  .hs:last-child {
+    border-bottom: none;
+  }
+
+  .pdata-num,
+  .hs-val {
+    font-size: clamp(2.4rem, 12vw, 3.5rem) !important;
+  }
+
+  .demo-chrome {
+    padding: 8px 12px !important;
+    height: auto !important;
+    min-height: 52px;
+  }
+
+  .demo-tabs {
+    flex: 1 1 100%;
+    margin-left: 0 !important;
+    margin-top: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .demo-lang {
+    flex: 1 1 100%;
+    text-align: center;
+    padding-top: 4px;
+  }
+}
+
+@media (max-width: 380px) {
+  .beta-tag,
+  .beta {
+    display: none;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 15vw, 3.2rem) !important;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.2em !important;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+  .demo-btn,
+  .nav-links a,
+  .gnav-links a,
+  .demo-tabs a,
+  .lang-switch a {
+    min-height: 40px;
+  }
+}
