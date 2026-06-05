@@ -340,6 +340,15 @@ export const en = {
   workspace: {
     title: 'Secure Workspace',
     secureBadge: 'Air-gapped · LOCAL ONLY',
+    seeds: {
+      clientTs:
+        '// Air-gapped — no external transmission\nexport async function fetchGigs() {\n  return [];\n}\n',
+      verifyLerTs:
+        "export function verify(id: string) {\n  // kim_daejeon_001 · Outcome score 92\n  console.log('LER', id);\n}\n",
+      readmeLocal:
+        '# D-GIG Dev Suite\n\n- Shortcuts: Ctrl+S · Ctrl+P · Ctrl+Shift+P\n- Git: Ctrl+Shift+G\n- Debug: Ctrl+Shift+D\n- API Send: Ctrl+Enter\n',
+      sqlMigration: 'SELECT id, name, trust_score FROM workers;\n',
+    },
     suiteTag: 'IT Dev Suite',
     explorer: 'Explorer',
     tasks: 'Assigned tasks',

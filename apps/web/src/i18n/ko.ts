@@ -338,6 +338,15 @@ export const ko = {
   workspace: {
     title: 'Secure Workspace',
     secureBadge: '폐쇄망 · LOCAL ONLY',
+    seeds: {
+      clientTs:
+        '// 폐쇄망 — 외부 전송 금지\nexport async function fetchGigs() {\n  return [];\n}\n',
+      verifyLerTs:
+        "export function verify(id: string) {\n  // kim_daejeon_001 · Outcome score 92\n  console.log('LER', id);\n}\n",
+      readmeLocal:
+        '# D-GIG Dev Suite\n\n- VS Code 단축키: Ctrl+S · Ctrl+P · Ctrl+Shift+P\n- Git: Ctrl+Shift+G\n- Debug: Ctrl+Shift+D\n- API Send: Ctrl+Enter\n',
+      sqlMigration: 'SELECT id, name, trust_score FROM workers;\n',
+    },
     suiteTag: 'IT Dev Suite',
     explorer: '탐색기',
     tasks: '배정 태스크',
