@@ -1,0 +1,236 @@
+.de-root {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #242424;
+  --border: #2a2a2a;
+  --text-primary: #e8e8e8;
+  --text-muted: #888888;
+  --accent: #7c6eff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.de-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.de-toolbar-tools,
+.de-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.de-tool-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.de-tool-btn.on {
+  color: var(--text-primary);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(124, 110, 255, 0.35);
+}
+
+.de-action-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.de-zoom-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
+.de-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.de-layer-panel {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+}
+
+.de-props-panel {
+  width: 260px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+}
+
+.de-panel-head {
+  padding: 10px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.de-layer-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  overflow: auto;
+  flex: 1;
+}
+
+.de-layer-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.de-layer-item:hover {
+  background: rgba(124, 110, 255, 0.1);
+}
+
+.de-layer-item.on {
+  background: rgba(124, 110, 255, 0.18);
+}
+
+.de-layer-icon {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px;
+}
+
+.de-layer-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.de-layer-rename {
+  flex: 1;
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 4px;
+}
+
+.de-canvas-wrap {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 8px 8px;
+  background-color: #0a0c10;
+  position: relative;
+}
+
+.de-tldraw-host {
+  display: flex;
+  flex-direction: column;
+}
+
+.de-tldraw-host .tl-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.de-tldraw-host .tl-background {
+  background: var(--bg-primary) !important;
+}
+
+.de-tldraw-host .tl-canvas {
+  background: transparent !important;
+}
+
+.de-hidden-input {
+  display: none;
+}
+
+.de-layer-type {
+  font-size: 10px;
+  color: var(--text-muted);
+  width: 14px;
+  text-align: center;
+}
+
+.de-props-body {
+  padding: 10px 12px;
+  overflow: auto;
+  flex: 1;
+}
+
+.de-props-empty,
+.de-prop-type,
+.de-prop-path {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.de-prop-row {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.de-prop-row--col {
+  grid-template-columns: 1fr;
+}
+
+.de-prop-row input[type='number'],
+.de-prop-row select,
+.de-prop-row textarea {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.de-prop-row textarea {
+  min-height: 56px;
+  resize: vertical;
+}

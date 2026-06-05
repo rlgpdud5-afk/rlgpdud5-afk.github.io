@@ -1,0 +1,127 @@
+/* Components: Frame · Product card (360×420) — scaffold until Figma paste */
+
+.frame-product-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: var(--product-card-width);
+  height: var(--product-card-height);
+  padding-top: var(--product-card-padding-top);
+  padding-right: var(--product-card-padding-right);
+  padding-bottom: var(--product-card-padding-bottom);
+  padding-left: var(--product-card-padding-left);
+  gap: var(--product-card-gap);
+  background-color: var(--product-card-bg);
+  border-radius: var(--product-card-radius);
+  box-shadow: var(--product-card-shadow);
+}
+
+.group-header {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--group-header-gap);
+  width: 312px;
+  height: var(--group-header-height);
+  flex-shrink: 0;
+}
+
+.text-title {
+  margin: 0;
+  padding: 0;
+  font-family: var(--text-title-font-family);
+  font-size: var(--text-title-font-size);
+  font-weight: var(--text-title-font-weight);
+  line-height: var(--text-title-line-height);
+  letter-spacing: var(--text-title-letter-spacing);
+  color: var(--text-title-color);
+}
+
+.frame-media {
+  box-sizing: border-box;
+  width: var(--frame-media-width);
+  height: var(--frame-media-height);
+  flex-shrink: 0;
+  background-color: var(--frame-media-bg);
+  border-radius: var(--frame-media-radius);
+  overflow: hidden;
+}
+
+.frame-media__img {
+  display: block;
+  width: 312px;
+  height: 160px;
+  object-fit: cover;
+}
+
+.text-description {
+  margin: 0;
+  padding: 0;
+  width: 312px;
+  font-family: var(--text-description-font-family);
+  font-size: var(--text-description-font-size);
+  font-weight: var(--text-description-font-weight);
+  line-height: var(--text-description-line-height);
+  letter-spacing: var(--text-description-letter-spacing);
+  color: var(--text-description-color);
+}
+
+.component-button {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: var(--component-button-width);
+  height: var(--component-button-height);
+  padding-top: var(--component-button-padding-top);
+  padding-right: var(--component-button-padding-right);
+  padding-bottom: var(--component-button-padding-bottom);
+  padding-left: var(--component-button-padding-left);
+  gap: 0;
+  background-color: var(--component-button-bg);
+  border: none;
+  border-radius: var(--component-button-radius);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.component-button:hover {
+  background-color: var(--component-button-bg-hover);
+}
+
+.component-button:focus-visible {
+  outline: 2px solid #111827;
+  outline-offset: 2px;
+}
+
+.component-button:active {
+  background-color: #374151;
+}
+
+.component-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.text-button-label {
+  margin: 0;
+  padding: 0;
+  font-family: var(--text-button-font-family);
+  font-size: var(--text-button-font-size);
+  font-weight: var(--text-button-font-weight);
+  line-height: var(--text-button-line-height);
+  letter-spacing: var(--text-button-letter-spacing);
+  color: var(--text-button-color);
+}
+
+/* Canvas viewport — fixed Figma frame size */
+.figma-layer-row--selected {
+  background-color: rgba(162, 89, 255, 0.12);
+  border-left-color: #a259ff;
+  color: #ffffff;
+}

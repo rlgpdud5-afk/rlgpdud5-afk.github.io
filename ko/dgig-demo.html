@@ -133,7 +133,9 @@
   </div>
   <script>
     (function () {
-      var BUILD = '20260604-es';
+      var BUILD = '20260612';
+      var LOCALE = 'ko';
+      try { localStorage.setItem('dgig-locale', LOCALE); } catch (e) {}
       var routes = {
         home: '/',
         crew: '/crew',

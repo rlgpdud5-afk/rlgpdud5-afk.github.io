@@ -1,0 +1,60 @@
+/* PENDING: FIGMA_PASTE.md — Dev Mode Variables not received yet. Do not treat as final spec. */
+
+.frame-product-card {
+  /* Frame · Product card */
+  --product-card-width: 360px;
+  --product-card-height: 420px;
+  --product-card-bg: #ffffff;
+  --product-card-radius: 12px;
+  --product-card-padding-top: 24px;
+  --product-card-padding-right: 24px;
+  --product-card-padding-bottom: 24px;
+  --product-card-padding-left: 24px;
+  --product-card-gap: 20px;
+  --product-card-shadow: 0 8px 24px 0 rgba(17, 24, 39, 0.12);
+
+  /* Group · Header */
+  --group-header-gap: 12px;
+  --group-header-height: 48px;
+
+  /* Text · Title */
+  --text-title-font-family: 'Inter', 'Noto Sans KR', system-ui, sans-serif;
+  --text-title-font-size: 18px;
+  --text-title-font-weight: 600;
+  --text-title-line-height: 1.2;
+  --text-title-letter-spacing: -0.02em;
+  --text-title-color: #111827;
+
+  /* Frame · Media */
+  --frame-media-width: 312px;
+  --frame-media-height: 160px;
+  --frame-media-bg: #f3f4f6;
+  --frame-media-radius: 8px;
+
+  /* Text · Description */
+  --text-description-font-family: 'Inter', 'Noto Sans KR', system-ui, sans-serif;
+  --text-description-font-size: 14px;
+  --text-description-font-weight: 400;
+  --text-description-line-height: 1.5;
+  --text-description-letter-spacing: 0em;
+  --text-description-color: #6b7280;
+
+  /* Component · Button */
+  --component-button-width: 312px;
+  --component-button-height: 44px;
+  --component-button-bg: #111827;
+  --component-button-bg-hover: #1f2937;
+  --component-button-radius: 8px;
+  --component-button-padding-top: 0px;
+  --component-button-padding-right: 16px;
+  --component-button-padding-bottom: 0px;
+  --component-button-padding-left: 16px;
+
+  /* Text · Button label */
+  --text-button-font-family: 'Inter', 'Noto Sans KR', system-ui, sans-serif;
+  --text-button-font-size: 14px;
+  --text-button-font-weight: 600;
+  --text-button-line-height: 1;
+  --text-button-letter-spacing: 0em;
+  --text-button-color: #ffffff;
+}

@@ -32,12 +32,24 @@ export function getBrowserSeedMap(locale: Locale): Record<string, Record<string,
 export function migrateSeedFiles(files: WorkspaceFile[], locale: Locale): WorkspaceFile[] {
   const byName = Object.fromEntries(buildDefaultFiles(locale).map((f) => [f.name, f.content]));
   return files.map((file) => {
-    if (file.name === 'api/client.ts' && file.content.includes(LEGACY_KO_CLIENT) && locale !== 'ko') {
+    if (locale !== 'ko' && file.name === 'api/client.ts' && file.content.includes(LEGACY_KO_CLIENT)) {
       return { ...file, content: byName['api/client.ts'] };
     }
-    if (file.name === 'README.local.md' && file.content.includes(LEGACY_KO_README) && locale !== 'ko') {
+    if (locale !== 'ko' && file.name === 'README.local.md' && file.content.includes(LEGACY_KO_README)) {
       return { ...file, content: byName['README.local.md'] };
     }
     return file;
   });
+}
+
+export function clearLegacyVfs(locale: Locale) {
+  if (locale === 'ko' || typeof localStorage === 'undefined') return;
+  try {
+    const raw = localStorage.getItem('dgig-code-vfs-st2');
+    if (raw?.includes(LEGACY_KO_CLIENT)) {
+      localStorage.removeItem('dgig-code-vfs-st2');
+    }
+  } catch {
+    /* ignore */
+  }
 }

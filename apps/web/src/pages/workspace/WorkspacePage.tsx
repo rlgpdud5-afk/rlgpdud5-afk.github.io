@@ -10,7 +10,7 @@ import {
   type WorkspaceMode,
   type WorkspaceState,
 } from '../../lib/workspace/store';
-import { migrateSeedFiles } from '../../lib/workspace/seeds';
+import { clearLegacyVfs, migrateSeedFiles } from '../../lib/workspace/seeds';
 import { useWorkspaceShortcuts } from './useWorkspaceShortcuts';
 import { ApiTesterPage } from './api-tester/ApiTesterPage';
 import { CodeEditorPage, type CodeEditorHandle } from './code-editor/CodeEditorPage';
@@ -51,7 +51,10 @@ export function WorkspacePage() {
   const navigate = useNavigate();
   const { t, locale } = useI18n();
   const loc = useLocalize();
-  const [state, setState] = useState<WorkspaceState>(() => loadWorkspace(locale));
+  const [state, setState] = useState<WorkspaceState>(() => {
+    clearLegacyVfs(locale);
+    return loadWorkspace(locale);
+  });
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
   const [paletteQuery, setPaletteQuery] = useState('');
@@ -69,6 +72,7 @@ export function WorkspacePage() {
   }, [codeTaskId]);
 
   useEffect(() => {
+    clearLegacyVfs(locale);
     setState((prev) => {
       const files = migrateSeedFiles(prev.files, locale);
       const changed = files.some((f, i) => f.content !== prev.files[i]?.content);

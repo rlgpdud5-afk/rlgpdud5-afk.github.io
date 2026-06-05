@@ -118,7 +118,15 @@
   </div>
   <script>
     (function () {
-      var BUILD = '20260604-es';
+      var BUILD = '20260612';
+      var LOCALE = 'es';
+      try {
+        localStorage.setItem('dgig-locale', LOCALE);
+        var vfsRaw = localStorage.getItem('dgig-code-vfs-st2');
+        if (vfsRaw && vfsRaw.indexOf('\uD3D0\uC1C4\uB9DD') !== -1) {
+          localStorage.removeItem('dgig-code-vfs-st2');
+        }
+      } catch (e) {}
       var routes = { home: '/', crew: '/crew', match: '/match', workspace: '/workspace' };
       var view = new URLSearchParams(location.search).get('view') || 'home';
       if (!routes[view]) view = 'home';

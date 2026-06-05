@@ -37,13 +37,18 @@ function getByPath(obj: Record<string, unknown>, path: string): string | undefin
   return typeof cur === 'string' ? cur : undefined;
 }
 
+function resolveLocale(): Locale {
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  if (urlLang === 'en' || urlLang === 'ko' || urlLang === 'zh' || urlLang === 'es') {
+    localStorage.setItem(STORAGE_KEY, urlLang);
+    return urlLang;
+  }
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved === 'en' || saved === 'ko' || saved === 'zh' || saved === 'es' ? saved : 'ko';
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    const urlLang = new URLSearchParams(window.location.search).get('lang');
-    if (urlLang === 'en' || urlLang === 'ko' || urlLang === 'zh' || urlLang === 'es') return urlLang;
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved === 'en' || saved === 'ko' || saved === 'zh' || saved === 'es' ? saved : 'ko';
-  });
+  const [locale, setLocaleState] = useState<Locale>(resolveLocale);
 
   const messages = MESSAGES[locale];
 
