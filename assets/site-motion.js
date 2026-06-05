@@ -4,9 +4,25 @@
   var root = document.documentElement;
   root.classList.add('gc-motion-on');
 
-  var nav = document.querySelector('nav.site-nav, nav.gnav, nav');
+  var nav = document.querySelector('nav.site-nav, nav.gnav, nav:not(.demo-tabs)');
+  var chrome = document.querySelector('header.demo-chrome');
   var hero = document.getElementById('hero');
   var ticking = false;
+
+  function syncNavHeight() {
+    var bar = nav || chrome;
+    if (!bar) return;
+    var h = Math.ceil(bar.getBoundingClientRect().height);
+    root.style.setProperty('--gc-nav-h', h + 'px');
+    root.classList.add('gc-nav-sync');
+  }
+
+  syncNavHeight();
+  window.addEventListener('resize', syncNavHeight);
+  if (typeof ResizeObserver !== 'undefined') {
+    var roTarget = nav || chrome;
+    if (roTarget) new ResizeObserver(syncNavHeight).observe(roTarget);
+  }
 
   function onScroll() {
     if (ticking) return;
