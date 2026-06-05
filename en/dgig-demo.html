@@ -8,18 +8,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #F4F2EE;
-      --black: #0C0D0E;
-      --mid: rgba(12,13,14,0.55);
-      --border: rgba(12,13,14,0.12);
-      --green: #16B85A;
+      --navy: #0f1729;
+      --ink: #e2e8f4;
+      --muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.1);
+      --gold: #e8c98a;
+      --gold-soft: rgba(232, 201, 138, 0.14);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
     body {
       font-family: 'Barlow', sans-serif;
-      background: var(--bg);
-      color: var(--black);
+      background: var(--navy);
+      color: var(--ink);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -33,56 +34,62 @@
       padding: 0 16px;
       height: 52px;
       border-bottom: 1px solid var(--border);
-      background: rgba(244,242,238,0.98);
+      background: rgba(15, 23, 41, 0.96);
+      backdrop-filter: blur(12px);
     }
     .demo-chrome a {
-      color: var(--black);
+      color: var(--ink);
       text-decoration: none;
       font-size: 0.72rem;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-    .demo-chrome a:hover { opacity: 0.7; }
+    .demo-chrome a:hover { opacity: 0.75; }
     .demo-title {
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      color: var(--muted);
     }
     .demo-tabs {
       display: flex;
       gap: 6px;
       margin-left: auto;
       flex-wrap: wrap;
+      align-items: center;
     }
     .demo-tabs a {
-      padding: 6px 12px;
+      padding: 7px 13px;
       border-radius: 999px;
       border: 1px solid var(--border);
       font-size: 0.68rem;
-      text-transform: none;
-      letter-spacing: 0;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      transition: background 0.15s, border-color 0.15s;
     }
+    .demo-tabs a:hover { background: rgba(255, 255, 255, 0.08); }
     .demo-tabs a.on {
-      background: var(--black);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.22);
       color: #fff;
-      border-color: var(--black);
     }
-    .demo-lang { font-size: 0.65rem; color: var(--mid); }
+    .demo-tabs a.tab-workspace {
+      border-color: rgba(232, 201, 138, 0.35);
+      background: var(--gold-soft);
+      color: #f5e8cc;
+    }
+    .demo-tabs a.tab-workspace.on {
+      background: rgba(232, 201, 138, 0.22);
+      border-color: rgba(232, 201, 138, 0.5);
+      color: #fff8e8;
+    }
+    .demo-lang { font-size: 0.65rem; color: var(--muted); }
     .demo-lang a { margin: 0 4px; opacity: 0.45; text-transform: uppercase; }
-    .demo-lang a.on { opacity: 1; color: var(--green); }
-    .demo-frame-wrap {
-      flex: 1;
-      min-height: 0;
-      background: #0a0c10;
-    }
-    #dgig-frame {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-    }
+    .demo-lang a.on { opacity: 1; color: var(--gold); }
+    .demo-frame-wrap { flex: 1; min-height: 0; background: #080d1a; }
+    #dgig-frame { width: 100%; height: 100%; border: 0; display: block; }
   </style>
 </head>
 <body>
@@ -90,10 +97,10 @@
     <a href="index.html">← GigCareer</a>
     <span class="demo-title">D-GIG Demo</span>
     <nav class="demo-tabs" aria-label="Demo modules">
-      <a href="?view=match" data-view="match">Match</a>
+      <a href="?view=home" data-view="home">D-GIG Home</a>
       <a href="?view=crew" data-view="crew">LER</a>
-      <a href="?view=workspace" data-view="workspace">Workspace</a>
-      <a href="?view=home" data-view="home">Home</a>
+      <a href="?view=match" data-view="match">Match</a>
+      <a href="?view=workspace" data-view="workspace" class="tab-workspace">Air-gapped workspace</a>
     </nav>
     <span class="demo-lang">
       <a href="../ko/dgig-demo.html">KO</a>
@@ -106,14 +113,9 @@
   </div>
   <script>
     (function () {
-      var routes = {
-        match: '/match',
-        crew: '/crew',
-        workspace: '/workspace',
-        home: '/'
-      };
-      var view = new URLSearchParams(location.search).get('view') || 'match';
-      if (!routes[view]) view = 'match';
+      var routes = { home: '/', crew: '/crew', match: '/match', workspace: '/workspace' };
+      var view = new URLSearchParams(location.search).get('view') || 'home';
+      if (!routes[view]) view = 'home';
       document.querySelectorAll('.demo-tabs a').forEach(function (a) {
         a.classList.toggle('on', a.getAttribute('data-view') === view);
       });

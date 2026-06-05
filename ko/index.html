@@ -172,36 +172,57 @@
     .demo-entry {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
       margin-top: 44px;
-      max-width: 720px;
+      max-width: 760px;
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #0f1729 0%, #141f38 55%, #0b1224 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(8, 13, 26, 0.35);
       opacity: 0;
       animation: fu .9s ease .62s forwards;
     }
     .demo-btn {
       font-family: var(--f-body);
-      font-size: .82rem;
+      font-size: .78rem;
       font-weight: 600;
       letter-spacing: .02em;
-      padding: 16px 18px;
+      padding: 15px 14px;
       text-decoration: none;
       text-align: center;
       line-height: 1.35;
-      transition: opacity .16s, transform .14s;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: #e2e8f4;
+      transition: transform .14s, background .15s, border-color .15s;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
-    .demo-btn:hover { opacity: .88; transform: translateY(-2px); }
-    .demo-btn--match {
-      background: var(--black);
-      color: var(--bg);
-    }
-    .demo-btn--platform {
-      background: transparent;
-      color: var(--black);
-      border: 2px solid var(--border-hi);
+    .demo-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.2);
     }
     .demo-btn--program {
-      background: var(--green);
-      color: #fff;
+      border-color: rgba(232, 201, 138, 0.38);
+      background: rgba(232, 201, 138, 0.12);
+      color: #f5e8cc;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 24px rgba(232, 201, 138, 0.08);
+    }
+    .demo-btn--program:hover {
+      background: rgba(232, 201, 138, 0.18);
+      border-color: rgba(232, 201, 138, 0.48);
+    }
+    .demo-btn--platform {
+      color: #dbe4f0;
+    }
+    .demo-btn--match {
+      color: #94a3b8;
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .hero-btns {
@@ -757,9 +778,9 @@ nav.site-nav {
       지역의 잠재력과 청년의 역량을 데이터로 증명하는<br>새로운 생태계를 엽니다.
     </p>
     <div class="demo-entry">
-      <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
+      <a href="dgig-demo.html?view=home" class="demo-btn demo-btn--program">D-GIG 프로그램 데모</a>
       <a href="dgig-demo.html?view=crew" class="demo-btn demo-btn--platform">LER · 플랫폼 데모</a>
-      <a href="dgig-demo.html?view=workspace" class="demo-btn demo-btn--program">D-GIG 프로그램 데모</a>
+      <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">역할 태그 매칭 체험</a>
     </div>
     <div class="hero-btns">
       <a href="service.html" class="btn-line">D-GIG 서비스 알아보기</a>

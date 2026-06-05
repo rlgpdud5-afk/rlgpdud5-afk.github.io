@@ -101,10 +101,21 @@
     .demo-btn:hover{opacity:.92;transform:translateY(-2px);}
     .demo-btn--match{background:var(--bg);color:var(--black);}
     .demo-btn--platform{background:transparent;color:var(--bg);border:2px solid rgba(244,242,238,.42);}
-    .demo-btn--program{background:var(--green);color:#fff;}
+    .demo-btn--program{
+      border-color:rgba(232,201,138,.38);
+      background:rgba(232,201,138,.12);
+      color:#f5e8cc;
+      backdrop-filter:blur(14px);
+      border-radius:12px;
+      border:1px solid rgba(232,201,138,.38);
+    }
     .demo-entry--light .demo-btn--match{background:var(--black);color:var(--bg);}
     .demo-entry--light .demo-btn--platform{border-color:rgba(12,13,14,.28);color:var(--black);}
-    .demo-entry--light .demo-btn--program{background:var(--green);color:#fff;}
+    .demo-entry--light .demo-btn--program{
+      border-color:rgba(232,201,138,.38);
+      background:rgba(232,201,138,.12);
+      color:#5c4a28;
+    }
 
     /* FOOTER */
     footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 40px;}
@@ -171,9 +182,9 @@
       <h1 class="hero-h">Proof-of-work<br>infrastructure<br><span class="it">for regions,</span><br>D-GIG</h1>
       <p class="hero-sub">A three-layer stack for investors: marketplace (Local Gig), verification (LER), and distribution (Global Match). Built to integrate with workforce agencies and enterprise hiring workflows.</p>
       <div class="demo-entry demo-entry--hero">
-        <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">Role tag matching demo</a>
+        <a href="dgig-demo.html?view=home" class="demo-btn demo-btn--program">D-GIG program demo</a>
         <a href="dgig-demo.html?view=crew" class="demo-btn demo-btn--platform">LER · platform demo</a>
-        <a href="dgig-demo.html?view=workspace" class="demo-btn demo-btn--program">D-GIG program demo</a>
+        <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">Role tag matching demo</a>
       </div>
     </div>
     <div class="hero-mockup">
@@ -309,9 +320,9 @@
       <h2 class="cta-h">MVP is live.<br><span class="it">Request a walkthrough.</span></h2>
       <p class="cta-sub">Book a demo for investors and enterprise partners — including role-based MVP flows.</p>
       <div class="demo-entry" style="max-width:640px;margin:0 auto">
-        <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">Role tag matching demo</a>
+        <a href="dgig-demo.html?view=home" class="demo-btn demo-btn--program">D-GIG program demo</a>
         <a href="dgig-demo.html?view=crew" class="demo-btn demo-btn--platform">LER · platform demo</a>
-        <a href="dgig-demo.html?view=workspace" class="demo-btn demo-btn--program">D-GIG program demo</a>
+        <a href="dgig-demo.html?view=match" class="demo-btn demo-btn--match">Role tag matching demo</a>
       </div>
     </div>
   </div>
