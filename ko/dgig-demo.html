@@ -17,14 +17,16 @@
       --gold-soft: rgba(232, 201, 138, 0.14);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
     body {
       font-family: 'Barlow', sans-serif;
       background: var(--navy);
       color: var(--ink);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
     .demo-chrome {
       flex-shrink: 0;
@@ -97,6 +99,7 @@
       flex: 1;
       min-height: 0;
       background: #080d1a;
+      overflow: hidden;
     }
     #dgig-frame {
       width: 100%;
@@ -117,9 +120,9 @@
       <a href="?view=workspace" data-view="workspace" class="tab-workspace">폐쇄망 작업공간</a>
     </nav>
     <span class="demo-lang">
-      <a href="../ko/dgig-demo.html" class="on">KO</a>
-      <a href="../en/dgig-demo.html">EN</a>
-      <a href="../zh/dgig-demo.html">中文</a>
+      <a href="../ko/dgig-demo.html" data-locale="ko" class="on">KO</a>
+      <a href="../en/dgig-demo.html" data-locale="en">EN</a>
+      <a href="../zh/dgig-demo.html" data-locale="zh">中文</a>
     </span>
   </header>
   <div class="demo-frame-wrap">
@@ -127,6 +130,7 @@
   </div>
   <script>
     (function () {
+      var BUILD = '20260604-zh';
       var routes = {
         home: '/',
         crew: '/crew',
@@ -138,8 +142,11 @@
       document.querySelectorAll('.demo-tabs a').forEach(function (a) {
         a.classList.toggle('on', a.getAttribute('data-view') === view);
       });
+      document.querySelectorAll('.demo-lang a[data-locale]').forEach(function (a) {
+        a.href = '../' + a.getAttribute('data-locale') + '/dgig-demo.html?view=' + encodeURIComponent(view);
+      });
       document.getElementById('dgig-frame').src =
-        'dgig-app/index.html?embed=1&lang=ko#' + routes[view];
+        'dgig-app/index.html?embed=1&lang=ko&build=' + BUILD + '#' + routes[view];
     })();
   </script>
 </body>

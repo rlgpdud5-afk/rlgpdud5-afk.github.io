@@ -378,7 +378,8 @@ a {
   overflow-y: auto;
 }
 
-.layout-main:has(.ws-root) {
+.layout-main:has(.ws-root),
+.layout-main:has(.crew-root) {
   overflow: hidden;
 }
 
