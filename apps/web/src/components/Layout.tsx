@@ -4,13 +4,15 @@ import { LangSwitch } from './LangSwitch';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../context/I18nContext';
 import { useEmbedMode } from '../hooks/useEmbedMode';
-
+import { useAppScrollMotion } from '../hooks/useAppScrollMotion';
 export function Layout({ children }: { children: React.ReactNode }) {
   const { user, authEnabled, signOut } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
   const loc = useLocation();
   const embed = useEmbedMode();
+  const frameScroll = embed;
+  const mainRef = useAppScrollMotion();
 
   const navClass = (path: string) => (loc.pathname === path ? 'active' : '');
 
@@ -80,7 +82,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
       )}
       <AppToolbar />
-      <main className="layout-main">{children}</main>
+      <main
+        ref={mainRef}
+        className={'layout-main' + (frameScroll ? ' layout-main--frame dgig-scroll' : ' layout-main--page')}
+      >
+        {children}
+      </main>
     </div>
   );
 }

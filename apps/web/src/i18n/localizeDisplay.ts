@@ -160,19 +160,92 @@ const GIG_ZH: Record<string, string> = {
   카피라이팅: '文案',
 };
 
+const NAME_ES: Record<string, string> = {
+  김서연: 'Seoyeon Kim',
+  김민수: 'Minsu Kim',
+  이준혁: 'Junhyuk Lee',
+  박민수: 'Minsu Park',
+  최유나: 'Yuna Choi',
+  정하늘: 'Haneul Jung',
+  한소희: 'Sohee Han',
+  운영자: 'Administrador',
+  '(주)로컬테크': 'LocalTech S.A.',
+  로컬테크: 'LocalTech',
+};
+
+const REGION_ES: Record<string, string> = {
+  대전: 'Daejeon',
+  세종: 'Sejong',
+  청주: 'Cheongju',
+  제주: 'Jeju',
+  원격: 'Remoto',
+};
+
+const PROJECT_ES: Record<string, string> = {
+  '대전 스타트업 마케팅 데이터 분석': 'Startup regional · analítica de marketing',
+  '로컬푸드 쇼핑몰 리뉴얼': 'Renovación tienda local food',
+  '세종시 관광 데이터 정리': 'Datos turísticos Sejong',
+  '스타트업 IR 자료 디자인': 'Diseño material IR startup',
+  '마케팅 리서치 보고서': 'Informe de investigación de marketing',
+  '교육 앱 UX 리서치': 'Investigación UX app educativa',
+};
+
+const TASK_ES: Record<string, string> = {
+  '마케팅 데이터 분석·시각화': 'Analítica de marketing · visualización',
+  '마케팅 데이터 시각화': 'Visualización de datos de marketing',
+  '메인 히어로 섹션 퍼블리싱': 'Publicación sección hero principal',
+  '상품 카드 컴포넌트 제작': 'Componente tarjeta de producto',
+  '반응형 레이아웃 적용': 'Layout responsive',
+  '검색 필터 UI 구현': 'UI de filtros de búsqueda',
+  '설문 데이터 분석': 'Análisis de datos de encuestas',
+  '사용자 인터뷰 정리': 'Síntesis de entrevistas',
+  'React API 연동': 'Integración API React',
+  'LER 검증 스크립트': 'Script de verificación LER',
+  '워커 DB 마이그레이션': 'Migración BD workers',
+  'REST API 스펙 검증': 'Validación especificación REST API',
+};
+
+const COMPANY_ES: Record<string, string> = {
+  '대전 헬스테크': 'HealthTech Daejeon',
+  '서울 핀테크': 'Fintech Seúl',
+  '충남대 산학협력단': 'Univ. Chungnam · industria-academia',
+  '(주)로컬테크': 'LocalTech S.A.',
+  로컬테크: 'LocalTech',
+  세종시청: 'Ayuntamiento de Sejong',
+  넥스트랩: 'NextLab',
+  에듀플러스: 'EduPlus',
+  '제주 카페 모모': 'Café Momo Jeju',
+};
+
+const GIG_ES: Record<string, string> = {
+  '마케팅 데이터 분석 (4주)': 'Analítica de marketing (4 sem.)',
+  '원격 계약직 (스킬 매칭)': 'Contrato remoto (match por skills)',
+  '지역 기업 UX 리서치 보조': 'Apoyo investigación UX regional',
+  '바리스타 2주 긱 (오전)': 'Gig barista 2 sem. (mañana)',
+  '쇼핑몰 React UI 3주': 'UI React e-commerce · 3 sem.',
+  '데이터 분석': 'Análisis de datos',
+  Figma: 'Figma',
+  카피라이팅: 'Copywriting',
+  '2주': '2 sem.',
+  '1개월': '1 mes',
+  협의: 'A convenir',
+};
+
 function mapForLocale(
   text: string,
   locale: Locale,
   en: Record<string, string>,
   zh: Record<string, string>,
+  es: Record<string, string> = {},
 ): string {
   if (locale === 'ko' || !text) return text;
   if (locale === 'zh') return zh[text] ?? en[text] ?? text;
+  if (locale === 'es') return es[text] ?? en[text] ?? text;
   return en[text] ?? text;
 }
 
 export function localizeName(name: string, locale: Locale): string {
-  return mapForLocale(name, locale, NAME_EN, NAME_ZH);
+  return mapForLocale(name, locale, NAME_EN, NAME_ZH, NAME_ES);
 }
 
 /** AI 요약 등에 박힌 한글 이름·업체명을 영문 UI용으로 치환 */
@@ -213,6 +286,13 @@ export function localizeEmbeddedText(text: string, locale: Locale): string {
         ...TASK_ZH,
         ...GIG_ZH,
       },
+      {
+        ...NAME_ES,
+        ...COMPANY_ES,
+        ...PROJECT_ES,
+        ...TASK_ES,
+        ...GIG_ES,
+      },
     );
     if (mapped !== key) out = out.split(key).join(mapped);
   }
@@ -221,23 +301,19 @@ export function localizeEmbeddedText(text: string, locale: Locale): string {
 
 export function localizeStatus(status: string, locale: Locale, t: (key: string) => string): string {
   if (locale === 'ko') return status;
-  if (locale === 'zh') {
-    const key = `crew.status.${status}`;
-    const translated = t(key);
-    return translated !== key ? translated : status;
-  }
   const key = `crew.status.${status}`;
   const translated = t(key);
   return translated !== key ? translated : status;
 }
 
 export function localizeRegion(region: string, locale: Locale): string {
-  return mapForLocale(region, locale, REGION_EN, REGION_ZH);
+  return mapForLocale(region, locale, REGION_EN, REGION_ZH, REGION_ES);
 }
 
 export function localizeCompany(name: string, locale: Locale): string {
   if (locale === 'ko' || !name) return name;
   if (locale === 'zh') return COMPANY_ZH[name] ?? NAME_ZH[name] ?? name;
+  if (locale === 'es') return COMPANY_ES[name] ?? NAME_ES[name] ?? COMPANY_EN[name] ?? name;
   return COMPANY_EN[name] ?? NAME_EN[name] ?? name;
 }
 
@@ -268,7 +344,8 @@ export function nameMatchesQuery(name: string, query: string, _locale: Locale): 
   if (name.toLowerCase().includes(q)) return true;
   const en = localizeName(name, 'en').toLowerCase();
   const zh = localizeName(name, 'zh').toLowerCase();
-  return en.includes(q) || zh.includes(q);
+  const es = localizeName(name, 'es').toLowerCase();
+  return en.includes(q) || zh.includes(q) || es.includes(q);
 }
 
 export function useLocalize() {

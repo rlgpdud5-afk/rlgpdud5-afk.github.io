@@ -1,5 +1,6 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { ScrollMode } from './components/ScrollMode';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
 import { I18nProvider } from './context/I18nContext';
@@ -15,6 +16,7 @@ export default function App() {
       <AuthProvider>
         <DataProvider>
           <HashRouter>
+          <ScrollMode />
           <Routes>
             <Route path="/crew/*" element={<CrewRoutes />} />
             <Route path="/workspace/*" element={<WorkspaceRoutes />} />

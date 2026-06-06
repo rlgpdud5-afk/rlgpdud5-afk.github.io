@@ -28,13 +28,14 @@ export function Home() {
   const lerLines = ['lerCmd', 'lerLine1', 'lerLine2', 'lerLine3', 'lerLine4'] as const;
 
   return (
-    <div className="app-home app-home--fx app-home--framer app-home--gig">
+    <div className="app-home app-home--fx app-home--framer app-home--gig app-home--scroll">
       <div className="home-fx-orb home-fx-orb--a" aria-hidden />
       <div className="home-fx-orb home-fx-orb--b" aria-hidden />
+      <div className="home-fx-orb home-fx-orb--c" aria-hidden />
       <div className="home-fx-grid" aria-hidden />
 
       <div className="app-home-inner app-home-gig">
-        <header className="home-gig-hero">
+        <header className="home-gig-hero app-rv app-rv--hero app-rv--on">
           <div className="home-hero-pill">
             <span className="home-hero-pill-dot" />
             {t('home.platformTag')}
@@ -67,7 +68,7 @@ export function Home() {
           {authEnabled && user && <p className="app-home-meta">{user.email}</p>}
         </header>
 
-        <section className="home-gig-stats" aria-label="Regional metrics">
+        <section className="home-gig-stats app-sec app-rv" aria-label="Regional metrics">
           {stats.map(({ val, label }) => (
             <div key={label} className="home-gig-stat">
               <div className="home-gig-stat-val">{val}</div>
@@ -76,7 +77,7 @@ export function Home() {
           ))}
         </section>
 
-        <section className="home-fit-flow" aria-labelledby="home-flow-heading">
+        <section className="home-fit-flow app-sec app-rv" aria-labelledby="home-flow-heading">
           <div className="home-fit-section-head">
             <h2 id="home-flow-heading">{t('home.flowTitle')}</h2>
             <p>{t('home.flowSub')}</p>
@@ -99,7 +100,7 @@ export function Home() {
           </div>
         </section>
 
-        <section className="home-gig-ler" aria-labelledby="home-ler-heading">
+        <section className="home-gig-ler app-sec app-rv" aria-labelledby="home-ler-heading">
           <h2 id="home-ler-heading" className="home-gig-ler-title">
             {t('home.lerTitle')}
           </h2>
@@ -115,7 +116,7 @@ export function Home() {
           </div>
         </section>
 
-        <section className="home-gig-value" aria-labelledby="home-value-heading">
+        <section className="home-gig-value app-sec app-rv" aria-labelledby="home-value-heading">
           <h2 id="home-value-heading" className="visually-hidden">
             Value proposition
           </h2>
@@ -133,7 +134,7 @@ export function Home() {
           </div>
         </section>
 
-        <section className="home-fit-modules" aria-labelledby="home-modules-heading">
+        <section className="home-fit-modules app-sec app-rv" aria-labelledby="home-modules-heading">
           <div className="home-fit-section-head home-fit-section-head--center">
             <h2 id="home-modules-heading">{t('home.modulesTitle')}</h2>
             <p>{t('home.modulesSub')}</p>
@@ -153,7 +154,7 @@ export function Home() {
           </div>
         </section>
 
-        <section className="home-gig-cta" aria-labelledby="home-cta-heading">
+        <section className="home-gig-cta app-sec app-rv" aria-labelledby="home-cta-heading">
           <h2 id="home-cta-heading">{t('home.ctaTitle')}</h2>
           <p>{t('home.ctaSub')}</p>
           <div className="home-hero-actions home-gig-cta-actions">

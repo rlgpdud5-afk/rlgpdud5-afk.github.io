@@ -1,0 +1,225 @@
+/* D-GIG app — scroll reveal + ambient motion (marketing-aligned, no cursor tracking) */
+
+html.app-motion-on {
+  --app-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --app-gold-glow: rgba(232, 201, 138, 0.22);
+}
+
+/* ── Nav compression on scroll ── */
+html.app-motion-on .site-nav.app-nav--scrolled {
+  background: rgba(7, 10, 18, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ── Hero parallax ── */
+.app-home--gig .home-gig-hero {
+  transform: translateY(var(--app-hero-y, 0));
+  transition: transform 0.12s linear;
+  will-change: transform;
+}
+
+.home-fx-orb {
+  transform: translateY(var(--app-orb-y, 0));
+  transition: transform 0.15s linear;
+}
+
+/* Gold ambient orb (marketing-style) */
+.home-fx-orb--c {
+  width: min(38vw, 340px);
+  height: min(38vw, 340px);
+  top: 28%;
+  left: -6%;
+  background: radial-gradient(circle, var(--app-gold-glow) 0%, transparent 68%);
+  animation: orb-drift 18s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+/* ── Headline line reveal on load ── */
+html.app-motion-on .home-gig-hero .home-fit-title-line {
+  display: block;
+  overflow: hidden;
+}
+
+html.app-motion-on .home-gig-hero .home-fit-title-line > * {
+  display: inline;
+}
+
+html.app-motion-on .home-gig-hero .home-fit-title-line {
+  opacity: 0;
+  transform: translateY(100%);
+  animation: app-line-up 0.85s var(--app-ease-out) forwards;
+}
+
+html.app-motion-on .home-gig-hero .home-fit-title-line:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+html.app-motion-on .home-gig-hero .home-fit-title-line:nth-child(2) {
+  animation-delay: 0.22s;
+}
+
+html.app-motion-on .home-gig-hero .home-hero-pill,
+html.app-motion-on .home-gig-hero .home-fit-lead,
+html.app-motion-on .home-gig-hero .home-hero-actions {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: app-fade-up 0.7s var(--app-ease-out) forwards;
+}
+
+html.app-motion-on .home-gig-hero .home-hero-pill {
+  animation-delay: 0.05s;
+}
+
+html.app-motion-on .home-gig-hero .home-fit-lead {
+  animation-delay: 0.28s;
+}
+
+html.app-motion-on .home-gig-hero .home-hero-actions {
+  animation-delay: 0.38s;
+}
+
+@keyframes app-line-up {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes app-fade-up {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Scroll reveal sections ── */
+html.app-motion-on .app-rv:not(.app-rv--on):not(.app-rv--hero) {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  filter: blur(5px);
+  transition:
+    opacity 0.7s var(--app-ease-out),
+    transform 0.7s var(--app-ease-out),
+    filter 0.7s var(--app-ease-out);
+}
+
+html.app-motion-on .app-rv.app-rv--on {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+html.app-motion-on .app-sec--lit {
+  position: relative;
+}
+
+html.app-motion-on .app-sec--lit::before {
+  content: '';
+  position: absolute;
+  inset: -8px -12px;
+  border-radius: 20px;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232, 201, 138, 0.06), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Card lift (home + match) ── */
+html.app-motion-on .home-card,
+html.app-motion-on .home-gig-stat,
+html.app-motion-on .home-fit-step,
+html.app-motion-on .home-gig-value-card,
+html.app-motion-on .card {
+  transition:
+    transform 0.38s var(--app-ease-out),
+    box-shadow 0.38s var(--app-ease-out),
+    border-color 0.25s,
+    background 0.25s;
+}
+
+html.app-motion-on .home-card:hover,
+html.app-motion-on .home-gig-stat:hover,
+html.app-motion-on .home-fit-step:hover,
+html.app-motion-on .home-gig-value-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+}
+
+html.app-motion-on .home-gig-stat:hover {
+  border-color: rgba(232, 201, 138, 0.28);
+}
+
+html.app-motion-on .home-gig-cta {
+  transition:
+    transform 0.38s var(--app-ease-out),
+    box-shadow 0.38s var(--app-ease-out),
+    border-color 0.25s;
+}
+
+html.app-motion-on .home-gig-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+  border-color: rgba(232, 201, 138, 0.22);
+}
+
+/* ── Terminal scan line ── */
+html.app-motion-on .home-gig-terminal {
+  position: relative;
+  overflow: hidden;
+}
+
+html.app-motion-on .home-gig-terminal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(52, 211, 153, 0.06) 48%,
+    transparent 100%
+  );
+  transform: translateY(-100%);
+  animation: app-term-scan 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes app-term-scan {
+  0%,
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  42% {
+    transform: translateY(100%);
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.app-motion-on .home-gig-hero .home-fit-title-line,
+  html.app-motion-on .home-gig-hero .home-hero-pill,
+  html.app-motion-on .home-gig-hero .home-fit-lead,
+  html.app-motion-on .home-gig-hero .home-hero-actions,
+  html.app-motion-on .app-rv:not(.app-rv--on) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+
+  .home-fx-orb,
+  .home-gig-hero {
+    transform: none !important;
+  }
+
+  html.app-motion-on .home-gig-terminal::after {
+    display: none;
+  }
+}

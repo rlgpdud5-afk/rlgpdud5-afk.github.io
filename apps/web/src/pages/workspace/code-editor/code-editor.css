@@ -243,6 +243,18 @@
   padding: 4px 8px;
 }
 
+.ce-terminal-body .xterm-helper-textarea {
+  font-family: 'D2Coding', 'Malgun Gothic', Consolas, monospace;
+  ime-mode: active;
+  opacity: 0;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.ce-terminal-body .xterm-screen {
+  pointer-events: none;
+}
+
 .ce-editor-toolbar {
   display: flex;
   gap: 6px;
