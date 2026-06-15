@@ -3,7 +3,7 @@ import { buildDefaultFiles, migrateSeedFiles } from './seeds';
 
 const KEY = 'dgig-workspace-v2';
 
-export type WorkspaceMode = 'code' | 'design' | 'git' | 'api' | 'db' | 'debug' | 'docs';
+export type WorkspaceMode = 'code' | 'design' | 'git' | 'api' | 'db' | 'debug' | 'security' | 'docs';
 export type DesignTool = 'select' | 'frame' | 'rect' | 'text';
 export type SideView = 'files' | 'tasks' | 'git' | 'api';
 

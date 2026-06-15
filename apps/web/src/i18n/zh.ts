@@ -394,6 +394,7 @@ export const zh = {
       api: 'API (Postman)',
       db: 'Database',
       debug: 'Debug',
+      security: 'Security / Trust',
       docs: 'Docs',
     },
     status: {
@@ -406,6 +407,7 @@ export const zh = {
       apiKeys: 'Ctrl+Enter Send',
       dbKeys: 'F5 Run',
       debugKeys: 'Ctrl+Shift+D',
+      securityKeys: 'Trust · LER · Security events',
       docsKeys: 'Markdown · 本地保存',
     },
     cmd: {
@@ -414,6 +416,7 @@ export const zh = {
       modeDesign: 'Design (Figma)',
       modeGit: 'Git',
       modeDebug: 'Debug',
+      modeSecurity: 'Security / Trust',
       modeApi: 'API (Postman)',
       modeDb: 'Database',
       toggleSidebar: '切换侧边栏',

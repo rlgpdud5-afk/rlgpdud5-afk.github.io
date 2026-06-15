@@ -601,6 +601,118 @@
       color: #a8b4c5;
       font-size: 0.76rem;
     }
+    .ops-console {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 14px;
+    }
+    .ops-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .ops-actions button {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.055);
+      color: #eef4ff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .ops-actions button:hover {
+      border-color: rgba(229,192,121,0.48);
+      background: rgba(255,255,255,0.085);
+    }
+    .ops-actions strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff;
+      font-size: 0.92rem;
+    }
+    .ops-actions span {
+      color: #9ca8ba;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .ops-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ops-metric {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .ops-metric b {
+      display: block;
+      color: #e5c079;
+      font-size: 1.16rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .ops-metric span {
+      color: #95a1b4;
+      font-size: 0.72rem;
+    }
+    .ops-stream {
+      display: grid;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .ops-event {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .ops-event .sev {
+      min-width: 74px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .ops-event.critical .sev { background: rgba(180,70,17,0.5); color: #ffd8bd; }
+    .ops-event.high .sev { background: rgba(84,73,209,0.56); color: #ddd9ff; }
+    .ops-event.medium .sev { background: rgba(255,255,255,0.12); color: #f4f6fb; }
+    .ops-event.low .sev { background: rgba(27,134,99,0.45); color: #bbf7da; }
+    .ops-event strong {
+      display: block;
+      color: #fff;
+      font-size: 0.84rem;
+    }
+    .ops-event small {
+      color: #8f9caf;
+      font-size: 0.72rem;
+    }
+    .ops-event code {
+      color: #9ff0cd;
+      font-size: 0.72rem;
+    }
+    .credential-view {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px solid rgba(60,218,163,0.36);
+      border-radius: 14px;
+      background: rgba(10,76,61,0.3);
+      color: #bdf7d8;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
     @media (max-width: 860px) {
       body:not(.view-workspace) { overflow: auto; }
       body.view-workspace .demo-frame-wrap { min-height: 100vh; height: 100vh; }
@@ -611,7 +723,9 @@
       .design-grid,
       .security-row,
       .tenant-grid,
-      .quality-strip { grid-template-columns: 1fr; }
+      .quality-strip,
+      .ops-console,
+      .ops-metrics { grid-template-columns: 1fr; }
       .design-flow { grid-template-columns: 1fr; gap: 10px; }
       .design-flow li + li::before { display: none; }
     }
@@ -708,6 +822,48 @@
 <span class="terminal-match">→ Match: 서울 핀테크 스타트업 (원격 계약직)</span></pre>
       </section>
       <section class="workspace-design" aria-label="D-GIG 시스템 설계 보드">
+        <article class="design-panel" aria-label="D-GIG 기능 데모 콘솔">
+          <h2>Trust · LER · Security Live Console</h2>
+          <p>설계 문서의 핵심 흐름을 실제 데모 동작으로 연결했습니다. 버튼을 누르면 localStorage에 이벤트가 저장되고, 화면의 Trust Graph / LER / Security Stream이 즉시 갱신됩니다.</p>
+          <div class="ops-console">
+            <div class="ops-actions">
+              <button type="button" data-demo-action="approve-task">
+                <strong>① Task 승인 → Trust Event 생성</strong>
+                <span>Maker 제출물을 Reviewer가 승인하고 trust_score를 올립니다.</span>
+              </button>
+              <button type="button" data-demo-action="issue-credential">
+                <strong>② LER Credential 발급</strong>
+                <span>QA 통과 + rating 4.0 이상 조건으로 VRF 검증 ID를 생성합니다.</span>
+              </button>
+              <button type="button" data-demo-action="login-fail">
+                <strong>③ 보안 이벤트: 로그인 실패</strong>
+                <span>5회 실패 시 HIGH · MFA 재인증 이벤트로 분류합니다.</span>
+              </button>
+              <button type="button" data-demo-action="mass-download">
+                <strong>④ 보안 이벤트: 대량 다운로드</strong>
+                <span>CRITICAL · 계정 잠금 + IP 차단 + Slack 알림 시뮬레이션.</span>
+              </button>
+              <button type="button" data-demo-action="reset">
+                <strong>데모 상태 초기화</strong>
+                <span>생성된 trust_events, credentials, security_events를 초기값으로 되돌립니다.</span>
+              </button>
+            </div>
+            <div>
+              <div class="ops-metrics">
+                <div class="ops-metric"><b data-metric="trust">87</b><span>trust_score</span></div>
+                <div class="ops-metric"><b data-metric="credentials">0</b><span>issued_credentials</span></div>
+                <div class="ops-metric"><b data-metric="security">0</b><span>security_events</span></div>
+                <div class="ops-metric"><b data-metric="locked">0</b><span>locked accounts</span></div>
+              </div>
+              <div class="ops-stream" data-ops-stream aria-live="polite"></div>
+              <div class="credential-view" data-credential-view>
+                $ waiting for LER issuance<br>
+                조건: task approved + QA pass + rating ≥ 4.0
+              </div>
+            </div>
+          </div>
+        </article>
+
         <article class="design-panel">
           <h2>D-GIG System Architecture</h2>
           <p>현재 웹사이트는 Phase 0 데모이며, Gig Match와 LocalCrew에서 생성된 완료 기록을 하나의 Trust Graph로 모아 LER 발급 레이어로 확장합니다.</p>
@@ -843,6 +999,190 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
           document.body.classList.add('workspace-app-open');
         });
       });
+
+      var demoKey = 'dgig-architecture-demo-v1';
+      var defaultDemoState = {
+        trustScore: 87,
+        lockedAccounts: 0,
+        trustEvents: [],
+        credentials: [],
+        securityEvents: [
+          {
+            id: 'evt-seed',
+            severity: 'LOW',
+            type: 'normal_access',
+            message: 'Workspace loaded · local demo stream ready',
+            response: 'log only',
+            at: new Date().toISOString()
+          }
+        ]
+      };
+
+      function loadDemoState() {
+        try {
+          var raw = localStorage.getItem(demoKey);
+          return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultDemoState));
+        } catch (e) {
+          return JSON.parse(JSON.stringify(defaultDemoState));
+        }
+      }
+
+      function saveDemoState(next) {
+        localStorage.setItem(demoKey, JSON.stringify(next));
+      }
+
+      function makeId(prefix) {
+        return prefix + '-' + Math.random().toString(16).slice(2, 8).toUpperCase();
+      }
+
+      function classifySecurity(type) {
+        if (type === 'mass_download') {
+          return {
+            severity: 'CRITICAL',
+            message: 'Mass download threshold exceeded',
+            response: 'account lock · IP block · Slack/email alert'
+          };
+        }
+        if (type === 'login_fail') {
+          return {
+            severity: 'HIGH',
+            message: '5 consecutive login failures detected',
+            response: 'force MFA re-authentication'
+          };
+        }
+        if (type === 'new_device') {
+          return {
+            severity: 'MEDIUM',
+            message: 'New IP/device login detected',
+            response: 'record session · notify user'
+          };
+        }
+        return { severity: 'LOW', message: 'Normal access event', response: 'log only' };
+      }
+
+      function renderDemoState() {
+        var state = loadDemoState();
+        var latestCredential = state.credentials[0];
+        var stream = document.querySelector('[data-ops-stream]');
+        var credentialView = document.querySelector('[data-credential-view]');
+        var trustMetric = document.querySelector('[data-metric="trust"]');
+        var credentialMetric = document.querySelector('[data-metric="credentials"]');
+        var securityMetric = document.querySelector('[data-metric="security"]');
+        var lockedMetric = document.querySelector('[data-metric="locked"]');
+
+        if (trustMetric) trustMetric.textContent = String(state.trustScore);
+        if (credentialMetric) credentialMetric.textContent = String(state.credentials.length);
+        if (securityMetric) securityMetric.textContent = String(state.securityEvents.length);
+        if (lockedMetric) lockedMetric.textContent = String(state.lockedAccounts);
+
+        if (stream) {
+          var combined = []
+            .concat(state.securityEvents.map(function (event) { return Object.assign({ kind: 'security' }, event); }))
+            .concat(state.trustEvents.map(function (event) { return Object.assign({ kind: 'trust' }, event); }))
+            .sort(function (a, b) { return new Date(b.at).getTime() - new Date(a.at).getTime(); })
+            .slice(0, 8);
+
+          stream.innerHTML = combined.map(function (event) {
+            var sev = event.kind === 'trust' ? 'medium' : String(event.severity || 'LOW').toLowerCase();
+            var label = event.kind === 'trust' ? 'TRUST' : event.severity;
+            var title = event.kind === 'trust' ? event.reason : event.message;
+            var sub = event.kind === 'trust'
+              ? ('delta +' + event.delta + ' · ref ' + event.ref)
+              : (event.type + ' · ' + event.response);
+            return '<div class="ops-event ' + sev + '">' +
+              '<span class="sev">' + label + '</span>' +
+              '<div><strong>' + title + '</strong><small>' + sub + '</small></div>' +
+              '<code>' + new Date(event.at).toLocaleTimeString('ko-KR', { hour12: false }) + '</code>' +
+            '</div>';
+          }).join('');
+        }
+
+        if (credentialView) {
+          if (latestCredential) {
+            credentialView.innerHTML =
+              '$ ler-issue --source ' + latestCredential.sourceId + '<br>' +
+              '✓ verify_id: ' + latestCredential.verifyId + '<br>' +
+              '✓ subject: ' + latestCredential.workerDid + '<br>' +
+              '✓ skills: ' + latestCredential.skills.join(' · ') + '<br>' +
+              '✓ content_hash: ' + latestCredential.contentHash + '<br>' +
+              '→ status: VALID · blockchain-ready';
+          } else {
+            credentialView.innerHTML = '$ waiting for LER issuance<br>조건: task approved + QA pass + rating ≥ 4.0';
+          }
+        }
+      }
+
+      function approveTask() {
+        var state = loadDemoState();
+        var event = {
+          id: makeId('trust'),
+          delta: 5,
+          reason: 'task approved + QA pass + rating 4.8',
+          ref: 'task:marketing-data-analysis',
+          at: new Date().toISOString()
+        };
+        state.trustScore = Math.min(100, state.trustScore + event.delta);
+        state.trustEvents.unshift(event);
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      function issueCredential() {
+        var state = loadDemoState();
+        var hasApproval = state.trustEvents.some(function (event) {
+          return event.ref === 'task:marketing-data-analysis';
+        });
+        if (!hasApproval) {
+          approveTask();
+          state = loadDemoState();
+        }
+        var credential = {
+          id: makeId('cred'),
+          sourceType: 'task',
+          sourceId: 'task:marketing-data-analysis',
+          workerDid: 'did:dgig:worker:kim_daejeon_001',
+          verifyId: 'VRF-' + new Date().getFullYear() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase(),
+          skills: ['KSF-DAT-A001 Lv.3', 'Figma Lv.2', 'Copywriting Lv.2'],
+          contentHash: 'sha256:' + Math.random().toString(16).slice(2, 10) + Math.random().toString(16).slice(2, 10),
+          at: new Date().toISOString()
+        };
+        state.credentials.unshift(credential);
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      function pushSecurityEvent(type) {
+        var state = loadDemoState();
+        var classified = classifySecurity(type);
+        state.securityEvents.unshift({
+          id: makeId('sec'),
+          type: type,
+          severity: classified.severity,
+          message: classified.message,
+          response: classified.response,
+          at: new Date().toISOString(),
+          ip: type === 'mass_download' ? '203.0.113.44' : '198.51.100.21'
+        });
+        if (classified.severity === 'CRITICAL') state.lockedAccounts += 1;
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      document.querySelectorAll('[data-demo-action]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var action = button.getAttribute('data-demo-action');
+          if (action === 'approve-task') approveTask();
+          if (action === 'issue-credential') issueCredential();
+          if (action === 'login-fail') pushSecurityEvent('login_fail');
+          if (action === 'mass-download') pushSecurityEvent('mass_download');
+          if (action === 'reset') {
+            localStorage.removeItem(demoKey);
+            renderDemoState();
+          }
+        });
+      });
+
+      renderDemoState();
     })();
   </script>
   <script src="../assets/site-motion.js?v=20260611" defer></script>

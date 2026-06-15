@@ -400,6 +400,7 @@ export const es = {
       api: 'API (Postman)',
       db: 'Base de datos',
       debug: 'Depuración',
+      security: 'Security / Trust',
       docs: 'Docs',
     },
     status: {
@@ -412,6 +413,7 @@ export const es = {
       apiKeys: 'Ctrl+Enter Enviar',
       dbKeys: 'F5 Ejecutar',
       debugKeys: 'Ctrl+Shift+D',
+      securityKeys: 'Trust · LER · Security events',
       docsKeys: 'Markdown · guardado local',
     },
     cmd: {
@@ -420,6 +422,7 @@ export const es = {
       modeDesign: 'Diseño (Figma)',
       modeGit: 'Git',
       modeDebug: 'Depuración',
+      modeSecurity: 'Security / Trust',
       modeApi: 'API (Postman)',
       modeDb: 'Base de datos',
       toggleSidebar: 'Alternar barra lateral',

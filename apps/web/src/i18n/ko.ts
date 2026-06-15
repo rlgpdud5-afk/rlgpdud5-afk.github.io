@@ -398,6 +398,7 @@ export const ko = {
       api: 'API (Postman)',
       db: 'Database',
       debug: 'Debug',
+      security: 'Security / Trust',
       docs: 'Docs',
     },
     status: {
@@ -410,6 +411,7 @@ export const ko = {
       apiKeys: 'Ctrl+Enter Send',
       dbKeys: 'F5 Run',
       debugKeys: 'Ctrl+Shift+D',
+      securityKeys: 'Trust · LER · Security events',
       docsKeys: 'Markdown · 로컬 저장',
     },
     cmd: {
@@ -418,6 +420,7 @@ export const ko = {
       modeDesign: 'Design (Figma)',
       modeGit: 'Git',
       modeDebug: 'Debug',
+      modeSecurity: 'Security / Trust',
       modeApi: 'API (Postman)',
       modeDb: 'Database',
       toggleSidebar: '사이드바 토글',

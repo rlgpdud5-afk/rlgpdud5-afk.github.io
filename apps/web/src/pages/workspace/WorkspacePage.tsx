@@ -20,6 +20,7 @@ import { DesignPanel } from './panels/DesignPanel';
 import type { DesignEditorHandle } from './design-editor/DesignEditorPage';
 import { DocsPanel } from './panels/DocsPanel';
 import { GitPanel } from './git/GitPanel';
+import { SecurityTrustPanel } from './panels/SecurityTrustPanel';
 import '../../workspace.css';
 
 const TOOLS: { mode: WorkspaceMode; icon: string; key: string }[] = [
@@ -29,6 +30,7 @@ const TOOLS: { mode: WorkspaceMode; icon: string; key: string }[] = [
   { mode: 'api', icon: '⚡', key: 'api' },
   { mode: 'db', icon: '▦', key: 'db' },
   { mode: 'debug', icon: '⛭', key: 'debug' },
+  { mode: 'security', icon: '◈', key: 'security' },
   { mode: 'docs', icon: '☰', key: 'docs' },
 ];
 
@@ -38,6 +40,7 @@ const COMMANDS = [
   { id: 'modeDesign', keys: '', run: 'modeDesign' },
   { id: 'modeGit', keys: 'Ctrl+Shift+G', run: 'modeGit' },
   { id: 'modeDebug', keys: 'Ctrl+Shift+D', run: 'modeDebug' },
+  { id: 'modeSecurity', keys: '', run: 'modeSecurity' },
   { id: 'modeApi', keys: '', run: 'modeApi' },
   { id: 'modeDb', keys: '', run: 'modeDb' },
   { id: 'toggleSidebar', keys: 'Ctrl+B', run: 'sidebar' },
@@ -148,6 +151,7 @@ export function WorkspacePage() {
         modeDebug: () => patch({ mode: 'debug' }),
         modeApi: () => patch({ mode: 'api' }),
         modeDb: () => patch({ mode: 'db' }),
+        modeSecurity: () => patch({ mode: 'security' }),
         sidebar: () => patch({ sidebarOpen: !state.sidebarOpen }),
         terminal: () => patch({ terminalOpen: !state.terminalOpen }),
         newFile,
@@ -215,7 +219,9 @@ export function WorkspacePage() {
               ? ['dbKeys']
               : state.mode === 'debug'
                 ? ['debugKeys']
-                : ['docsKeys'];
+                : state.mode === 'security'
+                  ? ['securityKeys']
+                  : ['docsKeys'];
 
   return (
     <div className={'ws-root' + (state.panelsHidden ? ' ws-hidden' : '')}>
@@ -340,6 +346,7 @@ export function WorkspacePage() {
               breakpointsLabel={t('workspace.debugBp')}
             />
           )}
+          {state.mode === 'security' && <SecurityTrustPanel />}
           {state.mode === 'docs' && (
             <DocsPanel
               content={docsContent}
