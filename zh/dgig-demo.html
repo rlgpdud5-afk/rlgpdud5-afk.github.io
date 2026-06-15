@@ -100,12 +100,227 @@
       min-height: 0;
       background: #080d1a;
       overflow: hidden;
+      position: relative;
     }
     #dgig-frame {
       width: 100%;
       height: 100%;
       border: 0;
       display: block;
+    }
+    body.view-workspace .demo-chrome,
+    body.view-workspace #dgig-frame { display: none; }
+    body.view-workspace .demo-frame-wrap { height: 100vh; min-height: 100vh; overflow: hidden; }
+    body.workspace-app-open .demo-chrome { display: flex; }
+    body.workspace-app-open #dgig-frame { display: block; }
+    body.workspace-app-open .demo-frame-wrap { min-height: 0; }
+    .workspace-home {
+      display: none;
+      height: 100vh;
+      padding: 0 clamp(20px, 7vw, 96px) 46px;
+      background:
+        radial-gradient(circle at 78% 7%, rgba(40, 90, 164, 0.38), transparent 34rem),
+        radial-gradient(circle at 6% 30%, rgba(49, 67, 104, 0.28), transparent 28rem),
+        linear-gradient(135deg, #070b14 0%, #0b111d 52%, #101827 100%);
+      color: #f6f8fc;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .workspace-home::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.92), rgba(0,0,0,0.22));
+    }
+    body.view-workspace .workspace-home { display: block; }
+    body.workspace-app-open .workspace-home { display: none; }
+    .workspace-site-header,
+    .workspace-hero,
+    .workspace-stats,
+    .workspace-flow,
+    .workspace-terminal {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .workspace-site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 70px;
+    }
+    .workspace-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #f6f8fc;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+    }
+    .workspace-brand::before {
+      content: '';
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #68a8ff;
+      box-shadow: 0 0 18px rgba(104,168,255,0.95);
+    }
+    .workspace-nav,
+    .workspace-lang {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.045);
+    }
+    .workspace-nav a,
+    .workspace-lang a {
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 15px;
+      border-radius: 999px;
+      color: #97a3b6;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .workspace-lang a { min-height: 26px; padding: 0 9px; font-size: 0.68rem; }
+    .workspace-nav a.on,
+    .workspace-lang a.on { color: #fff; background: rgba(255,255,255,0.1); }
+    .workspace-hero { padding-top: clamp(78px, 12vh, 135px); }
+    .workspace-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      padding: 7px 13px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      color: #9aa7ba;
+      background: rgba(255,255,255,0.045);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+    .workspace-eyebrow::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #59d69e;
+      box-shadow: 0 0 16px rgba(89,214,158,0.8);
+    }
+    .workspace-hero h1 {
+      margin: 0 0 14px;
+      color: #f8fbff;
+      font-size: clamp(2.75rem, 5.6vw, 5.9rem);
+      line-height: 0.97;
+      letter-spacing: -0.062em;
+    }
+    .workspace-hero h1 em {
+      display: block;
+      color: #e5c079;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight: 500;
+      letter-spacing: -0.05em;
+    }
+    .workspace-hero p {
+      max-width: 560px;
+      color: #b9c3d2;
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+    .workspace-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .workspace-actions a,
+    .workspace-actions button {
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.07);
+      color: #eef4ff;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .workspace-actions .primary {
+      border-color: rgba(229,192,121,0.62);
+      background: linear-gradient(135deg, #f2d79c, #c99456);
+      color: #17150f;
+    }
+    .workspace-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+    .workspace-stats article,
+    .workspace-flow li,
+    .workspace-terminal pre {
+      border: 1px solid rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      box-shadow: 0 22px 70px rgba(0,0,0,0.26);
+    }
+    .workspace-stats article { min-height: 80px; padding: 18px; border-radius: 14px; }
+    .workspace-stats strong { display: block; margin-bottom: 7px; color: #e5c079; font-size: 1.42rem; line-height: 1; }
+    .workspace-stats span { color: #8d99ac; font-size: 0.74rem; font-weight: 700; }
+    .workspace-section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin: 28px auto 12px;
+      max-width: 1180px;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .workspace-section-title h2 { margin: 0; font-size: 1.24rem; letter-spacing: -0.04em; }
+    .workspace-section-title p { margin: 0; color: #7f8a9e; font-size: 0.82rem; }
+    .workspace-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px; padding: 0; list-style: none; }
+    .workspace-flow li { position: relative; min-height: 104px; padding: 18px; border-radius: 14px; }
+    .workspace-flow li + li::before { content: '→'; position: absolute; right: calc(100% + 13px); top: 43px; color: rgba(255,255,255,0.25); font-weight: 900; }
+    .workspace-flow b { display: block; margin-bottom: 8px; color: #67a7ff; font-size: 0.72rem; }
+    .workspace-flow strong { display: block; margin-bottom: 7px; color: #fff; font-size: 1rem; }
+    .workspace-flow p { margin: 0; color: #b8c3d2; font-size: 0.82rem; line-height: 1.55; }
+    .workspace-terminal { margin-top: 26px; }
+    .workspace-terminal h2 { margin: 0 0 12px; color: #fff; font-size: 1.24rem; letter-spacing: -0.04em; }
+    .workspace-terminal pre {
+      margin: 0;
+      padding: 18px 20px;
+      border-color: rgba(88,214,160,0.28);
+      border-radius: 14px;
+      background: rgba(1,10,14,0.76);
+      color: #b6f6ce;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.86rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+    .terminal-prompt { color: #e5c079; }
+    .terminal-ok { color: #a7f4c3; }
+    .terminal-match { color: #95f3d8; }
+    @media (max-width: 860px) {
+      body:not(.view-workspace) { overflow: auto; }
+      body.view-workspace .demo-frame-wrap { min-height: 100vh; height: 100vh; }
+      .workspace-site-header { flex-wrap: wrap; justify-content: flex-start; }
+      .workspace-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workspace-flow { grid-template-columns: 1fr; gap: 12px; }
+      .workspace-flow li + li::before { display: none; }
+    }
+    @media (max-width: 520px) {
+      .workspace-stats { grid-template-columns: 1fr; }
+      .workspace-nav, .workspace-lang { overflow-x: auto; max-width: 100%; }
+      .workspace-section-title { display: block; }
     }
   </style>
   <link rel="stylesheet" href="../assets/site-glass.css?v=20260611">
@@ -129,6 +344,60 @@
     </span>
   </header>
   <div class="demo-frame-wrap">
+    <section class="workspace-home" aria-label="D-GIG 隔离网络工作区首页">
+      <header class="workspace-site-header">
+        <a class="workspace-brand" href="index.html">D-GIG</a>
+        <nav class="workspace-nav" aria-label="工作区菜单">
+          <a href="index.html">首页</a>
+          <a href="?view=match">匹配</a>
+          <a href="?view=crew">LOCALCREW</a>
+          <a href="?view=workspace" class="on">工作区</a>
+        </nav>
+        <nav class="workspace-lang" aria-label="Language">
+          <a href="../ko/dgig-demo.html?view=workspace">KO</a>
+          <a href="../en/dgig-demo.html?view=workspace">EN</a>
+          <a href="../zh/dgig-demo.html?view=workspace" class="on">中文</a>
+          <a href="../es/dgig-demo.html?view=workspace">ES</a>
+        </nav>
+      </header>
+      <section class="workspace-hero">
+        <div class="workspace-eyebrow">GigCareer X D-GIG Platform -- 区域人才基础设施</div>
+        <h1>Opportunity beyond<em>Seoul.</em></h1>
+        <p>
+          让物理距离不再限制机会。<br>
+          D-GIG 将地区潜力与青年能力转化为可验证的数据，<br>
+          打开新的可信职业生态。
+        </p>
+        <div class="workspace-actions">
+          <button class="primary" type="button" data-enter-workspace>进入工作区 →</button>
+          <a href="?view=crew">LER · 平台演示</a>
+          <a href="?view=match">角色标签匹配体验</a>
+        </div>
+      </section>
+      <section class="workspace-stats" aria-label="D-GIG 指标">
+        <article><strong>52%</strong><span>地区毕业生外流率</span></article>
+        <article><strong>12.4</strong><span>每个岗位的竞争人数</span></article>
+        <article><strong>LER</strong><span>学习与就业记录资产化</span></article>
+        <article><strong>3-Step</strong><span>Local → Data → Global</span></article>
+      </section>
+      <div class="workspace-section-title">
+        <h2>将地区工作经验转化为全球职业凭证</h2>
+        <p>D-GIG 通过本地项目连接地区企业与青年人才</p>
+      </div>
+      <ol class="workspace-flow">
+        <li><b>01</b><strong>Local Gig</strong><p>短周期地区项目产出真实成果与可审计工作记录</p></li>
+        <li><b>02</b><strong>LER Data</strong><p>经过验证的成果保存为 LER 数据并自动生成作品集资产</p></li>
+        <li><b>03</b><strong>Global Match</strong><p>验证后的实务数据连接远程与全球技能型招聘</p></li>
+      </ol>
+      <section class="workspace-terminal">
+        <h2>LER 验证演示</h2>
+        <pre><span class="terminal-prompt">$ ler-verify --candidate kim_daejeon_001</span>
+<span class="terminal-ok">✓ Project: 地区初创企业营销数据分析（4周）</span>
+<span class="terminal-ok">✓ Skills verified: Data Analysis · Figma · Copywriting</span>
+<span class="terminal-ok">✓ Outcome score: 92 / 100</span>
+<span class="terminal-match">→ Match: 金融科技初创企业远程合约</span></pre>
+      </section>
+    </section>
     <iframe id="dgig-frame" title="D-GIG 平台演示" allow="clipboard-write"></iframe>
   </div>
   <script>
@@ -145,6 +414,7 @@
       var routes = { home: '/', crew: '/crew', match: '/match', workspace: '/workspace' };
       var view = new URLSearchParams(location.search).get('view') || 'home';
       if (!routes[view]) view = 'home';
+      document.body.classList.add('view-' + view);
       document.querySelectorAll('.demo-tabs a').forEach(function (a) {
         a.classList.toggle('on', a.getAttribute('data-view') === view);
       });
@@ -153,6 +423,11 @@
       });
       document.getElementById('dgig-frame').src =
         'dgig-app/index.html?embed=1&lang=zh&build=' + BUILD + '#' + routes[view];
+      document.querySelectorAll('[data-enter-workspace]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          document.body.classList.add('workspace-app-open');
+        });
+      });
     })();
   </script>
   <script src="../assets/site-motion.js?v=20260611" defer></script>
