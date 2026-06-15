@@ -400,6 +400,203 @@
     .terminal-prompt { color: #e5c079; }
     .terminal-ok { color: #a7f4c3; }
     .terminal-match { color: #95f3d8; }
+    .workspace-design {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 34px auto 0;
+      display: grid;
+      gap: 18px;
+    }
+    .design-panel {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      box-shadow: 0 24px 72px rgba(0,0,0,0.24);
+      padding: clamp(18px, 3vw, 26px);
+    }
+    .design-panel h2 {
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: clamp(1.28rem, 2.2vw, 1.72rem);
+      letter-spacing: -0.04em;
+    }
+    .design-panel > p {
+      margin: 0 0 18px;
+      color: #98a5b8;
+      line-height: 1.65;
+      font-size: 0.88rem;
+    }
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .design-card {
+      min-height: 116px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+    }
+    .design-card b {
+      display: block;
+      margin-bottom: 8px;
+      color: #67a7ff;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .design-card strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .design-card span,
+    .design-card p {
+      color: #b7c2d2;
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+    .design-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 24px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .design-flow li {
+      position: relative;
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+    }
+    .design-flow li + li::before {
+      content: '→';
+      position: absolute;
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.28);
+      font-weight: 900;
+    }
+    .design-flow b {
+      display: block;
+      color: #e5c079;
+      font-size: 0.72rem;
+      margin-bottom: 7px;
+    }
+    .design-flow strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .design-flow span {
+      color: #97a3b6;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .security-pipeline {
+      display: grid;
+      gap: 14px;
+    }
+    .security-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .security-box {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.05);
+      text-align: center;
+    }
+    .security-box strong {
+      display: block;
+      color: #fff;
+      font-size: 0.92rem;
+      margin-bottom: 5px;
+    }
+    .security-box span {
+      color: #aab6c7;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .security-box.critical { border-color: rgba(218,116,42,0.52); background: rgba(121,63,8,0.45); }
+    .security-box.high { border-color: rgba(111,99,255,0.55); background: rgba(66,58,158,0.42); }
+    .security-box.medium { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); }
+    .security-box.green { border-color: rgba(60,218,163,0.42); background: rgba(11,93,74,0.42); }
+    .security-core {
+      padding: 18px;
+      border: 1px solid rgba(60,218,163,0.42);
+      border-radius: 16px;
+      background: rgba(10,76,61,0.38);
+      color: #9ff0cd;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    .tenant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .tenant-node {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      text-align: center;
+    }
+    .tenant-node.gateway {
+      border-color: rgba(111,99,255,0.5);
+      background: rgba(66,58,158,0.34);
+    }
+    .tenant-node.cloud {
+      border-color: rgba(60,218,163,0.42);
+      background: rgba(11,93,74,0.38);
+    }
+    .tenant-node strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .tenant-node span {
+      display: block;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      color: #b9c4d4;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .quality-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .quality-strip div {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.045);
+    }
+    .quality-strip b {
+      display: block;
+      color: #e5c079;
+      font-size: 1.22rem;
+      margin-bottom: 5px;
+    }
+    .quality-strip span {
+      color: #a8b4c5;
+      font-size: 0.76rem;
+    }
     @media (max-width: 860px) {
       html, body { overflow: auto; }
       body.view-workspace .demo-frame-wrap { min-height: 100vh; }
@@ -407,6 +604,12 @@
       .workspace-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .workspace-flow { grid-template-columns: 1fr; gap: 12px; }
       .workspace-flow li + li::before { display: none; }
+      .design-grid,
+      .security-row,
+      .tenant-grid,
+      .quality-strip { grid-template-columns: 1fr; }
+      .design-flow { grid-template-columns: 1fr; gap: 10px; }
+      .design-flow li + li::before { display: none; }
     }
     @media (max-width: 520px) {
       .workspace-stats { grid-template-columns: 1fr; }
@@ -499,6 +702,112 @@
 <span class="terminal-ok">✓ Skills verified: Data Analysis · Figma · Copywriting</span>
 <span class="terminal-ok">✓ Outcome score: 92 / 100</span>
 <span class="terminal-match">→ Match: 서울 핀테크 스타트업 (원격 계약직)</span></pre>
+      </section>
+      <section class="workspace-design" aria-label="D-GIG 시스템 설계 보드">
+        <article class="design-panel">
+          <h2>D-GIG System Architecture</h2>
+          <p>현재 웹사이트는 Phase 0 데모이며, Gig Match와 LocalCrew에서 생성된 완료 기록을 하나의 Trust Graph로 모아 LER 발급 레이어로 확장합니다.</p>
+          <div class="design-grid">
+            <div class="design-card">
+              <b>ENTRY 01</b>
+              <strong>Gig Match</strong>
+              <p>1~4주 단기 공고, 태그·지역·기간 매칭, 빠른 온보딩과 지역 파일럿 검증.</p>
+            </div>
+            <div class="design-card">
+              <b>ENTRY 02</b>
+              <strong>LocalCrew / WBS</strong>
+              <p>프로젝트 → 모듈 → 태스크 구조, Maker/Reviewer 검수, B2B·지자체·대학 과업 수행.</p>
+            </div>
+            <div class="design-card">
+              <b>OUTPUT</b>
+              <strong>Trust Graph → LER</strong>
+              <p>완료 기록, 리뷰, SLA, QA를 신뢰 점수로 집계하고 검증 가능한 커리어 자산으로 전환.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Product Flow & Stack</h2>
+          <p>아키텍처는 정적 마케팅 사이트를 유지하면서, 앱 영역은 Vite + React + TypeScript, 데이터는 Supabase Postgres + Auth + RLS로 확장합니다.</p>
+          <ol class="design-flow">
+            <li><b>01</b><strong>Marketing</strong><span>GitHub Pages 기반 ko/*.html 유지</span></li>
+            <li><b>02</b><strong>App Web</strong><span>Vite React TS / app.gigcareer.kr 권장</span></li>
+            <li><b>03</b><strong>Supabase</strong><span>Postgres · Auth · RLS · Realtime</span></li>
+            <li><b>04</b><strong>Trust Engine</strong><span>review · SLA · QA · trust_score</span></li>
+            <li><b>05</b><strong>LER / VC</strong><span>DID · W3C VC · verify URL · blockchain-ready</span></li>
+          </ol>
+        </article>
+
+        <article class="design-panel">
+          <h2>LER Credential Layers</h2>
+          <p>LER는 v1 필수 조건이 아니라 신뢰 데이터가 쌓인 뒤 붙는 업그레이드 레이어입니다. 장기 구조는 위변조·양도·허위기록을 차단하는 5계층 검증으로 설계합니다.</p>
+          <div class="design-grid">
+            <div class="design-card"><b>LAYER 1</b><strong>DID</strong><span>worker DID와 개인키 기반 신원 바인딩</span></div>
+            <div class="design-card"><b>LAYER 2</b><strong>W3C VC</strong><span>Ed25519 서명으로 업무 기록 발급</span></div>
+            <div class="design-card"><b>LAYER 3</b><strong>LER Mapping</strong><span>KR-LER-2025 skill code와 level 집계</span></div>
+            <div class="design-card"><b>LAYER 4</b><strong>Polygon Anchor</strong><span>원문이 아닌 SHA-256 hash만 온체인 기록</span></div>
+            <div class="design-card"><b>LAYER 5</b><strong>ZKP Proof</strong><span>경력 조건만 증명하고 프로젝트 상세는 비공개</span></div>
+            <div class="design-card"><b>VERIFY</b><strong>/verify/VRF-xxxx</strong><span>서명 · 해시 · 상태를 공개 URL에서 검증</span></div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Real-Time Security Event Monitoring</h2>
+          <p>설계 파일의 Supabase Realtime 보안 이벤트 파이프라인을 데모 보드에 반영했습니다. 이벤트는 수집 즉시 관리자 화면으로 push되고 Edge Function이 심각도를 자동 분류합니다.</p>
+          <div class="security-pipeline">
+            <div class="security-row">
+              <div class="security-box"><strong>로그인 실패</strong><span>5회 연속 시도</span></div>
+              <div class="security-box"><strong>비정상 접근</strong><span>새 IP·새 기기</span></div>
+              <div class="security-box"><strong>대량 다운로드</strong><span>임계치 초과 요청</span></div>
+              <div class="security-box"><strong>권한 초과 시도</strong><span>미인가 API 호출</span></div>
+            </div>
+            <div class="security-core">
+Supabase security_events table
+event_type · user_id · ip · location · device · timestamp · severity · metadata
+INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스트
+            </div>
+            <div class="security-row">
+              <div class="security-box critical"><strong>CRITICAL</strong><span>계정 탈취·대량 유출<br>즉시 계정 잠금</span></div>
+              <div class="security-box high"><strong>HIGH</strong><span>반복 로그인 실패<br>MFA 재인증 요구</span></div>
+              <div class="security-box medium"><strong>MEDIUM / LOW</strong><span>새 기기·일반 로그인<br>기록 후 모니터링</span></div>
+              <div class="security-box green"><strong>Admin Dashboard</strong><span>Next.js + Supabase 구독<br>실시간 이벤트 표시</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Air-Gapped Tenant Isolation</h2>
+          <p>국비·기밀 프로젝트는 일반 프로젝트와 분리하고, 게이트웨이·DB·로그·감사 영역을 테넌트 단위로 나눕니다.</p>
+          <div class="tenant-grid">
+            <div class="tenant-node">
+              <strong>클라이언트 사용자 기기</strong>
+              <span>D-GIG 앱<br>작업·로그·접속 정보</span>
+              <span>엔드포인트 보안<br>암호화 에이전트</span>
+            </div>
+            <div class="tenant-node gateway">
+              <strong>보안 게이트웨이</strong>
+              <span>모든 트래픽 통과</span>
+              <span>인증·인가<br>OAuth2 + JWT</span>
+              <span>WAF + DDoS 방어<br>이상 트래픽 차단</span>
+            </div>
+            <div class="tenant-node cloud">
+              <strong>중앙 클라우드 D-GIG 서버</strong>
+              <span>테넌트 격리<br>프로젝트별 분리</span>
+              <span>로그·감사<br>실시간 수집</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Demo Quality & Next Build</h2>
+          <p>현재 단계는 투자·검토용 Phase 0입니다. 다음 빌드는 Auth/RLS, schema validation, security_events, credential verification seed를 우선 반영합니다.</p>
+          <div class="quality-strip">
+            <div><b>3.7 / 5</b><span>ISO 9126 demo weighted score</span></div>
+            <div><b>4.0 / 5</b><span>Quality in Use · 피칭 적합도</span></div>
+            <div><b>P0</b><span>Auth · RLS · air-gap policy</span></div>
+            <div><b>P1</b><span>Trust events · LER credential seed</span></div>
+          </div>
+        </article>
       </section>
     </section>
     <iframe id="dgig-frame" title="D-GIG 플랫폼 데모" allow="clipboard-write"></iframe>
