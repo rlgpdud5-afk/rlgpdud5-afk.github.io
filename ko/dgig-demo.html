@@ -114,6 +114,8 @@
     }
     body.view-workspace .demo-frame-wrap {
       min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
     }
     body.workspace-app-open .demo-chrome {
       display: flex;
@@ -126,7 +128,7 @@
     }
     .workspace-home {
       display: none;
-      min-height: 100vh;
+      height: 100vh;
       padding: 0 clamp(20px, 7vw, 96px) 46px;
       background:
         radial-gradient(circle at 78% 7%, rgba(40, 90, 164, 0.38), transparent 34rem),
@@ -134,6 +136,8 @@
         linear-gradient(135deg, #070b14 0%, #0b111d 52%, #101827 100%);
       color: #f6f8fc;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       position: relative;
     }
     .workspace-home::before {
@@ -598,8 +602,8 @@
       font-size: 0.76rem;
     }
     @media (max-width: 860px) {
-      html, body { overflow: auto; }
-      body.view-workspace .demo-frame-wrap { min-height: 100vh; }
+      body:not(.view-workspace) { overflow: auto; }
+      body.view-workspace .demo-frame-wrap { min-height: 100vh; height: 100vh; }
       .workspace-site-header { flex-wrap: wrap; justify-content: flex-start; }
       .workspace-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .workspace-flow { grid-template-columns: 1fr; gap: 12px; }
