@@ -26,8 +26,181 @@
     />
     <script type="module" crossorigin src="./assets/index-Qvr8hSqU.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-9HmUcqA5.css">
+    <style>
+      #dgig-security-console {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 9999;
+        width: min(430px, calc(100vw - 32px));
+        max-height: min(72vh, 620px);
+        overflow: auto;
+        padding: 14px;
+        border: 1px solid rgba(232, 201, 138, 0.32);
+        border-radius: 18px;
+        background: linear-gradient(145deg, rgba(16, 24, 40, 0.96), rgba(6, 11, 21, 0.96));
+        box-shadow: 0 26px 80px rgba(0, 0, 0, 0.45);
+        color: #e2e8f4;
+        font-family: 'Barlow', 'Noto Sans KR', system-ui, sans-serif;
+      }
+      #dgig-security-console.min { width: auto; max-height: none; }
+      #dgig-security-console.min .dgig-sec-body { display: none; }
+      .dgig-sec-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+      .dgig-sec-head strong { color: #fff; font-size: 14px; }
+      .dgig-sec-head button,
+      .dgig-sec-actions button {
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.07);
+        color: #e2e8f4;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .dgig-sec-head button { padding: 5px 9px; }
+      .dgig-sec-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 10px; }
+      .dgig-sec-actions button { padding: 9px 10px; text-align: left; border-radius: 10px; }
+      .dgig-sec-actions button:hover { border-color: rgba(232,201,138,0.42); }
+      .dgig-sec-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 9px; }
+      .dgig-sec-metrics div { padding: 9px; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.045); }
+      .dgig-sec-metrics b { display: block; color: #e8c98a; font-size: 18px; line-height: 1; margin-bottom: 4px; }
+      .dgig-sec-metrics span { color: #94a3b8; font-size: 10px; }
+      .dgig-sec-stream { display: grid; gap: 6px; max-height: 180px; overflow: auto; }
+      .dgig-sec-event { display: grid; grid-template-columns: 68px 1fr; gap: 8px; padding: 8px; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.045); }
+      .dgig-sec-event > span { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 9px; font-weight: 800; }
+      .dgig-sec-event.critical > span { background: rgba(180,70,17,.5); color: #ffd8bd; }
+      .dgig-sec-event.high > span { background: rgba(84,73,209,.56); color: #ddd9ff; }
+      .dgig-sec-event.medium > span { background: rgba(255,255,255,.13); color: #f4f6fb; }
+      .dgig-sec-event.low > span { background: rgba(27,134,99,.45); color: #bbf7da; }
+      .dgig-sec-event.trust > span { background: rgba(0,120,212,.4); color: #cbe6ff; }
+      .dgig-sec-event strong { display: block; color: #fff; font-size: 11px; }
+      .dgig-sec-event small { color: #94a3b8; font-size: 10px; }
+      .dgig-sec-cred {
+        margin-top: 9px;
+        padding: 9px;
+        border: 1px solid rgba(52,211,153,.3);
+        border-radius: 10px;
+        background: rgba(10,76,61,.24);
+        color: #a7f3d0;
+        font-family: Consolas, monospace;
+        font-size: 10px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var KEY = 'dgig-program-security-trust-v1';
+        var defaultState = {
+          trustScore: 87,
+          lockedAccounts: 0,
+          trustEvents: [],
+          credentials: [],
+          securityEvents: [{ id: 'seed', type: 'normal_access', severity: 'LOW', message: 'Program security stream ready', response: 'log only', at: new Date().toISOString() }]
+        };
+        function cloneDefault() { return JSON.parse(JSON.stringify(defaultState)); }
+        function load() {
+          try { return JSON.parse(localStorage.getItem(KEY) || 'null') || cloneDefault(); }
+          catch (e) { return cloneDefault(); }
+        }
+        function save(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
+        function id(prefix) { return prefix + '-' + Math.random().toString(16).slice(2, 8).toUpperCase(); }
+        function classify(type) {
+          if (type === 'mass_download') return { severity: 'CRITICAL', message: 'Mass download threshold exceeded', response: 'lock account · block IP · alert' };
+          if (type === 'login_fail') return { severity: 'HIGH', message: '5 consecutive login failures detected', response: 'force MFA re-authentication' };
+          return { severity: 'MEDIUM', message: 'New device access detected', response: 'record session · notify user' };
+        }
+        function ensureConsole() {
+          var isWorkspace = (location.hash || '').indexOf('/workspace') >= 0;
+          var existing = document.getElementById('dgig-security-console');
+          if (!isWorkspace) {
+            if (existing) existing.remove();
+            return;
+          }
+          if (existing) {
+            render();
+            return;
+          }
+          var el = document.createElement('aside');
+          el.id = 'dgig-security-console';
+          el.innerHTML = '<div class="dgig-sec-head"><strong>Security · Trust · LER</strong><button type="button" data-sec-toggle>접기</button></div>' +
+            '<div class="dgig-sec-body">' +
+            '<div class="dgig-sec-actions">' +
+            '<button type="button" data-sec-action="approve">① Trust event</button>' +
+            '<button type="button" data-sec-action="credential">② Issue LER</button>' +
+            '<button type="button" data-sec-action="login">③ Login fail</button>' +
+            '<button type="button" data-sec-action="download">④ Mass download</button>' +
+            '</div><div class="dgig-sec-metrics">' +
+            '<div><b data-sec-metric="trust">87</b><span>trust</span></div>' +
+            '<div><b data-sec-metric="cred">0</b><span>VC</span></div>' +
+            '<div><b data-sec-metric="event">0</b><span>events</span></div>' +
+            '<div><b data-sec-metric="lock">0</b><span>locks</span></div>' +
+            '</div><div class="dgig-sec-stream" data-sec-stream></div><pre class="dgig-sec-cred" data-sec-credential>$ waiting for LER issuance</pre></div>';
+          document.body.appendChild(el);
+          el.querySelector('[data-sec-toggle]').addEventListener('click', function () {
+            el.classList.toggle('min');
+          });
+          el.querySelectorAll('[data-sec-action]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var action = btn.getAttribute('data-sec-action');
+              if (action === 'approve') approve();
+              if (action === 'credential') issue();
+              if (action === 'login') security('login_fail');
+              if (action === 'download') security('mass_download');
+            });
+          });
+          render();
+        }
+        function approve() {
+          var s = load();
+          s.trustScore = Math.min(100, s.trustScore + 5);
+          s.trustEvents.unshift({ id: id('trust'), delta: 5, reason: 'task approved + QA pass + rating 4.8', ref: 'task:marketing-data-analysis', at: new Date().toISOString() });
+          save(s); render();
+        }
+        function issue() {
+          var s = load();
+          if (!s.trustEvents.some(function (e) { return e.ref === 'task:marketing-data-analysis'; })) {
+            s.trustScore = Math.min(100, s.trustScore + 5);
+            s.trustEvents.unshift({ id: id('trust'), delta: 5, reason: 'task approved + QA pass + rating 4.8', ref: 'task:marketing-data-analysis', at: new Date().toISOString() });
+          }
+          s.credentials.unshift({ id: id('cred'), verifyId: 'VRF-' + new Date().getFullYear() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase(), workerDid: 'did:dgig:worker:kim_daejeon_001', sourceId: 'task:marketing-data-analysis', skills: ['KSF-DAT-A001 Lv.3', 'Figma Lv.2'], contentHash: 'sha256:' + Math.random().toString(16).slice(2, 18), at: new Date().toISOString() });
+          save(s); render();
+        }
+        function security(type) {
+          var s = load();
+          var c = classify(type);
+          s.securityEvents.unshift({ id: id('sec'), type: type, severity: c.severity, message: c.message, response: c.response, at: new Date().toISOString() });
+          if (c.severity === 'CRITICAL') s.lockedAccounts += 1;
+          save(s); render();
+        }
+        function render() {
+          var el = document.getElementById('dgig-security-console');
+          if (!el) return;
+          var s = load();
+          el.querySelector('[data-sec-metric="trust"]').textContent = String(s.trustScore);
+          el.querySelector('[data-sec-metric="cred"]').textContent = String(s.credentials.length);
+          el.querySelector('[data-sec-metric="event"]').textContent = String(s.securityEvents.length);
+          el.querySelector('[data-sec-metric="lock"]').textContent = String(s.lockedAccounts);
+          var events = s.securityEvents.map(function (e) { return Object.assign({ kind: 'security' }, e); })
+            .concat(s.trustEvents.map(function (e) { return Object.assign({ kind: 'trust' }, e); }))
+            .sort(function (a, b) { return new Date(b.at) - new Date(a.at); }).slice(0, 8);
+          el.querySelector('[data-sec-stream]').innerHTML = events.map(function (e) {
+            var cls = e.kind === 'trust' ? 'trust' : String(e.severity).toLowerCase();
+            var label = e.kind === 'trust' ? 'TRUST' : e.severity;
+            var title = e.kind === 'trust' ? e.reason : e.message;
+            var sub = e.kind === 'trust' ? ('delta +' + e.delta + ' · ' + e.ref) : (e.type + ' · ' + e.response);
+            return '<div class="dgig-sec-event ' + cls + '"><span>' + label + '</span><div><strong>' + title + '</strong><small>' + sub + '</small></div></div>';
+          }).join('');
+          var cred = s.credentials[0];
+          el.querySelector('[data-sec-credential]').textContent = cred ? ('$ ler-issue --source ' + cred.sourceId + '\n✓ verify_id: ' + cred.verifyId + '\n✓ subject: ' + cred.workerDid + '\n✓ skills: ' + cred.skills.join(' · ') + '\n✓ content_hash: ' + cred.contentHash + '\n→ status: VALID') : '$ waiting for LER issuance\n조건: task approved + QA pass + rating ≥ 4.0';
+        }
+        window.addEventListener('hashchange', ensureConsole);
+        window.addEventListener('load', function () { setTimeout(ensureConsole, 400); });
+      })();
+    </script>
   </body>
 </html>
