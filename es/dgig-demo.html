@@ -9,6 +9,7 @@
   <style>
     :root {
       --navy: #0f1729;
+      --navy-2: #141f38;
       --ink: #e2e8f4;
       --muted: #94a3b8;
       --border: rgba(255, 255, 255, 0.1);
@@ -67,11 +68,15 @@
       border-radius: 999px;
       border: 1px solid var(--border);
       font-size: 0.68rem;
+      text-transform: none;
+      letter-spacing: 0;
       background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(12px);
       transition: background 0.15s, border-color 0.15s;
     }
-    .demo-tabs a:hover { background: rgba(255, 255, 255, 0.08); }
+    .demo-tabs a:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
     .demo-tabs a.on {
       background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.22);
@@ -90,14 +95,37 @@
     .demo-lang { font-size: 0.65rem; color: var(--muted); }
     .demo-lang a { margin: 0 4px; opacity: 0.45; text-transform: uppercase; }
     .demo-lang a.on { opacity: 1; color: var(--gold); }
-    .demo-frame-wrap { flex: 1; min-height: 0; background: #080d1a; overflow: hidden; position: relative; }
-    #dgig-frame { width: 100%; height: 100%; border: 0; display: block; }
+    .demo-frame-wrap {
+      flex: 1;
+      min-height: 0;
+      background: #080d1a;
+      overflow: hidden;
+      position: relative;
+    }
+    #dgig-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
     body.view-workspace .demo-chrome,
-    body.view-workspace #dgig-frame { display: none; }
-    body.view-workspace .demo-frame-wrap { height: 100vh; min-height: 100vh; overflow: hidden; }
-    body.workspace-app-open .demo-chrome { display: flex; }
-    body.workspace-app-open #dgig-frame { display: block; }
-    body.workspace-app-open .demo-frame-wrap { min-height: 0; }
+    body.view-workspace #dgig-frame {
+      display: none;
+    }
+    body.view-workspace .demo-frame-wrap {
+      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
+    }
+    body.workspace-app-open .demo-chrome {
+      display: flex;
+    }
+    body.workspace-app-open #dgig-frame {
+      display: block;
+    }
+    body.workspace-app-open .demo-frame-wrap {
+      min-height: 0;
+    }
     .workspace-home {
       display: none;
       height: 100vh;
@@ -123,8 +151,12 @@
       background-size: 72px 72px;
       mask-image: linear-gradient(to bottom, rgba(0,0,0,0.92), rgba(0,0,0,0.22));
     }
-    body.view-workspace .workspace-home { display: block; }
-    body.workspace-app-open .workspace-home { display: none; }
+    body.view-workspace .workspace-home {
+      display: block;
+    }
+    body.workspace-app-open .workspace-home {
+      display: none;
+    }
     .workspace-site-header,
     .workspace-hero,
     .workspace-stats,
@@ -182,10 +214,19 @@
       font-size: 0.8rem;
       font-weight: 700;
     }
-    .workspace-lang a { min-height: 26px; padding: 0 9px; font-size: 0.68rem; }
+    .workspace-lang a {
+      min-height: 26px;
+      padding: 0 9px;
+      font-size: 0.68rem;
+    }
     .workspace-nav a.on,
-    .workspace-lang a.on { color: #fff; background: rgba(255,255,255,0.1); }
-    .workspace-hero { padding-top: clamp(78px, 12vh, 135px); }
+    .workspace-lang a.on {
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+    .workspace-hero {
+      padding-top: clamp(78px, 12vh, 135px);
+    }
     .workspace-eyebrow {
       display: inline-flex;
       align-items: center;
@@ -222,12 +263,17 @@
       letter-spacing: -0.05em;
     }
     .workspace-hero p {
-      max-width: 560px;
+      max-width: 520px;
       color: #b9c3d2;
       line-height: 1.7;
       font-size: 0.98rem;
     }
-    .workspace-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .workspace-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
     .workspace-actions a,
     .workspace-actions button {
       min-height: 44px;
@@ -247,7 +293,12 @@
       background: linear-gradient(135deg, #f2d79c, #c99456);
       color: #17150f;
     }
-    .workspace-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+    .workspace-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+    }
     .workspace-stats article,
     .workspace-flow li,
     .workspace-terminal pre {
@@ -255,9 +306,23 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
       box-shadow: 0 22px 70px rgba(0,0,0,0.26);
     }
-    .workspace-stats article { min-height: 80px; padding: 18px; border-radius: 14px; }
-    .workspace-stats strong { display: block; margin-bottom: 7px; color: #e5c079; font-size: 1.42rem; line-height: 1; }
-    .workspace-stats span { color: #8d99ac; font-size: 0.74rem; font-weight: 700; }
+    .workspace-stats article {
+      min-height: 80px;
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .workspace-stats strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #e5c079;
+      font-size: 1.42rem;
+      line-height: 1;
+    }
+    .workspace-stats span {
+      color: #8d99ac;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
     .workspace-section-title {
       display: flex;
       align-items: baseline;
@@ -265,19 +330,65 @@
       margin: 28px auto 12px;
       max-width: 1180px;
       color: #fff;
-      position: relative;
-      z-index: 1;
     }
-    .workspace-section-title h2 { margin: 0; font-size: 1.24rem; letter-spacing: -0.04em; }
-    .workspace-section-title p { margin: 0; color: #7f8a9e; font-size: 0.82rem; }
-    .workspace-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px; padding: 0; list-style: none; }
-    .workspace-flow li { position: relative; min-height: 104px; padding: 18px; border-radius: 14px; }
-    .workspace-flow li + li::before { content: '→'; position: absolute; right: calc(100% + 13px); top: 43px; color: rgba(255,255,255,0.25); font-weight: 900; }
-    .workspace-flow b { display: block; margin-bottom: 8px; color: #67a7ff; font-size: 0.72rem; }
-    .workspace-flow strong { display: block; margin-bottom: 7px; color: #fff; font-size: 1rem; }
-    .workspace-flow p { margin: 0; color: #b8c3d2; font-size: 0.82rem; line-height: 1.55; }
-    .workspace-terminal { margin-top: 26px; }
-    .workspace-terminal h2 { margin: 0 0 12px; color: #fff; font-size: 1.24rem; letter-spacing: -0.04em; }
+    .workspace-section-title h2 {
+      margin: 0;
+      font-size: 1.24rem;
+      letter-spacing: -0.04em;
+    }
+    .workspace-section-title p {
+      margin: 0;
+      color: #7f8a9e;
+      font-size: 0.82rem;
+    }
+    .workspace-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 34px;
+      padding: 0;
+      list-style: none;
+    }
+    .workspace-flow li {
+      position: relative;
+      min-height: 104px;
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .workspace-flow li + li::before {
+      content: '→';
+      position: absolute;
+      right: calc(100% + 13px);
+      top: 43px;
+      color: rgba(255,255,255,0.25);
+      font-weight: 900;
+    }
+    .workspace-flow b {
+      display: block;
+      margin-bottom: 8px;
+      color: #67a7ff;
+      font-size: 0.72rem;
+    }
+    .workspace-flow strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .workspace-flow p {
+      margin: 0;
+      color: #b8c3d2;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .workspace-terminal {
+      margin-top: 26px;
+    }
+    .workspace-terminal h2 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: 1.24rem;
+      letter-spacing: -0.04em;
+    }
     .workspace-terminal pre {
       margin: 0;
       padding: 18px 20px;
@@ -293,6 +404,315 @@
     .terminal-prompt { color: #e5c079; }
     .terminal-ok { color: #a7f4c3; }
     .terminal-match { color: #95f3d8; }
+    .workspace-design {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 34px auto 0;
+      display: grid;
+      gap: 18px;
+    }
+    .design-panel {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      box-shadow: 0 24px 72px rgba(0,0,0,0.24);
+      padding: clamp(18px, 3vw, 26px);
+    }
+    .design-panel h2 {
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: clamp(1.28rem, 2.2vw, 1.72rem);
+      letter-spacing: -0.04em;
+    }
+    .design-panel > p {
+      margin: 0 0 18px;
+      color: #98a5b8;
+      line-height: 1.65;
+      font-size: 0.88rem;
+    }
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .design-card {
+      min-height: 116px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+    }
+    .design-card b {
+      display: block;
+      margin-bottom: 8px;
+      color: #67a7ff;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .design-card strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .design-card span,
+    .design-card p {
+      color: #b7c2d2;
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+    .design-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 24px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .design-flow li {
+      position: relative;
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+    }
+    .design-flow li + li::before {
+      content: '→';
+      position: absolute;
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.28);
+      font-weight: 900;
+    }
+    .design-flow b {
+      display: block;
+      color: #e5c079;
+      font-size: 0.72rem;
+      margin-bottom: 7px;
+    }
+    .design-flow strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .design-flow span {
+      color: #97a3b6;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .security-pipeline {
+      display: grid;
+      gap: 14px;
+    }
+    .security-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .security-box {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.05);
+      text-align: center;
+    }
+    .security-box strong {
+      display: block;
+      color: #fff;
+      font-size: 0.92rem;
+      margin-bottom: 5px;
+    }
+    .security-box span {
+      color: #aab6c7;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .security-box.critical { border-color: rgba(218,116,42,0.52); background: rgba(121,63,8,0.45); }
+    .security-box.high { border-color: rgba(111,99,255,0.55); background: rgba(66,58,158,0.42); }
+    .security-box.medium { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); }
+    .security-box.green { border-color: rgba(60,218,163,0.42); background: rgba(11,93,74,0.42); }
+    .security-core {
+      padding: 18px;
+      border: 1px solid rgba(60,218,163,0.42);
+      border-radius: 16px;
+      background: rgba(10,76,61,0.38);
+      color: #9ff0cd;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    .tenant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .tenant-node {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      text-align: center;
+    }
+    .tenant-node.gateway {
+      border-color: rgba(111,99,255,0.5);
+      background: rgba(66,58,158,0.34);
+    }
+    .tenant-node.cloud {
+      border-color: rgba(60,218,163,0.42);
+      background: rgba(11,93,74,0.38);
+    }
+    .tenant-node strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .tenant-node span {
+      display: block;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      color: #b9c4d4;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .quality-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .quality-strip div {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.045);
+    }
+    .quality-strip b {
+      display: block;
+      color: #e5c079;
+      font-size: 1.22rem;
+      margin-bottom: 5px;
+    }
+    .quality-strip span {
+      color: #a8b4c5;
+      font-size: 0.76rem;
+    }
+    .ops-console {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 14px;
+    }
+    .ops-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .ops-actions button {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.055);
+      color: #eef4ff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .ops-actions button:hover {
+      border-color: rgba(229,192,121,0.48);
+      background: rgba(255,255,255,0.085);
+    }
+    .ops-actions strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff;
+      font-size: 0.92rem;
+    }
+    .ops-actions span {
+      color: #9ca8ba;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .ops-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ops-metric {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .ops-metric b {
+      display: block;
+      color: #e5c079;
+      font-size: 1.16rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .ops-metric span {
+      color: #95a1b4;
+      font-size: 0.72rem;
+    }
+    .ops-stream {
+      display: grid;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .ops-event {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .ops-event .sev {
+      min-width: 74px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .ops-event.critical .sev { background: rgba(180,70,17,0.5); color: #ffd8bd; }
+    .ops-event.high .sev { background: rgba(84,73,209,0.56); color: #ddd9ff; }
+    .ops-event.medium .sev { background: rgba(255,255,255,0.12); color: #f4f6fb; }
+    .ops-event.low .sev { background: rgba(27,134,99,0.45); color: #bbf7da; }
+    .ops-event strong {
+      display: block;
+      color: #fff;
+      font-size: 0.84rem;
+    }
+    .ops-event small {
+      color: #8f9caf;
+      font-size: 0.72rem;
+    }
+    .ops-event code {
+      color: #9ff0cd;
+      font-size: 0.72rem;
+    }
+    .credential-view {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px solid rgba(60,218,163,0.36);
+      border-radius: 14px;
+      background: rgba(10,76,61,0.3);
+      color: #bdf7d8;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
     @media (max-width: 860px) {
       body:not(.view-workspace) { overflow: auto; }
       body.view-workspace .demo-frame-wrap { min-height: 100vh; height: 100vh; }
@@ -300,6 +720,14 @@
       .workspace-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .workspace-flow { grid-template-columns: 1fr; gap: 12px; }
       .workspace-flow li + li::before { display: none; }
+      .design-grid,
+      .security-row,
+      .tenant-grid,
+      .quality-strip,
+      .ops-console,
+      .ops-metrics { grid-template-columns: 1fr; }
+      .design-flow { grid-template-columns: 1fr; gap: 10px; }
+      .design-flow li + li::before { display: none; }
     }
     @media (max-width: 520px) {
       .workspace-stats { grid-template-columns: 1fr; }
@@ -313,12 +741,12 @@
 <body>
   <header class="demo-chrome">
     <a href="index.html">← GigCareer</a>
-    <span class="demo-title">Demo D-GIG</span>
+    <span class="demo-title">D-GIG Demo</span>
     <nav class="demo-tabs" aria-label="Módulos de demo">
       <a href="?view=home" data-view="home">Inicio D-GIG</a>
       <a href="?view=crew" data-view="crew">LER</a>
       <a href="?view=match" data-view="match">Match</a>
-      <a href="?view=workspace" data-view="workspace" class="tab-workspace">Mi espacio de trabajo</a>
+      <a href="?view=workspace" data-view="workspace" class="tab-workspace">Espacio de trabajo aislado</a>
     </nav>
     <span class="demo-lang">
       <a href="../ko/dgig-demo.html" data-locale="ko">KO</a>
@@ -328,10 +756,10 @@
     </span>
   </header>
   <div class="demo-frame-wrap">
-    <section class="workspace-home" aria-label="Inicio del espacio de trabajo D-GIG">
+    <section class="workspace-home" aria-label="Inicio del espacio de trabajo aislado D-GIG">
       <header class="workspace-site-header">
         <a class="workspace-brand" href="index.html">D-GIG</a>
-        <nav class="workspace-nav" aria-label="Menú de espacio de trabajo">
+        <nav class="workspace-nav" aria-label="Menú del espacio de trabajo">
           <a href="index.html">Inicio</a>
           <a href="?view=match">Match</a>
           <a href="?view=crew">LOCALCREW</a>
@@ -358,28 +786,188 @@
           <a href="?view=match">Demo de roles y etiquetas</a>
         </div>
       </section>
-      <section class="workspace-stats" aria-label="Métricas D-GIG">
-        <article><strong>52%</strong><span>salida regional de graduados</span></article>
-        <article><strong>12.4</strong><span>candidatos por puesto social/humanidades</span></article>
-        <article><strong>LER</strong><span>Learning & Employment Record</span></article>
+      <section class="workspace-stats" aria-label="Métricas principales D-GIG">
+        <article><strong>52%</strong><span>Salida regional de graduados</span></article>
+        <article><strong>12.4</strong><span>Candidatos por puesto social/humanidades</span></article>
+        <article><strong>LER</strong><span>Capa de activos Learning & Employment Record</span></article>
         <article><strong>3-Step</strong><span>Local → Data → Global</span></article>
       </section>
       <div class="workspace-section-title">
-        <h2>Convertir experiencia regional en credenciales globales</h2>
+        <h2>Convertir experiencia local en credenciales globales</h2>
         <p>D-GIG conecta empresas regionales y jóvenes mediante proyectos locales</p>
       </div>
       <ol class="workspace-flow">
-        <li><b>01</b><strong>Local Gig</strong><p>Proyectos regionales cortos crean entregables reales e historial auditable</p></li>
-        <li><b>02</b><strong>LER Data</strong><p>Resultados verificados se guardan como LER y se convierten en portafolio</p></li>
-        <li><b>03</b><strong>Global Match</strong><p>Datos de trabajo verificados conectan talento con contratación global por habilidades</p></li>
+        <li>
+          <b>01</b>
+          <strong>Local Gig</strong>
+          <p>Proyectos cortos de empresas y universidades regionales crean experiencia real y entregables verificables</p>
+        </li>
+        <li>
+          <b>02</b>
+          <strong>LER Data</strong>
+          <p>El proceso y los resultados verificados se guardan como LER y se convierten en activos de portafolio</p>
+        </li>
+        <li>
+          <b>03</b>
+          <strong>Global Match</strong>
+          <p>Los datos de trabajo verificados conectan talento con contratación remota y global basada en habilidades</p>
+        </li>
       </ol>
       <section class="workspace-terminal">
         <h2>Demo de verificación LER</h2>
         <pre><span class="terminal-prompt">$ ler-verify --candidate kim_daejeon_001</span>
-<span class="terminal-ok">✓ Project: análisis de marketing para startup regional (4 semanas)</span>
+<span class="terminal-ok">✓ Project: Análisis de marketing para startup regional (4 semanas)</span>
 <span class="terminal-ok">✓ Skills verified: Data Analysis · Figma · Copywriting</span>
 <span class="terminal-ok">✓ Outcome score: 92 / 100</span>
-<span class="terminal-match">→ Match: startup fintech, contrato remoto</span></pre>
+<span class="terminal-match">→ Match: Startup fintech, contrato remoto</span></pre>
+      </section>
+      <section class="workspace-design" aria-label="Tablero de diseño del sistema D-GIG">
+        <article class="design-panel" aria-label="Consola de demo funcional D-GIG">
+          <h2>Trust · LER · Security Live Console</h2>
+          <p>Los flujos clave del documento de diseño están conectados a acciones reales de demo. Al pulsar un botón, los eventos se guardan en localStorage y se actualizan al instante Trust Graph, LER y Security Stream.</p>
+          <div class="ops-console">
+            <div class="ops-actions">
+              <button type="button" data-demo-action="approve-task">
+                <strong>① Aprobar tarea → crear Trust Event</strong>
+                <span>El Reviewer aprueba el entregable del Maker y aumenta el trust_score.</span>
+              </button>
+              <button type="button" data-demo-action="issue-credential">
+                <strong>② Emitir LER Credential</strong>
+                <span>Genera un ID de verificación VRF cuando QA pasa y el rating es 4.0 o superior.</span>
+              </button>
+              <button type="button" data-demo-action="login-fail">
+                <strong>③ Evento de seguridad: fallo de login</strong>
+                <span>Cinco fallos se clasifican como HIGH y exigen reautenticación MFA.</span>
+              </button>
+              <button type="button" data-demo-action="mass-download">
+                <strong>④ Evento de seguridad: descarga masiva</strong>
+                <span>Simula respuesta CRITICAL: bloqueo de cuenta, bloqueo de IP y alerta Slack.</span>
+              </button>
+              <button type="button" data-demo-action="reset">
+                <strong>Restablecer demo</strong>
+                <span>Devuelve trust_events, credentials y security_events generados a su estado inicial.</span>
+              </button>
+            </div>
+            <div>
+              <div class="ops-metrics">
+                <div class="ops-metric"><b data-metric="trust">87</b><span>trust_score</span></div>
+                <div class="ops-metric"><b data-metric="credentials">0</b><span>issued_credentials</span></div>
+                <div class="ops-metric"><b data-metric="security">0</b><span>security_events</span></div>
+                <div class="ops-metric"><b data-metric="locked">0</b><span>locked accounts</span></div>
+              </div>
+              <div class="ops-stream" data-ops-stream aria-live="polite"></div>
+              <div class="credential-view" data-credential-view>
+                $ waiting for LER issuance<br>
+                Regla: task approved + QA pass + rating ≥ 4.0
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>D-GIG System Architecture</h2>
+          <p>El sitio actual es una demo Phase 0. Los registros completados de Gig Match y LocalCrew se reúnen en un Trust Graph y se expanden a la capa de emisión LER.</p>
+          <div class="design-grid">
+            <div class="design-card">
+              <b>ENTRY 01</b>
+              <strong>Gig Match</strong>
+              <p>Publicaciones cortas de 1 a 4 semanas con matching por etiquetas, región y duración para onboarding rápido y pilotos locales.</p>
+            </div>
+            <div class="design-card">
+              <b>ENTRY 02</b>
+              <strong>LocalCrew / WBS</strong>
+              <p>Estructura proyecto → módulo → tarea, revisión Maker/Reviewer y ejecución para B2B, gobiernos locales y universidades.</p>
+            </div>
+            <div class="design-card">
+              <b>OUTPUT</b>
+              <strong>Trust Graph → LER</strong>
+              <p>Agrega registros completados, reseñas, SLA y QA en puntuaciones de confianza y los convierte en activos profesionales verificables.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Product Flow & Stack</h2>
+          <p>La arquitectura mantiene el sitio estático de marketing y amplía la app con Vite + React + TypeScript y la capa de datos con Supabase Postgres + Auth + RLS.</p>
+          <ol class="design-flow">
+            <li><b>01</b><strong>Marketing</strong><span>Mantener archivos HTML por idioma sobre GitHub Pages</span></li>
+            <li><b>02</b><strong>App Web</strong><span>Recomendado: Vite React TS / app.gigcareer.kr</span></li>
+            <li><b>03</b><strong>Supabase</strong><span>Postgres · Auth · RLS · Realtime</span></li>
+            <li><b>04</b><strong>Trust Engine</strong><span>review · SLA · QA · trust_score</span></li>
+            <li><b>05</b><strong>LER / VC</strong><span>DID · W3C VC · verify URL · blockchain-ready</span></li>
+          </ol>
+        </article>
+
+        <article class="design-panel">
+          <h2>LER Credential Layers</h2>
+          <p>LER no es un requisito de v1; es una capa de mejora que se agrega cuando se acumulan datos de confianza. El modelo a largo plazo usa cinco capas de verificación para bloquear falsificación, transferencia y registros falsos.</p>
+          <div class="design-grid">
+            <div class="design-card"><b>LAYER 1</b><strong>DID</strong><span>Vinculación de identidad con worker DID y clave privada</span></div>
+            <div class="design-card"><b>LAYER 2</b><strong>W3C VC</strong><span>Emisión de registros de trabajo con firma Ed25519</span></div>
+            <div class="design-card"><b>LAYER 3</b><strong>LER Mapping</strong><span>Agregación de códigos y niveles KR-LER-2025</span></div>
+            <div class="design-card"><b>LAYER 4</b><strong>Polygon Anchor</strong><span>Registrar en cadena solo hash SHA-256, no contenido original</span></div>
+            <div class="design-card"><b>LAYER 5</b><strong>ZKP Proof</strong><span>Probar solo condiciones de experiencia manteniendo privados los detalles del proyecto</span></div>
+            <div class="design-card"><b>VERIFY</b><strong>/verify/VRF-xxxx</strong><span>Verificar firma, hash y estado desde una URL pública</span></div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Real-Time Security Event Monitoring</h2>
+          <p>El pipeline de eventos de seguridad Supabase Realtime del diseño está reflejado en este tablero. Los eventos se envían al panel de administración al instante y una Edge Function clasifica la severidad.</p>
+          <div class="security-pipeline">
+            <div class="security-row">
+              <div class="security-box"><strong>Fallo de login</strong><span>5 intentos consecutivos</span></div>
+              <div class="security-box"><strong>Acceso anómalo</strong><span>Nueva IP · nuevo dispositivo</span></div>
+              <div class="security-box"><strong>Descarga masiva</strong><span>Solicitudes sobre el umbral</span></div>
+              <div class="security-box"><strong>Intento de privilegios excesivos</strong><span>Llamada API no autorizada</span></div>
+            </div>
+            <div class="security-core">
+Supabase security_events table
+event_type · user_id · ip · location · device · timestamp · severity · metadata
+Al INSERT → difusión inmediata a todos los suscriptores por canales Realtime
+            </div>
+            <div class="security-row">
+              <div class="security-box critical"><strong>CRITICAL</strong><span>Secuestro de cuenta · exfiltración masiva<br>bloqueo inmediato</span></div>
+              <div class="security-box high"><strong>HIGH</strong><span>Fallos repetidos de login<br>requiere reautenticación MFA</span></div>
+              <div class="security-box medium"><strong>MEDIUM / LOW</strong><span>Nuevo dispositivo · login normal<br>registrar y monitorear</span></div>
+              <div class="security-box green"><strong>Admin Dashboard</strong><span>Next.js + suscripción Supabase<br>eventos en tiempo real</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Air-Gapped Tenant Isolation</h2>
+          <p>Los proyectos públicos o confidenciales se separan de los generales y aíslan gateway, DB, logs y auditoría por tenant.</p>
+          <div class="tenant-grid">
+            <div class="tenant-node">
+              <strong>Dispositivo del cliente</strong>
+              <span>App D-GIG<br>trabajo, logs y acceso</span>
+              <span>Seguridad endpoint<br>agente de cifrado</span>
+            </div>
+            <div class="tenant-node gateway">
+              <strong>Gateway de seguridad</strong>
+              <span>Todo el tráfico pasa por aquí</span>
+              <span>Autenticación · autorización<br>OAuth2 + JWT</span>
+              <span>WAF + defensa DDoS<br>bloqueo de tráfico anómalo</span>
+            </div>
+            <div class="tenant-node cloud">
+              <strong>Servidor cloud central D-GIG</strong>
+              <span>Aislamiento por tenant<br>separación por proyecto</span>
+              <span>Logs · auditoría<br>recolección en tiempo real</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Demo Quality & Next Build</h2>
+          <p>Esta es Phase 0 para inversión y revisión. La siguiente build prioriza Auth/RLS, schema validation, security_events y credential verification seed.</p>
+          <div class="quality-strip">
+            <div><b>3.7 / 5</b><span>ISO 9126 demo weighted score</span></div>
+            <div><b>4.0 / 5</b><span>Quality in Use · preparación para pitch</span></div>
+            <div><b>P0</b><span>Auth · RLS · air-gap policy</span></div>
+            <div><b>P1</b><span>Trust events · LER credential seed</span></div>
+          </div>
+        </article>
       </section>
     </section>
     <iframe id="dgig-frame" title="Demo de plataforma D-GIG" allow="clipboard-write"></iframe>
@@ -388,14 +976,13 @@
     (function () {
       var BUILD = '20260612';
       var LOCALE = 'es';
-      try {
-        localStorage.setItem('dgig-locale', LOCALE);
-        var vfsRaw = localStorage.getItem('dgig-code-vfs-st2');
-        if (vfsRaw && vfsRaw.indexOf('\uD3D0\uC1C4\uB9DD') !== -1) {
-          localStorage.removeItem('dgig-code-vfs-st2');
-        }
-      } catch (e) {}
-      var routes = { home: '/', crew: '/crew', match: '/match', workspace: '/workspace' };
+      try { localStorage.setItem('dgig-locale', LOCALE); } catch (e) {}
+      var routes = {
+        home: '/',
+        crew: '/crew',
+        match: '/match',
+        workspace: '/workspace'
+      };
       var view = new URLSearchParams(location.search).get('view') || 'home';
       if (!routes[view]) view = 'home';
       document.body.classList.add('view-' + view);
@@ -412,6 +999,190 @@
           document.body.classList.add('workspace-app-open');
         });
       });
+
+      var demoKey = 'dgig-architecture-demo-v1';
+      var defaultDemoState = {
+        trustScore: 87,
+        lockedAccounts: 0,
+        trustEvents: [],
+        credentials: [],
+        securityEvents: [
+          {
+            id: 'evt-seed',
+            severity: 'LOW',
+            type: 'normal_access',
+            message: 'Workspace loaded · local demo stream ready',
+            response: 'log only',
+            at: new Date().toISOString()
+          }
+        ]
+      };
+
+      function loadDemoState() {
+        try {
+          var raw = localStorage.getItem(demoKey);
+          return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultDemoState));
+        } catch (e) {
+          return JSON.parse(JSON.stringify(defaultDemoState));
+        }
+      }
+
+      function saveDemoState(next) {
+        localStorage.setItem(demoKey, JSON.stringify(next));
+      }
+
+      function makeId(prefix) {
+        return prefix + '-' + Math.random().toString(16).slice(2, 8).toUpperCase();
+      }
+
+      function classifySecurity(type) {
+        if (type === 'mass_download') {
+          return {
+            severity: 'CRITICAL',
+            message: 'Mass download threshold exceeded',
+            response: 'account lock · IP block · Slack/email alert'
+          };
+        }
+        if (type === 'login_fail') {
+          return {
+            severity: 'HIGH',
+            message: '5 consecutive login failures detected',
+            response: 'force MFA re-authentication'
+          };
+        }
+        if (type === 'new_device') {
+          return {
+            severity: 'MEDIUM',
+            message: 'New IP/device login detected',
+            response: 'record session · notify user'
+          };
+        }
+        return { severity: 'LOW', message: 'Normal access event', response: 'log only' };
+      }
+
+      function renderDemoState() {
+        var state = loadDemoState();
+        var latestCredential = state.credentials[0];
+        var stream = document.querySelector('[data-ops-stream]');
+        var credentialView = document.querySelector('[data-credential-view]');
+        var trustMetric = document.querySelector('[data-metric="trust"]');
+        var credentialMetric = document.querySelector('[data-metric="credentials"]');
+        var securityMetric = document.querySelector('[data-metric="security"]');
+        var lockedMetric = document.querySelector('[data-metric="locked"]');
+
+        if (trustMetric) trustMetric.textContent = String(state.trustScore);
+        if (credentialMetric) credentialMetric.textContent = String(state.credentials.length);
+        if (securityMetric) securityMetric.textContent = String(state.securityEvents.length);
+        if (lockedMetric) lockedMetric.textContent = String(state.lockedAccounts);
+
+        if (stream) {
+          var combined = []
+            .concat(state.securityEvents.map(function (event) { return Object.assign({ kind: 'security' }, event); }))
+            .concat(state.trustEvents.map(function (event) { return Object.assign({ kind: 'trust' }, event); }))
+            .sort(function (a, b) { return new Date(b.at).getTime() - new Date(a.at).getTime(); })
+            .slice(0, 8);
+
+          stream.innerHTML = combined.map(function (event) {
+            var sev = event.kind === 'trust' ? 'medium' : String(event.severity || 'LOW').toLowerCase();
+            var label = event.kind === 'trust' ? 'TRUST' : event.severity;
+            var title = event.kind === 'trust' ? event.reason : event.message;
+            var sub = event.kind === 'trust'
+              ? ('delta +' + event.delta + ' · ref ' + event.ref)
+              : (event.type + ' · ' + event.response);
+            return '<div class="ops-event ' + sev + '">' +
+              '<span class="sev">' + label + '</span>' +
+              '<div><strong>' + title + '</strong><small>' + sub + '</small></div>' +
+              '<code>' + new Date(event.at).toLocaleTimeString('es-ES', { hour12: false }) + '</code>' +
+            '</div>';
+          }).join('');
+        }
+
+        if (credentialView) {
+          if (latestCredential) {
+            credentialView.innerHTML =
+              '$ ler-issue --source ' + latestCredential.sourceId + '<br>' +
+              '✓ verify_id: ' + latestCredential.verifyId + '<br>' +
+              '✓ subject: ' + latestCredential.workerDid + '<br>' +
+              '✓ skills: ' + latestCredential.skills.join(' · ') + '<br>' +
+              '✓ content_hash: ' + latestCredential.contentHash + '<br>' +
+              '→ status: VALID · blockchain-ready';
+          } else {
+            credentialView.innerHTML = '$ waiting for LER issuance<br>Regla: task approved + QA pass + rating ≥ 4.0';
+          }
+        }
+      }
+
+      function approveTask() {
+        var state = loadDemoState();
+        var event = {
+          id: makeId('trust'),
+          delta: 5,
+          reason: 'task approved + QA pass + rating 4.8',
+          ref: 'task:marketing-data-analysis',
+          at: new Date().toISOString()
+        };
+        state.trustScore = Math.min(100, state.trustScore + event.delta);
+        state.trustEvents.unshift(event);
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      function issueCredential() {
+        var state = loadDemoState();
+        var hasApproval = state.trustEvents.some(function (event) {
+          return event.ref === 'task:marketing-data-analysis';
+        });
+        if (!hasApproval) {
+          approveTask();
+          state = loadDemoState();
+        }
+        var credential = {
+          id: makeId('cred'),
+          sourceType: 'task',
+          sourceId: 'task:marketing-data-analysis',
+          workerDid: 'did:dgig:worker:kim_daejeon_001',
+          verifyId: 'VRF-' + new Date().getFullYear() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase(),
+          skills: ['KSF-DAT-A001 Lv.3', 'Figma Lv.2', 'Copywriting Lv.2'],
+          contentHash: 'sha256:' + Math.random().toString(16).slice(2, 10) + Math.random().toString(16).slice(2, 10),
+          at: new Date().toISOString()
+        };
+        state.credentials.unshift(credential);
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      function pushSecurityEvent(type) {
+        var state = loadDemoState();
+        var classified = classifySecurity(type);
+        state.securityEvents.unshift({
+          id: makeId('sec'),
+          type: type,
+          severity: classified.severity,
+          message: classified.message,
+          response: classified.response,
+          at: new Date().toISOString(),
+          ip: type === 'mass_download' ? '203.0.113.44' : '198.51.100.21'
+        });
+        if (classified.severity === 'CRITICAL') state.lockedAccounts += 1;
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      document.querySelectorAll('[data-demo-action]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var action = button.getAttribute('data-demo-action');
+          if (action === 'approve-task') approveTask();
+          if (action === 'issue-credential') issueCredential();
+          if (action === 'login-fail') pushSecurityEvent('login_fail');
+          if (action === 'mass-download') pushSecurityEvent('mass_download');
+          if (action === 'reset') {
+            localStorage.removeItem(demoKey);
+            renderDemoState();
+          }
+        });
+      });
+
+      renderDemoState();
     })();
   </script>
   <script src="../assets/site-motion.js?v=20260611" defer></script>

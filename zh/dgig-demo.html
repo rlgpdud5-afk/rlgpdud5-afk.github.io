@@ -15,8 +15,6 @@
       --border: rgba(255, 255, 255, 0.1);
       --gold: #e8c98a;
       --gold-soft: rgba(232, 201, 138, 0.14);
-      --scrollbar-thumb: rgba(148, 163, 184, 0.28);
-      --scrollbar-hover: rgba(232, 201, 138, 0.42);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -24,7 +22,7 @@
       overflow: hidden;
     }
     body {
-      font-family: 'Barlow', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      font-family: 'Barlow', sans-serif;
       background: var(--navy);
       color: var(--ink);
       display: flex;
@@ -76,7 +74,9 @@
       backdrop-filter: blur(12px);
       transition: background 0.15s, border-color 0.15s;
     }
-    .demo-tabs a:hover { background: rgba(255, 255, 255, 0.08); }
+    .demo-tabs a:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
     .demo-tabs a.on {
       background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.22);
@@ -109,11 +109,23 @@
       display: block;
     }
     body.view-workspace .demo-chrome,
-    body.view-workspace #dgig-frame { display: none; }
-    body.view-workspace .demo-frame-wrap { height: 100vh; min-height: 100vh; overflow: hidden; }
-    body.workspace-app-open .demo-chrome { display: flex; }
-    body.workspace-app-open #dgig-frame { display: block; }
-    body.workspace-app-open .demo-frame-wrap { min-height: 0; }
+    body.view-workspace #dgig-frame {
+      display: none;
+    }
+    body.view-workspace .demo-frame-wrap {
+      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
+    }
+    body.workspace-app-open .demo-chrome {
+      display: flex;
+    }
+    body.workspace-app-open #dgig-frame {
+      display: block;
+    }
+    body.workspace-app-open .demo-frame-wrap {
+      min-height: 0;
+    }
     .workspace-home {
       display: none;
       height: 100vh;
@@ -139,8 +151,12 @@
       background-size: 72px 72px;
       mask-image: linear-gradient(to bottom, rgba(0,0,0,0.92), rgba(0,0,0,0.22));
     }
-    body.view-workspace .workspace-home { display: block; }
-    body.workspace-app-open .workspace-home { display: none; }
+    body.view-workspace .workspace-home {
+      display: block;
+    }
+    body.workspace-app-open .workspace-home {
+      display: none;
+    }
     .workspace-site-header,
     .workspace-hero,
     .workspace-stats,
@@ -198,10 +214,19 @@
       font-size: 0.8rem;
       font-weight: 700;
     }
-    .workspace-lang a { min-height: 26px; padding: 0 9px; font-size: 0.68rem; }
+    .workspace-lang a {
+      min-height: 26px;
+      padding: 0 9px;
+      font-size: 0.68rem;
+    }
     .workspace-nav a.on,
-    .workspace-lang a.on { color: #fff; background: rgba(255,255,255,0.1); }
-    .workspace-hero { padding-top: clamp(78px, 12vh, 135px); }
+    .workspace-lang a.on {
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+    .workspace-hero {
+      padding-top: clamp(78px, 12vh, 135px);
+    }
     .workspace-eyebrow {
       display: inline-flex;
       align-items: center;
@@ -238,12 +263,17 @@
       letter-spacing: -0.05em;
     }
     .workspace-hero p {
-      max-width: 560px;
+      max-width: 520px;
       color: #b9c3d2;
       line-height: 1.7;
       font-size: 0.98rem;
     }
-    .workspace-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .workspace-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
     .workspace-actions a,
     .workspace-actions button {
       min-height: 44px;
@@ -263,7 +293,12 @@
       background: linear-gradient(135deg, #f2d79c, #c99456);
       color: #17150f;
     }
-    .workspace-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+    .workspace-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+    }
     .workspace-stats article,
     .workspace-flow li,
     .workspace-terminal pre {
@@ -271,9 +306,23 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
       box-shadow: 0 22px 70px rgba(0,0,0,0.26);
     }
-    .workspace-stats article { min-height: 80px; padding: 18px; border-radius: 14px; }
-    .workspace-stats strong { display: block; margin-bottom: 7px; color: #e5c079; font-size: 1.42rem; line-height: 1; }
-    .workspace-stats span { color: #8d99ac; font-size: 0.74rem; font-weight: 700; }
+    .workspace-stats article {
+      min-height: 80px;
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .workspace-stats strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #e5c079;
+      font-size: 1.42rem;
+      line-height: 1;
+    }
+    .workspace-stats span {
+      color: #8d99ac;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
     .workspace-section-title {
       display: flex;
       align-items: baseline;
@@ -281,19 +330,65 @@
       margin: 28px auto 12px;
       max-width: 1180px;
       color: #fff;
-      position: relative;
-      z-index: 1;
     }
-    .workspace-section-title h2 { margin: 0; font-size: 1.24rem; letter-spacing: -0.04em; }
-    .workspace-section-title p { margin: 0; color: #7f8a9e; font-size: 0.82rem; }
-    .workspace-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px; padding: 0; list-style: none; }
-    .workspace-flow li { position: relative; min-height: 104px; padding: 18px; border-radius: 14px; }
-    .workspace-flow li + li::before { content: '→'; position: absolute; right: calc(100% + 13px); top: 43px; color: rgba(255,255,255,0.25); font-weight: 900; }
-    .workspace-flow b { display: block; margin-bottom: 8px; color: #67a7ff; font-size: 0.72rem; }
-    .workspace-flow strong { display: block; margin-bottom: 7px; color: #fff; font-size: 1rem; }
-    .workspace-flow p { margin: 0; color: #b8c3d2; font-size: 0.82rem; line-height: 1.55; }
-    .workspace-terminal { margin-top: 26px; }
-    .workspace-terminal h2 { margin: 0 0 12px; color: #fff; font-size: 1.24rem; letter-spacing: -0.04em; }
+    .workspace-section-title h2 {
+      margin: 0;
+      font-size: 1.24rem;
+      letter-spacing: -0.04em;
+    }
+    .workspace-section-title p {
+      margin: 0;
+      color: #7f8a9e;
+      font-size: 0.82rem;
+    }
+    .workspace-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 34px;
+      padding: 0;
+      list-style: none;
+    }
+    .workspace-flow li {
+      position: relative;
+      min-height: 104px;
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .workspace-flow li + li::before {
+      content: '→';
+      position: absolute;
+      right: calc(100% + 13px);
+      top: 43px;
+      color: rgba(255,255,255,0.25);
+      font-weight: 900;
+    }
+    .workspace-flow b {
+      display: block;
+      margin-bottom: 8px;
+      color: #67a7ff;
+      font-size: 0.72rem;
+    }
+    .workspace-flow strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .workspace-flow p {
+      margin: 0;
+      color: #b8c3d2;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .workspace-terminal {
+      margin-top: 26px;
+    }
+    .workspace-terminal h2 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: 1.24rem;
+      letter-spacing: -0.04em;
+    }
     .workspace-terminal pre {
       margin: 0;
       padding: 18px 20px;
@@ -309,6 +404,315 @@
     .terminal-prompt { color: #e5c079; }
     .terminal-ok { color: #a7f4c3; }
     .terminal-match { color: #95f3d8; }
+    .workspace-design {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 34px auto 0;
+      display: grid;
+      gap: 18px;
+    }
+    .design-panel {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      box-shadow: 0 24px 72px rgba(0,0,0,0.24);
+      padding: clamp(18px, 3vw, 26px);
+    }
+    .design-panel h2 {
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: clamp(1.28rem, 2.2vw, 1.72rem);
+      letter-spacing: -0.04em;
+    }
+    .design-panel > p {
+      margin: 0 0 18px;
+      color: #98a5b8;
+      line-height: 1.65;
+      font-size: 0.88rem;
+    }
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .design-card {
+      min-height: 116px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+    }
+    .design-card b {
+      display: block;
+      margin-bottom: 8px;
+      color: #67a7ff;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .design-card strong {
+      display: block;
+      margin-bottom: 7px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .design-card span,
+    .design-card p {
+      color: #b7c2d2;
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+    .design-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 24px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .design-flow li {
+      position: relative;
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.045);
+    }
+    .design-flow li + li::before {
+      content: '→';
+      position: absolute;
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.28);
+      font-weight: 900;
+    }
+    .design-flow b {
+      display: block;
+      color: #e5c079;
+      font-size: 0.72rem;
+      margin-bottom: 7px;
+    }
+    .design-flow strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .design-flow span {
+      color: #97a3b6;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .security-pipeline {
+      display: grid;
+      gap: 14px;
+    }
+    .security-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .security-box {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.05);
+      text-align: center;
+    }
+    .security-box strong {
+      display: block;
+      color: #fff;
+      font-size: 0.92rem;
+      margin-bottom: 5px;
+    }
+    .security-box span {
+      color: #aab6c7;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .security-box.critical { border-color: rgba(218,116,42,0.52); background: rgba(121,63,8,0.45); }
+    .security-box.high { border-color: rgba(111,99,255,0.55); background: rgba(66,58,158,0.42); }
+    .security-box.medium { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); }
+    .security-box.green { border-color: rgba(60,218,163,0.42); background: rgba(11,93,74,0.42); }
+    .security-core {
+      padding: 18px;
+      border: 1px solid rgba(60,218,163,0.42);
+      border-radius: 16px;
+      background: rgba(10,76,61,0.38);
+      color: #9ff0cd;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    .tenant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .tenant-node {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      text-align: center;
+    }
+    .tenant-node.gateway {
+      border-color: rgba(111,99,255,0.5);
+      background: rgba(66,58,158,0.34);
+    }
+    .tenant-node.cloud {
+      border-color: rgba(60,218,163,0.42);
+      background: rgba(11,93,74,0.38);
+    }
+    .tenant-node strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .tenant-node span {
+      display: block;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      color: #b9c4d4;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .quality-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .quality-strip div {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.045);
+    }
+    .quality-strip b {
+      display: block;
+      color: #e5c079;
+      font-size: 1.22rem;
+      margin-bottom: 5px;
+    }
+    .quality-strip span {
+      color: #a8b4c5;
+      font-size: 0.76rem;
+    }
+    .ops-console {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 14px;
+    }
+    .ops-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .ops-actions button {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.055);
+      color: #eef4ff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .ops-actions button:hover {
+      border-color: rgba(229,192,121,0.48);
+      background: rgba(255,255,255,0.085);
+    }
+    .ops-actions strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff;
+      font-size: 0.92rem;
+    }
+    .ops-actions span {
+      color: #9ca8ba;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+    .ops-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ops-metric {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .ops-metric b {
+      display: block;
+      color: #e5c079;
+      font-size: 1.16rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .ops-metric span {
+      color: #95a1b4;
+      font-size: 0.72rem;
+    }
+    .ops-stream {
+      display: grid;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .ops-event {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .ops-event .sev {
+      min-width: 74px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .ops-event.critical .sev { background: rgba(180,70,17,0.5); color: #ffd8bd; }
+    .ops-event.high .sev { background: rgba(84,73,209,0.56); color: #ddd9ff; }
+    .ops-event.medium .sev { background: rgba(255,255,255,0.12); color: #f4f6fb; }
+    .ops-event.low .sev { background: rgba(27,134,99,0.45); color: #bbf7da; }
+    .ops-event strong {
+      display: block;
+      color: #fff;
+      font-size: 0.84rem;
+    }
+    .ops-event small {
+      color: #8f9caf;
+      font-size: 0.72rem;
+    }
+    .ops-event code {
+      color: #9ff0cd;
+      font-size: 0.72rem;
+    }
+    .credential-view {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px solid rgba(60,218,163,0.36);
+      border-radius: 14px;
+      background: rgba(10,76,61,0.3);
+      color: #bdf7d8;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
     @media (max-width: 860px) {
       body:not(.view-workspace) { overflow: auto; }
       body.view-workspace .demo-frame-wrap { min-height: 100vh; height: 100vh; }
@@ -316,6 +720,14 @@
       .workspace-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .workspace-flow { grid-template-columns: 1fr; gap: 12px; }
       .workspace-flow li + li::before { display: none; }
+      .design-grid,
+      .security-row,
+      .tenant-grid,
+      .quality-strip,
+      .ops-console,
+      .ops-metrics { grid-template-columns: 1fr; }
+      .design-flow { grid-template-columns: 1fr; gap: 10px; }
+      .design-flow li + li::before { display: none; }
     }
     @media (max-width: 520px) {
       .workspace-stats { grid-template-columns: 1fr; }
@@ -328,13 +740,13 @@
 </head>
 <body>
   <header class="demo-chrome">
-    <a href="dgig-demo.html?view=home">← GigCareer</a>
-    <span class="demo-title">D-GIG 演示</span>
+    <a href="index.html">← GigCareer</a>
+    <span class="demo-title">D-GIG Demo</span>
     <nav class="demo-tabs" aria-label="演示模块">
       <a href="?view=home" data-view="home">D-GIG 首页</a>
       <a href="?view=crew" data-view="crew">LER</a>
       <a href="?view=match" data-view="match">匹配</a>
-      <a href="?view=workspace" data-view="workspace" class="tab-workspace">我的工作台</a>
+      <a href="?view=workspace" data-view="workspace" class="tab-workspace">隔离网络工作区</a>
     </nav>
     <span class="demo-lang">
       <a href="../ko/dgig-demo.html" data-locale="ko">KO</a>
@@ -374,20 +786,32 @@
           <a href="?view=match">角色标签匹配体验</a>
         </div>
       </section>
-      <section class="workspace-stats" aria-label="D-GIG 指标">
+      <section class="workspace-stats" aria-label="D-GIG 关键指标">
         <article><strong>52%</strong><span>地区毕业生外流率</span></article>
         <article><strong>12.4</strong><span>每个岗位的竞争人数</span></article>
         <article><strong>LER</strong><span>学习与就业记录资产化</span></article>
         <article><strong>3-Step</strong><span>Local → Data → Global</span></article>
       </section>
       <div class="workspace-section-title">
-        <h2>将地区工作经验转化为全球职业凭证</h2>
-        <p>D-GIG 通过本地项目连接地区企业与青年人才</p>
+        <h2>将地区工作经验转化为全球职业资产</h2>
+        <p>D-GIG 是连接地区企业与青年人才的本地零工平台</p>
       </div>
       <ol class="workspace-flow">
-        <li><b>01</b><strong>Local Gig</strong><p>短周期地区项目产出真实成果与可审计工作记录</p></li>
-        <li><b>02</b><strong>LER Data</strong><p>经过验证的成果保存为 LER 数据并自动生成作品集资产</p></li>
-        <li><b>03</b><strong>Global Match</strong><p>验证后的实务数据连接远程与全球技能型招聘</p></li>
+        <li>
+          <b>01</b>
+          <strong>Local Gig</strong>
+          <p>通过地区企业与大学的短期实务项目，产出真实经验与成果</p>
+        </li>
+        <li>
+          <b>02</b>
+          <strong>LER Data</strong>
+          <p>经过验证的过程与成果保存为 LER，并自动生成作品集资产</p>
+        </li>
+        <li>
+          <b>03</b>
+          <strong>Global Match</strong>
+          <p>以验证后的实务数据连接首都圈与全球技能型招聘</p>
+        </li>
       </ol>
       <section class="workspace-terminal">
         <h2>LER 验证演示</h2>
@@ -397,6 +821,154 @@
 <span class="terminal-ok">✓ Outcome score: 92 / 100</span>
 <span class="terminal-match">→ Match: 金融科技初创企业远程合约</span></pre>
       </section>
+      <section class="workspace-design" aria-label="D-GIG 系统设计看板">
+        <article class="design-panel" aria-label="D-GIG 功能演示控制台">
+          <h2>Trust · LER · Security Live Console</h2>
+          <p>已将设计文档中的核心流程连接为真实可操作的演示。点击按钮后，事件会保存到 localStorage，并立即更新 Trust Graph、LER 与 Security Stream。</p>
+          <div class="ops-console">
+            <div class="ops-actions">
+              <button type="button" data-demo-action="approve-task">
+                <strong>① 批准任务 → 生成 Trust Event</strong>
+                <span>Reviewer 批准 Maker 提交物，并提升 trust_score。</span>
+              </button>
+              <button type="button" data-demo-action="issue-credential">
+                <strong>② 签发 LER Credential</strong>
+                <span>在 QA 通过且 rating ≥ 4.0 时生成 VRF 验证 ID。</span>
+              </button>
+              <button type="button" data-demo-action="login-fail">
+                <strong>③ 安全事件：登录失败</strong>
+                <span>连续失败 5 次时分类为 HIGH，并要求 MFA 重新认证。</span>
+              </button>
+              <button type="button" data-demo-action="mass-download">
+                <strong>④ 安全事件：大量下载</strong>
+                <span>模拟 CRITICAL 响应：账号锁定、IP 阻断与 Slack 通知。</span>
+              </button>
+              <button type="button" data-demo-action="reset">
+                <strong>重置演示状态</strong>
+                <span>将生成的 trust_events、credentials、security_events 恢复为初始状态。</span>
+              </button>
+            </div>
+            <div>
+              <div class="ops-metrics">
+                <div class="ops-metric"><b data-metric="trust">87</b><span>trust_score</span></div>
+                <div class="ops-metric"><b data-metric="credentials">0</b><span>issued_credentials</span></div>
+                <div class="ops-metric"><b data-metric="security">0</b><span>security_events</span></div>
+                <div class="ops-metric"><b data-metric="locked">0</b><span>locked accounts</span></div>
+              </div>
+              <div class="ops-stream" data-ops-stream aria-live="polite"></div>
+              <div class="credential-view" data-credential-view>
+                $ waiting for LER issuance<br>
+                规则：task approved + QA pass + rating ≥ 4.0
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>D-GIG System Architecture</h2>
+          <p>当前网站是 Phase 0 演示。Gig Match 与 LocalCrew 产生的完成记录会汇入同一个 Trust Graph，并扩展到 LER 签发层。</p>
+          <div class="design-grid">
+            <div class="design-card">
+              <b>ENTRY 01</b>
+              <strong>Gig Match</strong>
+              <p>1–4 周短期岗位，按标签、地区与周期匹配，用于快速入门与地区试点验证。</p>
+            </div>
+            <div class="design-card">
+              <b>ENTRY 02</b>
+              <strong>LocalCrew / WBS</strong>
+              <p>项目 → 模块 → 任务结构，Maker/Reviewer 评审，适用于 B2B、地方政府与大学项目。</p>
+            </div>
+            <div class="design-card">
+              <b>OUTPUT</b>
+              <strong>Trust Graph → LER</strong>
+              <p>将完成记录、评价、SLA 与 QA 汇总为信任分数，并转化为可验证的职业资产。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Product Flow & Stack</h2>
+          <p>架构保留静态营销网站，同时将应用层扩展为 Vite + React + TypeScript，数据层扩展为 Supabase Postgres + Auth + RLS。</p>
+          <ol class="design-flow">
+            <li><b>01</b><strong>Marketing</strong><span>保留基于 GitHub Pages 的多语言 HTML 文件</span></li>
+            <li><b>02</b><strong>App Web</strong><span>建议使用 Vite React TS / app.gigcareer.kr</span></li>
+            <li><b>03</b><strong>Supabase</strong><span>Postgres · Auth · RLS · Realtime</span></li>
+            <li><b>04</b><strong>Trust Engine</strong><span>review · SLA · QA · trust_score</span></li>
+            <li><b>05</b><strong>LER / VC</strong><span>DID · W3C VC · verify URL · blockchain-ready</span></li>
+          </ol>
+        </article>
+
+        <article class="design-panel">
+          <h2>LER Credential Layers</h2>
+          <p>LER 不是 v1 的前置条件，而是在信任数据积累后添加的升级层。长期结构采用 5 层验证，防止伪造、转让与虚假记录。</p>
+          <div class="design-grid">
+            <div class="design-card"><b>LAYER 1</b><strong>DID</strong><span>基于 worker DID 与私钥的身份绑定</span></div>
+            <div class="design-card"><b>LAYER 2</b><strong>W3C VC</strong><span>使用 Ed25519 签名签发工作记录</span></div>
+            <div class="design-card"><b>LAYER 3</b><strong>LER Mapping</strong><span>聚合 KR-LER-2025 技能代码与等级</span></div>
+            <div class="design-card"><b>LAYER 4</b><strong>Polygon Anchor</strong><span>仅将 SHA-256 哈希上链，不记录原文</span></div>
+            <div class="design-card"><b>LAYER 5</b><strong>ZKP Proof</strong><span>只证明经验条件，项目细节保持私密</span></div>
+            <div class="design-card"><b>VERIFY</b><strong>/verify/VRF-xxxx</strong><span>通过公开 URL 验证签名、哈希与状态</span></div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Real-Time Security Event Monitoring</h2>
+          <p>设计文档中的 Supabase Realtime 安全事件管线已反映在演示看板中。事件收集后会立即推送到管理员界面，并由 Edge Function 自动分类严重级别。</p>
+          <div class="security-pipeline">
+            <div class="security-row">
+              <div class="security-box"><strong>登录失败</strong><span>连续 5 次尝试</span></div>
+              <div class="security-box"><strong>异常访问</strong><span>新 IP · 新设备</span></div>
+              <div class="security-box"><strong>大量下载</strong><span>超过阈值的请求</span></div>
+              <div class="security-box"><strong>越权尝试</strong><span>未授权 API 调用</span></div>
+            </div>
+            <div class="security-core">
+Supabase security_events table
+event_type · user_id · ip · location · device · timestamp · severity · metadata
+INSERT 发生即刻 → 通过 Realtime 通道广播给全部订阅者
+            </div>
+            <div class="security-row">
+              <div class="security-box critical"><strong>CRITICAL</strong><span>账号接管·大量泄露<br>立即锁定账号</span></div>
+              <div class="security-box high"><strong>HIGH</strong><span>重复登录失败<br>要求 MFA 重新认证</span></div>
+              <div class="security-box medium"><strong>MEDIUM / LOW</strong><span>新设备·普通登录<br>记录后监控</span></div>
+              <div class="security-box green"><strong>Admin Dashboard</strong><span>Next.js + Supabase 订阅<br>实时显示事件</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Air-Gapped Tenant Isolation</h2>
+          <p>政府资助与机密项目会与普通项目分离，并按租户划分网关、数据库、日志与审计区域。</p>
+          <div class="tenant-grid">
+            <div class="tenant-node">
+              <strong>客户端用户设备</strong>
+              <span>D-GIG 应用<br>工作、日志、访问数据</span>
+              <span>端点安全<br>加密代理</span>
+            </div>
+            <div class="tenant-node gateway">
+              <strong>安全网关</strong>
+              <span>所有流量通过</span>
+              <span>认证·授权<br>OAuth2 + JWT</span>
+              <span>WAF + DDoS 防护<br>异常流量阻断</span>
+            </div>
+            <div class="tenant-node cloud">
+              <strong>中央云 D-GIG 服务器</strong>
+              <span>租户隔离<br>按项目分离</span>
+              <span>日志·审计<br>实时收集</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel">
+          <h2>Demo Quality & Next Build</h2>
+          <p>当前阶段是用于投资与评审的 Phase 0。下一版将优先反映 Auth/RLS、schema validation、security_events 与 credential verification seed。</p>
+          <div class="quality-strip">
+            <div><b>3.7 / 5</b><span>ISO 9126 demo weighted score</span></div>
+            <div><b>4.0 / 5</b><span>Quality in Use · 路演适配度</span></div>
+            <div><b>P0</b><span>Auth · RLS · air-gap policy</span></div>
+            <div><b>P1</b><span>Trust events · LER credential seed</span></div>
+          </div>
+        </article>
+      </section>
     </section>
     <iframe id="dgig-frame" title="D-GIG 平台演示" allow="clipboard-write"></iframe>
   </div>
@@ -404,14 +976,13 @@
     (function () {
       var BUILD = '20260612';
       var LOCALE = 'zh';
-      try {
-        localStorage.setItem('dgig-locale', LOCALE);
-        var vfsRaw = localStorage.getItem('dgig-code-vfs-st2');
-        if (vfsRaw && vfsRaw.indexOf('\uD3D0\uC1C4\uB9DD') !== -1) {
-          localStorage.removeItem('dgig-code-vfs-st2');
-        }
-      } catch (e) {}
-      var routes = { home: '/', crew: '/crew', match: '/match', workspace: '/workspace' };
+      try { localStorage.setItem('dgig-locale', LOCALE); } catch (e) {}
+      var routes = {
+        home: '/',
+        crew: '/crew',
+        match: '/match',
+        workspace: '/workspace'
+      };
       var view = new URLSearchParams(location.search).get('view') || 'home';
       if (!routes[view]) view = 'home';
       document.body.classList.add('view-' + view);
@@ -428,6 +999,190 @@
           document.body.classList.add('workspace-app-open');
         });
       });
+
+      var demoKey = 'dgig-architecture-demo-v1';
+      var defaultDemoState = {
+        trustScore: 87,
+        lockedAccounts: 0,
+        trustEvents: [],
+        credentials: [],
+        securityEvents: [
+          {
+            id: 'evt-seed',
+            severity: 'LOW',
+            type: 'normal_access',
+            message: 'Workspace loaded · local demo stream ready',
+            response: 'log only',
+            at: new Date().toISOString()
+          }
+        ]
+      };
+
+      function loadDemoState() {
+        try {
+          var raw = localStorage.getItem(demoKey);
+          return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultDemoState));
+        } catch (e) {
+          return JSON.parse(JSON.stringify(defaultDemoState));
+        }
+      }
+
+      function saveDemoState(next) {
+        localStorage.setItem(demoKey, JSON.stringify(next));
+      }
+
+      function makeId(prefix) {
+        return prefix + '-' + Math.random().toString(16).slice(2, 8).toUpperCase();
+      }
+
+      function classifySecurity(type) {
+        if (type === 'mass_download') {
+          return {
+            severity: 'CRITICAL',
+            message: 'Mass download threshold exceeded',
+            response: 'account lock · IP block · Slack/email alert'
+          };
+        }
+        if (type === 'login_fail') {
+          return {
+            severity: 'HIGH',
+            message: '5 consecutive login failures detected',
+            response: 'force MFA re-authentication'
+          };
+        }
+        if (type === 'new_device') {
+          return {
+            severity: 'MEDIUM',
+            message: 'New IP/device login detected',
+            response: 'record session · notify user'
+          };
+        }
+        return { severity: 'LOW', message: 'Normal access event', response: 'log only' };
+      }
+
+      function renderDemoState() {
+        var state = loadDemoState();
+        var latestCredential = state.credentials[0];
+        var stream = document.querySelector('[data-ops-stream]');
+        var credentialView = document.querySelector('[data-credential-view]');
+        var trustMetric = document.querySelector('[data-metric="trust"]');
+        var credentialMetric = document.querySelector('[data-metric="credentials"]');
+        var securityMetric = document.querySelector('[data-metric="security"]');
+        var lockedMetric = document.querySelector('[data-metric="locked"]');
+
+        if (trustMetric) trustMetric.textContent = String(state.trustScore);
+        if (credentialMetric) credentialMetric.textContent = String(state.credentials.length);
+        if (securityMetric) securityMetric.textContent = String(state.securityEvents.length);
+        if (lockedMetric) lockedMetric.textContent = String(state.lockedAccounts);
+
+        if (stream) {
+          var combined = []
+            .concat(state.securityEvents.map(function (event) { return Object.assign({ kind: 'security' }, event); }))
+            .concat(state.trustEvents.map(function (event) { return Object.assign({ kind: 'trust' }, event); }))
+            .sort(function (a, b) { return new Date(b.at).getTime() - new Date(a.at).getTime(); })
+            .slice(0, 8);
+
+          stream.innerHTML = combined.map(function (event) {
+            var sev = event.kind === 'trust' ? 'medium' : String(event.severity || 'LOW').toLowerCase();
+            var label = event.kind === 'trust' ? 'TRUST' : event.severity;
+            var title = event.kind === 'trust' ? event.reason : event.message;
+            var sub = event.kind === 'trust'
+              ? ('delta +' + event.delta + ' · ref ' + event.ref)
+              : (event.type + ' · ' + event.response);
+            return '<div class="ops-event ' + sev + '">' +
+              '<span class="sev">' + label + '</span>' +
+              '<div><strong>' + title + '</strong><small>' + sub + '</small></div>' +
+              '<code>' + new Date(event.at).toLocaleTimeString('zh-CN', { hour12: false }) + '</code>' +
+            '</div>';
+          }).join('');
+        }
+
+        if (credentialView) {
+          if (latestCredential) {
+            credentialView.innerHTML =
+              '$ ler-issue --source ' + latestCredential.sourceId + '<br>' +
+              '✓ verify_id: ' + latestCredential.verifyId + '<br>' +
+              '✓ subject: ' + latestCredential.workerDid + '<br>' +
+              '✓ skills: ' + latestCredential.skills.join(' · ') + '<br>' +
+              '✓ content_hash: ' + latestCredential.contentHash + '<br>' +
+              '→ status: VALID · blockchain-ready';
+          } else {
+            credentialView.innerHTML = '$ waiting for LER issuance<br>规则：task approved + QA pass + rating ≥ 4.0';
+          }
+        }
+      }
+
+      function approveTask() {
+        var state = loadDemoState();
+        var event = {
+          id: makeId('trust'),
+          delta: 5,
+          reason: 'task approved + QA pass + rating 4.8',
+          ref: 'task:marketing-data-analysis',
+          at: new Date().toISOString()
+        };
+        state.trustScore = Math.min(100, state.trustScore + event.delta);
+        state.trustEvents.unshift(event);
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      function issueCredential() {
+        var state = loadDemoState();
+        var hasApproval = state.trustEvents.some(function (event) {
+          return event.ref === 'task:marketing-data-analysis';
+        });
+        if (!hasApproval) {
+          approveTask();
+          state = loadDemoState();
+        }
+        var credential = {
+          id: makeId('cred'),
+          sourceType: 'task',
+          sourceId: 'task:marketing-data-analysis',
+          workerDid: 'did:dgig:worker:kim_daejeon_001',
+          verifyId: 'VRF-' + new Date().getFullYear() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase(),
+          skills: ['KSF-DAT-A001 Lv.3', 'Figma Lv.2', 'Copywriting Lv.2'],
+          contentHash: 'sha256:' + Math.random().toString(16).slice(2, 10) + Math.random().toString(16).slice(2, 10),
+          at: new Date().toISOString()
+        };
+        state.credentials.unshift(credential);
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      function pushSecurityEvent(type) {
+        var state = loadDemoState();
+        var classified = classifySecurity(type);
+        state.securityEvents.unshift({
+          id: makeId('sec'),
+          type: type,
+          severity: classified.severity,
+          message: classified.message,
+          response: classified.response,
+          at: new Date().toISOString(),
+          ip: type === 'mass_download' ? '203.0.113.44' : '198.51.100.21'
+        });
+        if (classified.severity === 'CRITICAL') state.lockedAccounts += 1;
+        saveDemoState(state);
+        renderDemoState();
+      }
+
+      document.querySelectorAll('[data-demo-action]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var action = button.getAttribute('data-demo-action');
+          if (action === 'approve-task') approveTask();
+          if (action === 'issue-credential') issueCredential();
+          if (action === 'login-fail') pushSecurityEvent('login_fail');
+          if (action === 'mass-download') pushSecurityEvent('mass_download');
+          if (action === 'reset') {
+            localStorage.removeItem(demoKey);
+            renderDemoState();
+          }
+        });
+      });
+
+      renderDemoState();
     })();
   </script>
   <script src="../assets/site-motion.js?v=20260611" defer></script>
