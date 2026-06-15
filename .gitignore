@@ -1,1 +1,5 @@
 config.js
+node_modules/
+apps/web/node_modules/
+downloads/package-work/
+downloads/*.zip
