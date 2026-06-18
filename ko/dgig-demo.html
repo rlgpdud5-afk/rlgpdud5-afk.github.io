@@ -225,7 +225,12 @@
       background: rgba(255,255,255,0.1);
     }
     .workspace-hero {
-      padding-top: clamp(78px, 12vh, 135px);
+      min-height: calc(100vh - 70px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 0;
+      padding-bottom: clamp(28px, 6vh, 72px);
     }
     .workspace-eyebrow {
       display: inline-flex;
