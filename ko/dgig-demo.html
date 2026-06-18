@@ -938,7 +938,7 @@
       </section>
       <section class="workspace-design" aria-label="D-GIG 시스템 설계 보드">
         <article class="design-panel" aria-label="D-GIG 기능 데모 콘솔">
-          <h2>Trust · LER · Security Live Console</h2>
+          <h2>신뢰 · LER · 보안 실시간 콘솔</h2>
           <p>설계 문서의 핵심 흐름을 실제 데모 동작으로 연결했습니다. 버튼을 누르면 localStorage에 이벤트가 저장되고, 화면의 Trust Graph / LER / Security Stream이 즉시 갱신됩니다.</p>
           <div class="ops-console">
             <div class="ops-actions">
@@ -947,7 +947,7 @@
                 <span>Maker 제출물을 Reviewer가 승인하고 trust_score를 올립니다.</span>
               </button>
               <button type="button" data-demo-action="issue-credential">
-                <strong>② LER Credential 발급</strong>
+                <strong>② LER 크레덴셜 발급</strong>
                 <span>QA 통과 + rating 4.0 이상 조건으로 VRF 검증 ID를 생성합니다.</span>
               </button>
               <button type="button" data-demo-action="login-fail">
@@ -960,19 +960,19 @@
               </button>
               <button type="button" data-demo-action="reset">
                 <strong>데모 상태 초기화</strong>
-                <span>생성된 trust_events, credentials, security_events를 초기값으로 되돌립니다.</span>
+                <span>생성된 trust_events, credentials, 보안 이벤트를 초기값으로 되돌립니다.</span>
               </button>
             </div>
             <div>
               <div class="ops-metrics">
                 <div class="ops-metric"><b data-metric="trust">87</b><span>trust_score</span></div>
-                <div class="ops-metric"><b data-metric="credentials">0</b><span>issued_credentials</span></div>
-                <div class="ops-metric"><b data-metric="security">0</b><span>security_events</span></div>
-                <div class="ops-metric"><b data-metric="locked">0</b><span>locked accounts</span></div>
+                <div class="ops-metric"><b data-metric="credentials">0</b><span>발급 크레덴셜</span></div>
+                <div class="ops-metric"><b data-metric="security">0</b><span>보안 이벤트</span></div>
+                <div class="ops-metric"><b data-metric="locked">0</b><span>잠금 계정</span></div>
               </div>
               <div class="ops-stream" data-ops-stream aria-live="polite"></div>
               <div class="credential-view" data-credential-view>
-                $ waiting for LER issuance<br>
+                $ LER 발급 대기 중<br>
                 조건: task approved + QA pass + rating ≥ 4.0
               </div>
             </div>
@@ -980,7 +980,7 @@
         </article>
 
         <article class="design-panel" aria-label="D-GIG 인간성 검증 콘솔">
-          <h2>Humanity Verification Console</h2>
+          <h2>인간성 검증 콘솔</h2>
           <p>이 레이어는 사람을 평가하지 않습니다. 무보상 도움, 압박 상황의 태도, 재협업 선택처럼 반복 행동으로 드러난 기록을 사용자가 직접 볼 수 있는 자기 기록으로 저장합니다.</p>
           <div class="humanity-console">
             <div class="humanity-actions">
@@ -990,15 +990,15 @@
               </button>
               <button type="button" data-humanity-action="pressure">
                 <strong>② 압박 상황 커뮤니케이션</strong>
-                <span>마감 48시간 이내 지연을 숨기지 않고 먼저 알린 행동을 consistency 데이터로 저장합니다.</span>
+                <span>마감 48시간 이내 지연을 숨기지 않고 먼저 알린 행동을 일관성 데이터로 저장합니다.</span>
               </button>
               <button type="button" data-humanity-action="reselect">
                 <strong>③ 재협업 선택 기록</strong>
-                <span>프로젝트 종료 7일 이내 “다시 같이 일하고 싶다” 선택을 re-selection graph에 반영합니다.</span>
+                <span>프로젝트 종료 7일 이내 “다시 같이 일하고 싶다” 선택을 재협업 선택률 graph에 반영합니다.</span>
               </button>
               <button type="button" data-humanity-action="reviewer">
                 <strong>④ 3권 분립 리뷰어 배정</strong>
-                <span>A Observer · B Validator · C Arbitrator를 익명/무작위로 배정합니다.</span>
+                <span>A 관찰자 · B 검증자 · C 조정자를 익명/무작위로 배정합니다.</span>
               </button>
               <button type="button" data-humanity-action="level">
                 <strong>⑤ 마이크로태스크 레벨업</strong>
@@ -1007,11 +1007,11 @@
             </div>
             <div>
               <div class="humanity-metrics">
-                <div class="humanity-metric"><b data-humanity-metric="score">61</b><span>self trust index</span></div>
-                <div class="humanity-metric"><b data-humanity-metric="kant">50</b><span>Kant score</span></div>
-                <div class="humanity-metric"><b data-humanity-metric="reselect">50%</b><span>re-selection</span></div>
-                <div class="humanity-metric"><b data-humanity-metric="consistency">50</b><span>consistency</span></div>
-                <div class="humanity-metric"><b data-humanity-metric="level">Lv.0</b><span>micro-task</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="score">61</b><span>자기 신뢰 지표</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="kant">50</b><span>무보상 도움 지표</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="reselect">50%</b><span>재협업 선택률</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="일관성">50</b><span>일관성</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="level">Lv.0</b><span>마이크로태스크</span></div>
               </div>
               <div class="humanity-stream" data-humanity-stream aria-live="polite"></div>
               <div class="humanity-note" data-humanity-note>
@@ -1022,21 +1022,21 @@
         </article>
 
         <article class="design-panel">
-          <h2>D-GIG System Architecture</h2>
+          <h2>D-GIG 시스템 아키텍처</h2>
           <p>현재 웹사이트는 Phase 0 데모이며, Gig Match와 LocalCrew에서 생성된 완료 기록을 하나의 Trust Graph로 모아 LER 발급 레이어로 확장합니다.</p>
           <div class="design-grid">
             <div class="design-card">
-              <b>ENTRY 01</b>
+              <b>진입점 01</b>
               <strong>Gig Match</strong>
               <p>1~4주 단기 공고, 태그·지역·기간 매칭, 빠른 온보딩과 지역 파일럿 검증.</p>
             </div>
             <div class="design-card">
-              <b>ENTRY 02</b>
+              <b>진입점 02</b>
               <strong>LocalCrew / WBS</strong>
               <p>프로젝트 → 모듈 → 태스크 구조, Maker/Reviewer 검수, B2B·지자체·대학 과업 수행.</p>
             </div>
             <div class="design-card">
-              <b>OUTPUT</b>
+              <b>공통 산출물</b>
               <strong>Trust Graph → LER</strong>
               <p>완료 기록, 리뷰, SLA, QA를 신뢰 점수로 집계하고 검증 가능한 커리어 자산으로 전환.</p>
             </div>
@@ -1044,32 +1044,32 @@
         </article>
 
         <article class="design-panel">
-          <h2>Product Flow & Stack</h2>
+          <h2>제품 흐름 및 기술 스택</h2>
           <p>아키텍처는 정적 마케팅 사이트를 유지하면서, 앱 영역은 Vite + React + TypeScript, 데이터는 Supabase Postgres + Auth + RLS로 확장합니다.</p>
           <ol class="design-flow">
-            <li><b>01</b><strong>Marketing</strong><span>GitHub Pages 기반 ko/*.html 유지</span></li>
-            <li><b>02</b><strong>App Web</strong><span>Vite React TS / app.gigcareer.kr 권장</span></li>
+            <li><b>01</b><strong>마케팅 사이트</strong><span>GitHub Pages 기반 ko/*.html 유지</span></li>
+            <li><b>02</b><strong>웹 앱</strong><span>Vite React TS / app.gigcareer.kr 권장</span></li>
             <li><b>03</b><strong>Supabase</strong><span>Postgres · Auth · RLS · Realtime</span></li>
-            <li><b>04</b><strong>Trust Engine</strong><span>review · SLA · QA · trust_score</span></li>
-            <li><b>05</b><strong>LER / VC</strong><span>DID · W3C VC · verify URL · blockchain-ready</span></li>
+            <li><b>04</b><strong>신뢰 엔진</strong><span>review · SLA · QA · trust_score</span></li>
+            <li><b>05</b><strong>LER / VC</strong><span>DID · W3C VC · 검증 URL · 블록체인 연동 준비</span></li>
           </ol>
         </article>
 
         <article class="design-panel">
-          <h2>LER Credential Layers</h2>
+          <h2>LER 크레덴셜 검증 레이어</h2>
           <p>LER는 v1 필수 조건이 아니라 신뢰 데이터가 쌓인 뒤 붙는 업그레이드 레이어입니다. 장기 구조는 위변조·양도·허위기록을 차단하는 5계층 검증으로 설계합니다.</p>
           <div class="design-grid">
-            <div class="design-card"><b>LAYER 1</b><strong>DID</strong><span>worker DID와 개인키 기반 신원 바인딩</span></div>
-            <div class="design-card"><b>LAYER 2</b><strong>W3C VC</strong><span>Ed25519 서명으로 업무 기록 발급</span></div>
-            <div class="design-card"><b>LAYER 3</b><strong>LER Mapping</strong><span>KR-LER-2025 skill code와 level 집계</span></div>
-            <div class="design-card"><b>LAYER 4</b><strong>Polygon Anchor</strong><span>원문이 아닌 SHA-256 hash만 온체인 기록</span></div>
-            <div class="design-card"><b>LAYER 5</b><strong>ZKP Proof</strong><span>경력 조건만 증명하고 프로젝트 상세는 비공개</span></div>
-            <div class="design-card"><b>VERIFY</b><strong>/verify/VRF-xxxx</strong><span>서명 · 해시 · 상태를 공개 URL에서 검증</span></div>
+            <div class="design-card"><b>레이어 1</b><strong>DID</strong><span>worker DID와 개인키 기반 신원 바인딩</span></div>
+            <div class="design-card"><b>레이어 2</b><strong>W3C VC</strong><span>Ed25519 서명으로 업무 기록 발급</span></div>
+            <div class="design-card"><b>레이어 3</b><strong>LER Mapping</strong><span>KR-LER-2025 skill code와 level 집계</span></div>
+            <div class="design-card"><b>레이어 4</b><strong>Polygon Anchor</strong><span>원문이 아닌 SHA-256 hash만 온체인 기록</span></div>
+            <div class="design-card"><b>레이어 5</b><strong>ZKP Proof</strong><span>경력 조건만 증명하고 프로젝트 상세는 비공개</span></div>
+            <div class="design-card"><b>검증</b><strong>/verify/VRF-xxxx</strong><span>서명 · 해시 · 상태를 공개 URL에서 검증</span></div>
           </div>
         </article>
 
         <article class="design-panel">
-          <h2>Real-Time Security Event Monitoring</h2>
+          <h2>실시간 보안 이벤트 모니터링</h2>
           <p>설계 파일의 Supabase Realtime 보안 이벤트 파이프라인을 데모 보드에 반영했습니다. 이벤트는 수집 즉시 관리자 화면으로 push되고 Edge Function이 심각도를 자동 분류합니다.</p>
           <div class="security-pipeline">
             <div class="security-row">
@@ -1079,7 +1079,7 @@
               <div class="security-box"><strong>권한 초과 시도</strong><span>미인가 API 호출</span></div>
             </div>
             <div class="security-core">
-Supabase security_events table
+Supabase 보안 이벤트 table
 event_type · user_id · ip · location · device · timestamp · severity · metadata
 INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스트
             </div>
@@ -1087,13 +1087,13 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
               <div class="security-box critical"><strong>CRITICAL</strong><span>계정 탈취·대량 유출<br>즉시 계정 잠금</span></div>
               <div class="security-box high"><strong>HIGH</strong><span>반복 로그인 실패<br>MFA 재인증 요구</span></div>
               <div class="security-box medium"><strong>MEDIUM / LOW</strong><span>새 기기·일반 로그인<br>기록 후 모니터링</span></div>
-              <div class="security-box green"><strong>Admin Dashboard</strong><span>Next.js + Supabase 구독<br>실시간 이벤트 표시</span></div>
+              <div class="security-box green"><strong>관리자 대시보드</strong><span>Next.js + Supabase 구독<br>실시간 이벤트 표시</span></div>
             </div>
           </div>
         </article>
 
         <article class="design-panel">
-          <h2>Air-Gapped Tenant Isolation</h2>
+          <h2>폐쇄망 테넌트 격리 구조</h2>
           <p>국비·기밀 프로젝트는 일반 프로젝트와 분리하고, 게이트웨이·DB·로그·감사 영역을 테넌트 단위로 나눕니다.</p>
           <div class="tenant-grid">
             <div class="tenant-node">
@@ -1116,13 +1116,13 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         </article>
 
         <article class="design-panel">
-          <h2>Demo Quality & Next Build</h2>
-          <p>현재 단계는 투자·검토용 Phase 0입니다. 다음 빌드는 Auth/RLS, schema validation, security_events, credential verification seed를 우선 반영합니다.</p>
+          <h2>데모 품질 및 다음 구축 단계</h2>
+          <p>현재 단계는 투자·검토용 Phase 0입니다. 다음 빌드는 Auth/RLS, schema validation, 보안 이벤트, credential verification seed를 우선 반영합니다.</p>
           <div class="quality-strip">
-            <div><b>3.7 / 5</b><span>ISO 9126 demo weighted score</span></div>
-            <div><b>4.0 / 5</b><span>Quality in Use · 피칭 적합도</span></div>
-            <div><b>P0</b><span>Auth · RLS · air-gap policy</span></div>
-            <div><b>P1</b><span>Trust events · LER credential seed</span></div>
+            <div><b>3.7 / 5</b><span>ISO 9126 데모 가중 점수</span></div>
+            <div><b>4.0 / 5</b><span>사용 품질 · 피칭 적합도</span></div>
+            <div><b>P0</b><span>Auth · RLS · 폐쇄망 정책</span></div>
+            <div><b>P1</b><span>신뢰 이벤트 · LER 크레덴셜 시드</span></div>
           </div>
         </article>
       </section>
@@ -1169,15 +1169,15 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
             id: 'evt-seed',
             severity: 'LOW',
             type: 'normal_access',
-            message: 'Workspace loaded · local demo stream ready',
-            response: 'log only',
+            message: '작업공간 로드 완료 · 로컬 데모 스트림 준비됨',
+            response: '기록만 수행',
             at: new Date().toISOString()
           }
         ]
       };
       var defaultHumanityState = {
         kantScore: 50,
-        consistencyScore: 50,
+        일관성Score: 50,
         reselectYes: 1,
         reselectTotal: 2,
         networkCentrality: 28,
@@ -1187,8 +1187,8 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
           {
             id: 'hum-seed',
             kind: 'help',
-            title: 'Humanity stream ready',
-            detail: 'Actions are recorded for user self-understanding, not employer scoring.',
+            title: '인간성 기록 스트림 준비됨',
+            detail: '이 기록은 고용주 평가가 아니라 사용자의 자기 이해를 위한 행동 기록입니다.',
             at: new Date().toISOString()
           }
         ],
@@ -1227,25 +1227,25 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         if (type === 'mass_download') {
           return {
             severity: 'CRITICAL',
-            message: 'Mass download threshold exceeded',
-            response: 'account lock · IP block · Slack/email alert'
+            message: '대량 다운로드 임계치 초과',
+            response: '계정 잠금 · IP 차단 · Slack/이메일 알림'
           };
         }
         if (type === 'login_fail') {
           return {
             severity: 'HIGH',
-            message: '5 consecutive login failures detected',
-            response: 'force MFA re-authentication'
+            message: '로그인 5회 연속 실패 감지',
+            response: 'MFA 재인증 요구'
           };
         }
         if (type === 'new_device') {
           return {
             severity: 'MEDIUM',
-            message: 'New IP/device login detected',
-            response: 'record session · notify user'
+            message: '새 IP/기기 로그인 감지',
+            response: '세션 기록 · 사용자 알림'
           };
         }
-        return { severity: 'LOW', message: 'Normal access event', response: 'log only' };
+        return { severity: 'LOW', message: '일반 접근 이벤트', response: '기록만 수행' };
       }
 
       function renderDemoState() {
@@ -1272,10 +1272,10 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
 
           stream.innerHTML = combined.map(function (event) {
             var sev = event.kind === 'trust' ? 'medium' : String(event.severity || 'LOW').toLowerCase();
-            var label = event.kind === 'trust' ? 'TRUST' : event.severity;
+            var label = event.kind === 'trust' ? '신뢰' : event.severity;
             var title = event.kind === 'trust' ? event.reason : event.message;
             var sub = event.kind === 'trust'
-              ? ('delta +' + event.delta + ' · ref ' + event.ref)
+              ? ('변화 +' + event.변화 + ' · 참조 ' + event.ref)
               : (event.type + ' · ' + event.response);
             return '<div class="ops-event ' + sev + '">' +
               '<span class="sev">' + label + '</span>' +
@@ -1289,13 +1289,13 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
           if (latestCredential) {
             credentialView.innerHTML =
               '$ ler-issue --source ' + latestCredential.sourceId + '<br>' +
-              '✓ verify_id: ' + latestCredential.verifyId + '<br>' +
-              '✓ subject: ' + latestCredential.workerDid + '<br>' +
-              '✓ skills: ' + latestCredential.skills.join(' · ') + '<br>' +
-              '✓ content_hash: ' + latestCredential.contentHash + '<br>' +
-              '→ status: VALID · blockchain-ready';
+              '✓ 검증 ID: ' + latestCredential.verifyId + '<br>' +
+              '✓ 대상 DID: ' + latestCredential.workerDid + '<br>' +
+              '✓ 검증 스킬: ' + latestCredential.skills.join(' · ') + '<br>' +
+              '✓ 콘텐츠 해시: ' + latestCredential.contentHash + '<br>' +
+              '→ 상태: 유효 · 블록체인 연동 준비됨';
           } else {
-            credentialView.innerHTML = '$ waiting for LER issuance<br>조건: task approved + QA pass + rating ≥ 4.0';
+            credentialView.innerHTML = '$ LER 발급 대기 중<br>조건: task approved + QA pass + rating ≥ 4.0';
           }
         }
       }
@@ -1304,7 +1304,7 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         return Math.round(
           reselectRate * 35 +
           (state.kantScore / 100) * 25 +
-          (state.consistencyScore / 100) * 20 +
+          (state.일관성Score / 100) * 20 +
           (state.networkCentrality / 100) * 12 +
           (state.deadlineMeetRate / 100) * 8
         );
@@ -1316,14 +1316,14 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         var scoreEl = document.querySelector('[data-humanity-metric="score"]');
         var kantEl = document.querySelector('[data-humanity-metric="kant"]');
         var reselectEl = document.querySelector('[data-humanity-metric="reselect"]');
-        var consistencyEl = document.querySelector('[data-humanity-metric="consistency"]');
+        var 일관성El = document.querySelector('[data-humanity-metric="일관성"]');
         var levelEl = document.querySelector('[data-humanity-metric="level"]');
         var stream = document.querySelector('[data-humanity-stream]');
         var note = document.querySelector('[data-humanity-note]');
         if (scoreEl) scoreEl.textContent = String(score);
         if (kantEl) kantEl.textContent = String(Math.round(state.kantScore));
         if (reselectEl) reselectEl.textContent = reselectRate + '%';
-        if (consistencyEl) consistencyEl.textContent = String(Math.round(state.consistencyScore));
+        if (일관성El) 일관성El.textContent = String(Math.round(state.일관성Score));
         if (levelEl) levelEl.textContent = 'Lv.' + state.microLevel;
         if (stream) {
           stream.innerHTML = state.events.slice(0, 8).map(function (event) {
@@ -1336,7 +1336,7 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         }
         if (note) {
           note.innerHTML =
-            'Composite = re-selection 35% + Kant 25% + consistency 20% + network 12% + promise 8%.<br>' +
+            'Composite = 재협업 선택률 35% + Kant 25% + 일관성 20% + network 12% + promise 8%.<br>' +
             '현재 지표는 본인에게만 보이는 자기 기록입니다. 고용주에게 내부 점수는 노출되지 않습니다.';
         }
       }
@@ -1359,7 +1359,7 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         pushHumanityEvent(
           'review',
           '3권 분립 리뷰어 배정 완료',
-          'A Observer: ' + reviewers[0] + ' · B Validator: ' + reviewers[1] + ' · C Arbitrator: ' + reviewers[2],
+          'A 관찰자: ' + reviewers[0] + ' · B 검증자: ' + reviewers[1] + ' · C 조정자: ' + reviewers[2],
           function (state) {
             state.reviewerCase = {
               caseId: makeId('case'),
@@ -1376,7 +1376,7 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
         var event = {
           id: makeId('trust'),
           delta: 5,
-          reason: 'task approved + QA pass + rating 4.8',
+          reason: '태스크 승인 + QA 통과 + 평점 4.8',
           ref: 'task:marketing-data-analysis',
           at: new Date().toISOString()
         };
@@ -1452,7 +1452,7 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
           }
           if (action === 'pressure') {
             pushHumanityEvent('pressure', '압박 상황 커뮤니케이션', '마감 48시간 이내 지연 가능성을 먼저 알리고 대안을 제시했습니다.', function (state) {
-              state.consistencyScore = Math.min(100, state.consistencyScore + 10);
+              state.일관성Score = Math.min(100, state.일관성Score + 10);
               state.deadlineMeetRate = Math.min(100, state.deadlineMeetRate + 3);
             });
           }
