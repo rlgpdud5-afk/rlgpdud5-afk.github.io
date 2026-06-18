@@ -98,6 +98,57 @@ create table if not exists security_events (
   created_at timestamptz not null default now()
 );
 
+-- Humanity verification layer: records behavior, not hidden personality scores.
+create table if not exists behavior_events (
+  id uuid primary key default gen_random_uuid(),
+  actor_id uuid,
+  event_type text not null check (event_type in ('help_given','feedback_left','deadline_met','conflict_response','mistake_acknowledged')),
+  context_type text not null check (context_type in ('task','project','gig')),
+  context_id uuid,
+  is_incentivized boolean not null default false,
+  kant_weight numeric(4,2) not null default 1.0,
+  pressure_level int not null default 0 check (pressure_level >= 0 and pressure_level <= 10),
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists reselect_surveys (
+  id uuid primary key default gen_random_uuid(),
+  selector_id uuid,
+  target_id uuid,
+  project_id uuid,
+  would_reselect boolean not null,
+  is_mutual boolean,
+  created_at timestamptz not null default now(),
+  unique (selector_id, target_id, project_id)
+);
+
+create table if not exists humanity_trust_scores (
+  profile_id uuid primary key,
+  reselect_rate numeric(5,4) not null default 0.5,
+  kant_score numeric(5,4) not null default 0.5,
+  consistency_score numeric(5,4) not null default 0.5,
+  network_centrality numeric(5,4) not null default 0.0,
+  deadline_meet_rate numeric(5,4) not null default 0.5,
+  composite_score numeric(5,4) not null default 0.5,
+  micro_task_level int not null default 0,
+  last_computed_at timestamptz,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists reviewer_assignments (
+  id uuid primary key default gen_random_uuid(),
+  case_id uuid,
+  reviewer_a uuid,
+  reviewer_b uuid,
+  reviewer_c uuid,
+  reviewer_a_term int not null default 3,
+  reviewer_b_term int not null default 3,
+  reviewer_c_term int not null default 1,
+  status text not null default 'assigned' check (status in ('assigned','consensus','arbitration','escalated','closed')),
+  created_at timestamptz not null default now()
+);
+
 create index if not exists idx_gigs_status on gigs(status);
 create index if not exists idx_gigs_region on gigs(region);
 create index if not exists idx_gigs_tags on gigs using gin(role_tags);
@@ -109,6 +160,10 @@ create index if not exists idx_trust_events_subject on trust_events(subject_type
 create index if not exists idx_credentials_verify_id on issued_credentials(verify_id);
 create index if not exists idx_credentials_source on issued_credentials(source_type, source_id);
 create index if not exists idx_security_events_severity_created on security_events(severity, created_at desc);
+create index if not exists idx_behavior_events_actor_created on behavior_events(actor_id, created_at desc);
+create index if not exists idx_behavior_events_context on behavior_events(context_type, context_id);
+create index if not exists idx_reselect_surveys_target on reselect_surveys(target_id, created_at desc);
+create index if not exists idx_reviewer_assignments_case on reviewer_assignments(case_id);
 
 create or replace function set_updated_at()
 returns trigger language plpgsql as $$
@@ -137,6 +192,10 @@ alter table reviews enable row level security;
 alter table trust_events enable row level security;
 alter table issued_credentials enable row level security;
 alter table security_events enable row level security;
+alter table behavior_events enable row level security;
+alter table reselect_surveys enable row level security;
+alter table humanity_trust_scores enable row level security;
+alter table reviewer_assignments enable row level security;
 
 -- DEMO ONLY: public read/write. Lock down when Supabase Auth is added.
 drop policy if exists "demo_workers_all" on workers;
@@ -159,6 +218,18 @@ create policy "demo_issued_credentials_all" on issued_credentials for all using 
 
 drop policy if exists "demo_security_events_all" on security_events;
 create policy "demo_security_events_all" on security_events for all using (true) with check (true);
+
+drop policy if exists "demo_behavior_events_all" on behavior_events;
+create policy "demo_behavior_events_all" on behavior_events for all using (true) with check (true);
+
+drop policy if exists "demo_reselect_surveys_all" on reselect_surveys;
+create policy "demo_reselect_surveys_all" on reselect_surveys for all using (true) with check (true);
+
+drop policy if exists "demo_humanity_trust_scores_all" on humanity_trust_scores;
+create policy "demo_humanity_trust_scores_all" on humanity_trust_scores for all using (true) with check (true);
+
+drop policy if exists "demo_reviewer_assignments_all" on reviewer_assignments;
+create policy "demo_reviewer_assignments_all" on reviewer_assignments for all using (true) with check (true);
 
 -- Enable Supabase Realtime manually after running this schema if needed:
 -- alter publication supabase_realtime add table security_events;

@@ -718,6 +718,114 @@
       font-size: 0.78rem;
       line-height: 1.6;
     }
+    .humanity-console {
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+      gap: 14px;
+    }
+    .humanity-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .humanity-actions button {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.055);
+      color: #eef4ff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .humanity-actions button:hover {
+      border-color: rgba(60,218,163,0.42);
+      background: rgba(255,255,255,0.085);
+    }
+    .humanity-actions strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff;
+      font-size: .92rem;
+    }
+    .humanity-actions span {
+      color: #9ca8ba;
+      font-size: .76rem;
+      line-height: 1.45;
+    }
+    .humanity-metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .humanity-metric {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .humanity-metric b {
+      display: block;
+      color: #9ff0cd;
+      font-size: 1.12rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .humanity-metric span {
+      color: #95a1b4;
+      font-size: .7rem;
+    }
+    .humanity-stream {
+      display: grid;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .humanity-event {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.045);
+    }
+    .humanity-event .kind {
+      min-width: 84px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      background: rgba(60,218,163,.34);
+      color: #c7f9df;
+    }
+    .humanity-event.reselect .kind { background: rgba(103,167,255,.32); color: #d8e9ff; }
+    .humanity-event.pressure .kind { background: rgba(232,201,138,.28); color: #ffe8b8; }
+    .humanity-event.review .kind { background: rgba(139,92,246,.36); color: #e9ddff; }
+    .humanity-event strong {
+      display: block;
+      color: #fff;
+      font-size: .84rem;
+    }
+    .humanity-event small {
+      color: #8f9caf;
+      font-size: .72rem;
+    }
+    .humanity-note {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px solid rgba(103,167,255,.28);
+      border-radius: 14px;
+      background: rgba(30,64,119,.22);
+      color: #c9d8ea;
+      font-size: .78rem;
+      line-height: 1.65;
+    }
     @media (max-width: 860px) {
       body:not(.view-workspace) { overflow: auto; }
       body.view-workspace .demo-frame-wrap { min-height: 100vh; height: 100vh; }
@@ -730,7 +838,9 @@
       .tenant-grid,
       .quality-strip,
       .ops-console,
-      .ops-metrics { grid-template-columns: 1fr; }
+      .ops-metrics,
+      .humanity-console,
+      .humanity-metrics { grid-template-columns: 1fr; }
       .design-flow { grid-template-columns: 1fr; gap: 10px; }
       .design-flow li + li::before { display: none; }
     }
@@ -864,6 +974,48 @@
               <div class="credential-view" data-credential-view>
                 $ waiting for LER issuance<br>
                 조건: task approved + QA pass + rating ≥ 4.0
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="design-panel" aria-label="D-GIG 인간성 검증 콘솔">
+          <h2>Humanity Verification Console</h2>
+          <p>이 레이어는 사람을 평가하지 않습니다. 무보상 도움, 압박 상황의 태도, 재협업 선택처럼 반복 행동으로 드러난 기록을 사용자가 직접 볼 수 있는 자기 기록으로 저장합니다.</p>
+          <div class="humanity-console">
+            <div class="humanity-actions">
+              <button type="button" data-humanity-action="help">
+                <strong>① 무보상 도움 기록</strong>
+                <span>내 과업 완료 후 동료 마감 임박 태스크를 도운 행동을 Kant weight ×2.0으로 기록합니다.</span>
+              </button>
+              <button type="button" data-humanity-action="pressure">
+                <strong>② 압박 상황 커뮤니케이션</strong>
+                <span>마감 48시간 이내 지연을 숨기지 않고 먼저 알린 행동을 consistency 데이터로 저장합니다.</span>
+              </button>
+              <button type="button" data-humanity-action="reselect">
+                <strong>③ 재협업 선택 기록</strong>
+                <span>프로젝트 종료 7일 이내 “다시 같이 일하고 싶다” 선택을 re-selection graph에 반영합니다.</span>
+              </button>
+              <button type="button" data-humanity-action="reviewer">
+                <strong>④ 3권 분립 리뷰어 배정</strong>
+                <span>A Observer · B Validator · C Arbitrator를 익명/무작위로 배정합니다.</span>
+              </button>
+              <button type="button" data-humanity-action="level">
+                <strong>⑤ 마이크로태스크 레벨업</strong>
+                <span>Nano → Micro → Mini → Standard 순서로 작은 일부터 신뢰 데이터를 쌓습니다.</span>
+              </button>
+            </div>
+            <div>
+              <div class="humanity-metrics">
+                <div class="humanity-metric"><b data-humanity-metric="score">61</b><span>self trust index</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="kant">50</b><span>Kant score</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="reselect">50%</b><span>re-selection</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="consistency">50</b><span>consistency</span></div>
+                <div class="humanity-metric"><b data-humanity-metric="level">Lv.0</b><span>micro-task</span></div>
+              </div>
+              <div class="humanity-stream" data-humanity-stream aria-live="polite"></div>
+              <div class="humanity-note" data-humanity-note>
+                D-GIG는 고용주에게 숨겨진 점수를 판매하지 않습니다. 이 기록은 사용자가 자기 행동 이력을 이해하기 위한 데이터이며, 고용주에게는 원점수가 아니라 검증 가능한 협업 신호만 노출됩니다.
               </div>
             </div>
           </div>
@@ -1006,6 +1158,7 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
       });
 
       var demoKey = 'dgig-architecture-demo-v1';
+      var humanityKey = 'dgig-humanity-demo-v1';
       var defaultDemoState = {
         trustScore: 87,
         lockedAccounts: 0,
@@ -1022,6 +1175,25 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
           }
         ]
       };
+      var defaultHumanityState = {
+        kantScore: 50,
+        consistencyScore: 50,
+        reselectYes: 1,
+        reselectTotal: 2,
+        networkCentrality: 28,
+        deadlineMeetRate: 82,
+        microLevel: 0,
+        events: [
+          {
+            id: 'hum-seed',
+            kind: 'help',
+            title: 'Humanity stream ready',
+            detail: 'Actions are recorded for user self-understanding, not employer scoring.',
+            at: new Date().toISOString()
+          }
+        ],
+        reviewerCase: null
+      };
 
       function loadDemoState() {
         try {
@@ -1034,6 +1206,17 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
 
       function saveDemoState(next) {
         localStorage.setItem(demoKey, JSON.stringify(next));
+      }
+      function loadHumanityState() {
+        try {
+          var raw = localStorage.getItem(humanityKey);
+          return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultHumanityState));
+        } catch (e) {
+          return JSON.parse(JSON.stringify(defaultHumanityState));
+        }
+      }
+      function saveHumanityState(next) {
+        localStorage.setItem(humanityKey, JSON.stringify(next));
       }
 
       function makeId(prefix) {
@@ -1116,6 +1299,77 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
           }
         }
       }
+      function computeHumanityScore(state) {
+        var reselectRate = state.reselectTotal ? state.reselectYes / state.reselectTotal : 0.5;
+        return Math.round(
+          reselectRate * 35 +
+          (state.kantScore / 100) * 25 +
+          (state.consistencyScore / 100) * 20 +
+          (state.networkCentrality / 100) * 12 +
+          (state.deadlineMeetRate / 100) * 8
+        );
+      }
+      function renderHumanityState() {
+        var state = loadHumanityState();
+        var score = computeHumanityScore(state);
+        var reselectRate = state.reselectTotal ? Math.round((state.reselectYes / state.reselectTotal) * 100) : 0;
+        var scoreEl = document.querySelector('[data-humanity-metric="score"]');
+        var kantEl = document.querySelector('[data-humanity-metric="kant"]');
+        var reselectEl = document.querySelector('[data-humanity-metric="reselect"]');
+        var consistencyEl = document.querySelector('[data-humanity-metric="consistency"]');
+        var levelEl = document.querySelector('[data-humanity-metric="level"]');
+        var stream = document.querySelector('[data-humanity-stream]');
+        var note = document.querySelector('[data-humanity-note]');
+        if (scoreEl) scoreEl.textContent = String(score);
+        if (kantEl) kantEl.textContent = String(Math.round(state.kantScore));
+        if (reselectEl) reselectEl.textContent = reselectRate + '%';
+        if (consistencyEl) consistencyEl.textContent = String(Math.round(state.consistencyScore));
+        if (levelEl) levelEl.textContent = 'Lv.' + state.microLevel;
+        if (stream) {
+          stream.innerHTML = state.events.slice(0, 8).map(function (event) {
+            return '<div class="humanity-event ' + event.kind + '">' +
+              '<span class="kind">' + event.kind.toUpperCase() + '</span>' +
+              '<div><strong>' + event.title + '</strong><small>' + event.detail + '</small></div>' +
+              '<code>' + new Date(event.at).toLocaleTimeString('ko-KR', { hour12: false }) + '</code>' +
+            '</div>';
+          }).join('');
+        }
+        if (note) {
+          note.innerHTML =
+            'Composite = re-selection 35% + Kant 25% + consistency 20% + network 12% + promise 8%.<br>' +
+            '현재 지표는 본인에게만 보이는 자기 기록입니다. 고용주에게 내부 점수는 노출되지 않습니다.';
+        }
+      }
+      function pushHumanityEvent(kind, title, detail, updater) {
+        var state = loadHumanityState();
+        if (typeof updater === 'function') updater(state);
+        state.events.unshift({
+          id: makeId('hum'),
+          kind: kind,
+          title: title,
+          detail: detail,
+          at: new Date().toISOString()
+        });
+        saveHumanityState(state);
+        renderHumanityState();
+      }
+      function assignHumanityReviewers() {
+        var reviewers = ['reviewer_kim', 'reviewer_lee', 'reviewer_park', 'reviewer_choi', 'reviewer_jung']
+          .sort(function () { return Math.random() - 0.5; });
+        pushHumanityEvent(
+          'review',
+          '3권 분립 리뷰어 배정 완료',
+          'A Observer: ' + reviewers[0] + ' · B Validator: ' + reviewers[1] + ' · C Arbitrator: ' + reviewers[2],
+          function (state) {
+            state.reviewerCase = {
+              caseId: makeId('case'),
+              reviewerA: reviewers[0],
+              reviewerB: reviewers[1],
+              reviewerC: reviewers[2]
+            };
+          }
+        );
+      }
 
       function approveTask() {
         var state = loadDemoState();
@@ -1188,6 +1442,38 @@ INSERT 발생 즉시 → Realtime 채널로 구독자 전체에 브로드캐스�
       });
 
       renderDemoState();
+      document.querySelectorAll('[data-humanity-action]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var action = button.getAttribute('data-humanity-action');
+          if (action === 'help') {
+            pushHumanityEvent('help', '무보상 도움 기록', '내 과업 완료 후 동료 마감 임박 태스크를 도왔습니다. Kant weight ×2.0', function (state) {
+              state.kantScore = Math.min(100, state.kantScore + 12);
+            });
+          }
+          if (action === 'pressure') {
+            pushHumanityEvent('pressure', '압박 상황 커뮤니케이션', '마감 48시간 이내 지연 가능성을 먼저 알리고 대안을 제시했습니다.', function (state) {
+              state.consistencyScore = Math.min(100, state.consistencyScore + 10);
+              state.deadlineMeetRate = Math.min(100, state.deadlineMeetRate + 3);
+            });
+          }
+          if (action === 'reselect') {
+            pushHumanityEvent('reselect', '재협업 선택 기록', '익명 사후 설문에서 “다시 함께 일하고 싶다” 선택이 추가되었습니다.', function (state) {
+              state.reselectYes += 1;
+              state.reselectTotal += 1;
+              state.networkCentrality = Math.min(100, state.networkCentrality + 8);
+            });
+          }
+          if (action === 'reviewer') assignHumanityReviewers();
+          if (action === 'level') {
+            pushHumanityEvent('reselect', '마이크로태스크 레벨업', '재협업 기준을 충족해 다음 작업 단위로 이동했습니다.', function (state) {
+              state.microLevel = Math.min(4, state.microLevel + 1);
+              state.reselectYes += 1;
+              state.reselectTotal += 1;
+            });
+          }
+        });
+      });
+      renderHumanityState();
     })();
   </script>
   <script src="../assets/site-motion.js?v=20260611" defer></script>
