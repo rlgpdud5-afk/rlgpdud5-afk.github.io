@@ -183,15 +183,6 @@
     gsap.registerPlugin(ScrollTrigger);
 
     if (hero && hero.classList.contains('hero-section')) {
-      ScrollTrigger.create({
-        trigger: hero,
-        start: 'top top',
-        end: '+=160%',
-        pin: true,
-        scrub: 1,
-        anticipatePin: 1
-      });
-
       var heroGrid = hero.querySelector('.hero-grid');
       if (heroGrid) {
         gsap.to(heroGrid, {
