@@ -17,7 +17,7 @@ export function LoginPage() {
       <div className="wrap auth">
         <h1>{t('auth.login')}</h1>
         <p className="muted">
-          Supabase가 설정되지 않았습니다. apps/web/.env 파일을 만들고 dev 서버를 다시
+          Supabase가 설정되지 않았습니다. .env.example을 .env.local로 복사한 뒤 dev 서버를 다시
           시작하세요. 로컬 모드는 <Link to="/match">매칭</Link>에서 바로 사용할 수 있습니다.
         </p>
       </div>

@@ -1,6 +1,6 @@
 import { STORAGE_KEY } from './constants';
 import { matchScore, tailorSummary } from './matching';
-import { supabase, supabaseConfigured } from './supabase';
+import { supabase, supabaseConfigured } from './supabase/client';
 import type { Application, Gig, GigForm, MatchDb, StorageMode, Worker } from './types';
 
 const SEED: MatchDb = {

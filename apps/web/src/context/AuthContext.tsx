@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { User, Session } from '@supabase/supabase-js';
-import { supabase, supabaseConfigured } from '../lib/supabase';
+import { supabase, supabaseConfigured } from '../lib/supabase/client';
 
 interface AuthState {
   user: User | null;
