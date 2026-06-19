@@ -175,6 +175,81 @@
     });
   }
 
+  function initGsapScrollMotion() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+
+    var gsap = window.gsap;
+    var ScrollTrigger = window.ScrollTrigger;
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (hero && hero.classList.contains('hero-section')) {
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: '+=160%',
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1
+      });
+
+      var heroGrid = hero.querySelector('.hero-grid');
+      if (heroGrid) {
+        gsap.to(heroGrid, {
+          backgroundPosition: '50% 100%',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        });
+      }
+    }
+
+    gsap.utils.toArray('.sec-h, .visual-title').forEach(function (title) {
+      gsap.from(title, {
+        scrollTrigger: { trigger: title, start: 'top 82%' },
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+    });
+
+    gsap.utils.toArray('.paradox-grid, .shift-facts, .sol-steps, .val-split').forEach(function (group) {
+      gsap.from(group.children, {
+        scrollTrigger: { trigger: group, start: 'top 74%' },
+        y: 42,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 0.65,
+        ease: 'power2.out'
+      });
+    });
+
+    gsap.utils.toArray('.visual-image').forEach(function (img) {
+      var scene = img.closest('[data-visual-scene]');
+      if (!scene) return;
+      gsap.fromTo(img,
+        { y: 80, scale: 0.94, opacity: 0.8 },
+        {
+          y: -48,
+          scale: 1.04,
+          opacity: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: scene,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1
+          }
+        }
+      );
+    });
+  }
+
   injectHeroLayers();
   upgradeReveal();
+  window.addEventListener('load', initGsapScrollMotion);
 })();
