@@ -5,6 +5,23 @@
   flex-wrap: wrap;
 }
 
+.portfolio-page,
+.crew-main > div:has(.port-tabs) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 48px;
+}
+
+.portfolio-page > .crew-content,
+.crew-main > div:has(.port-tabs) > .crew-content {
+  overflow: visible;
+  min-height: auto;
+  padding-bottom: 0;
+}
+
 .port-tabs button {
   min-height: 40px;
   padding: 0 16px;

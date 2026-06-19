@@ -39,3 +39,9 @@
 .port-preview-wrap{min-height:0;}
 .port-doc{max-height:min(72vh,820px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
 .port-ai-col .port-doc{max-height:min(68vh,760px);}
+
+
+/* D-GIG patch: make the LocalCrew portfolio builder page itself scrollable. */
+.portfolio-page,.crew-main>div:has(.port-tabs){flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:48px;}
+.portfolio-page>.crew-content,.crew-main>div:has(.port-tabs)>.crew-content{overflow:visible;min-height:auto;padding-bottom:0;}
+.portfolio-page .port-doc,.crew-main>div:has(.port-tabs) .port-doc{max-height:none;overflow:visible;}

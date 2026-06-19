@@ -110,7 +110,7 @@ export function PortfolioPanel({ user, allCredentials }: PortfolioPanelProps) {
   };
 
   return (
-    <div>
+    <div className="portfolio-page">
       <div className="crew-ph">
         <h1>{t('crew.portfolio.title')}</h1>
         <p>{t('crew.portfolio.sub')}</p>
