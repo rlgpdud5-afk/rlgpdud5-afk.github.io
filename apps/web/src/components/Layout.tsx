@@ -65,8 +65,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 type="button"
                 className="link-btn"
                 onClick={async () => {
-                  await signOut();
-                  navigate('/');
+                  try {
+                    await signOut();
+                    navigate('/');
+                  } catch (error) {
+                    console.error('로그아웃 버튼 처리 중 오류가 발생했습니다.', error);
+                  }
                 }}
               >
                 {t('auth.logout')}

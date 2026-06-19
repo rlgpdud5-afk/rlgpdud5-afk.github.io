@@ -1,9 +1,9 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ScrollMode } from './components/ScrollMode';
-import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
 import { I18nProvider } from './context/I18nContext';
+import { AuthProvider } from './features/auth/AuthProvider';
 import { Home } from './pages/Home';
 import { LoginPage, SignupPage } from './pages/AuthPage';
 import { MatchPage } from './pages/MatchPage';
