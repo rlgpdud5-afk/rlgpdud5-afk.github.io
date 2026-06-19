@@ -616,33 +616,91 @@
       perspective: 1100px;
       transform: translateY(calc((var(--scene-p) - .5) * 70px));
     }
-    .credential-card {
+    .credential-badge {
       position: absolute;
-      left: 50%; top: 54%;
-      width: clamp(170px, 22vw, 270px);
-      aspect-ratio: 1.58 / 1;
-      border-radius: 22px;
-      padding: 22px;
+      left: 50%; top: 52%;
+      width: clamp(132px, 15vw, 210px);
+      aspect-ratio: .72 / 1;
+      border-radius: 30px;
+      padding: 20px 18px;
       color: #fff;
-      box-shadow: 0 34px 90px rgba(0,0,0,.45), inset 0 1px rgba(255,255,255,.35);
-      border: 1px solid rgba(255,255,255,.22);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
       transform-style: preserve-3d;
+      box-shadow:
+        0 34px 90px rgba(0,0,0,.5),
+        inset 0 1px rgba(255,255,255,.34),
+        inset 0 -1px rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.18);
+      overflow: hidden;
     }
-    .credential-card::before {
+    .credential-badge::before {
       content: '';
       position: absolute;
-      width: 34px; height: 26px;
-      left: 22px; bottom: 22px;
-      border-radius: 7px;
-      background: linear-gradient(135deg, #f3d99e, #8f7043);
-      opacity: .9;
+      inset: 1px;
+      border-radius: inherit;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.28), transparent 30%, transparent 70%, rgba(255,255,255,.08)),
+        radial-gradient(circle at 50% 28%, rgba(255,255,255,.22), transparent 34%);
+      pointer-events: none;
     }
-    .credential-card b { display:block; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; }
-    .credential-card span { position:absolute; right:22px; bottom:22px; font-size:.7rem; opacity:.75; }
-    .credential-card.c1 { background: linear-gradient(135deg,#f72585,#4361ee 70%,#111); transform: translate(-160%, -45%) rotateY(-30deg) rotateZ(-8deg) translateY(calc(var(--scene-p) * -36px)); }
-    .credential-card.c2 { background: linear-gradient(135deg,#f8fafc,#6b7280); color:#111; transform: translate(-60%, -55%) rotateY(-12deg) rotateZ(4deg) translateY(calc(var(--scene-p) * 18px)); }
-    .credential-card.c3 { background: linear-gradient(135deg,#191b20,#050505); transform: translate(42%, -42%) rotateY(18deg) rotateZ(8deg) translateY(calc(var(--scene-p) * -22px)); }
-    .credential-card.c4 { background: repeating-linear-gradient(90deg,#2b2b2b,#2b2b2b 2px,#111 3px,#111 6px); transform: translate(126%, -35%) rotateY(34deg) rotateZ(14deg) translateY(calc(var(--scene-p) * 26px)); }
+    .credential-badge::after {
+      content: '✓';
+      position: relative;
+      z-index: 1;
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #0a0f16;
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #f5e1a8, #b88842 55%, #fff2c7);
+      box-shadow: 0 12px 28px rgba(0,0,0,.32), inset 0 1px rgba(255,255,255,.55);
+    }
+    .credential-badge b {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 8px;
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .credential-badge span {
+      position: relative;
+      z-index: 1;
+      display: block;
+      color: rgba(255,255,255,.72);
+      font-size: .68rem;
+      line-height: 1.35;
+    }
+    .credential-badge .badge-seal {
+      position: relative;
+      z-index: 1;
+      width: 76px;
+      height: 76px;
+      margin: 12px 0;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 1px rgba(255,255,255,.18);
+    }
+    .credential-badge.c1 { background: linear-gradient(160deg,#6d28d9,#2563eb 52%,#070b14); transform: translate(-185%, -45%) rotateY(-34deg) rotateZ(-7deg) translateY(calc(var(--scene-p) * -34px)); }
+    .credential-badge.c2 { background: linear-gradient(160deg,#f3f4f6,#737373 54%,#171717); color:#111; transform: translate(-65%, -55%) rotateY(-12deg) rotateZ(3deg) translateY(calc(var(--scene-p) * 18px)); }
+    .credential-badge.c2 span { color: rgba(0,0,0,.58); }
+    .credential-badge.c2 .badge-seal { color:#111; background: rgba(0,0,0,.08); border-color: rgba(0,0,0,.12); }
+    .credential-badge.c3 { background: linear-gradient(160deg,#1f2937,#020617 62%,#000); transform: translate(55%, -46%) rotateY(18deg) rotateZ(7deg) translateY(calc(var(--scene-p) * -22px)); }
+    .credential-badge.c4 { background: repeating-linear-gradient(90deg,#3a3a3a,#3a3a3a 2px,#111 3px,#111 6px); transform: translate(166%, -36%) rotateY(36deg) rotateZ(12deg) translateY(calc(var(--scene-p) * 26px)); }
     .phone-ai {
       position:absolute; left:50%; top:52%;
       width: clamp(250px, 30vw, 380px); height: clamp(430px, 56vw, 620px);
@@ -687,7 +745,7 @@
     @media (max-width: 900px) {
       .visual-scene { padding-top: 72px; }
       .visual-stage { height: 360px; }
-      .credential-card { width: 170px; }
+      .credential-badge { width: 132px; }
       .security-copy { text-align:center; margin:auto; }
       .shield-visual { opacity:.22; right:50%; transform:translate(50%,-50%); }
     }
@@ -992,10 +1050,10 @@ nav.site-nav {
       <a class="visual-cta" href="dgig-demo.html?view=crew">크레덴셜 체험하기</a>
     </div>
     <div class="visual-stage" aria-hidden="true">
-      <div class="credential-card c1"><b>LER VC</b><span>Verified</span></div>
-      <div class="credential-card c2"><b>Trust</b><span>92 / 100</span></div>
-      <div class="credential-card c3"><b>D-GIG</b><span>Work Record</span></div>
-      <div class="credential-card c4"><b>VRF</b><span>On-chain ready</span></div>
+      <div class="credential-badge c1"><b>LER VC</b><div class="badge-seal">DG</div><span>Project verified</span></div>
+      <div class="credential-badge c2"><b>Trust Graph</b><div class="badge-seal">92</div><span>Re-selected record</span></div>
+      <div class="credential-badge c3"><b>Humanity</b><div class="badge-seal">H</div><span>Behavior proof</span></div>
+      <div class="credential-badge c4"><b>VRF Badge</b><div class="badge-seal">ZK</div><span>Blockchain ready</span></div>
     </div>
   </section>
 
