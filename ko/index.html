@@ -524,8 +524,8 @@
 
     /* ── REVOLUT-STYLE VISUAL SHOWCASE ── */
     .visual-showcase {
-      background: #030407;
-      color: #fff;
+      background: var(--bg);
+      color: var(--black);
       overflow: hidden;
     }
     .visual-scene {
@@ -534,18 +534,23 @@
       display: grid;
       place-items: center;
       padding: 92px 24px 72px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid var(--border);
       isolation: isolate;
       --scene-p: 0;
     }
-    .visual-scene.light {
-      background: #f6f6f2;
-      color: #111315;
-    }
+    .visual-scene.light,
     .visual-scene.dark {
+      color: var(--black);
       background:
-        radial-gradient(circle at 50% 12%, rgba(66, 133, 244, .14), transparent 34rem),
-        #030407;
+        radial-gradient(circle at 78% 8%, rgba(232, 201, 138, .24), transparent 28rem),
+        radial-gradient(circle at 10% 24%, rgba(12, 13, 14, .045), transparent 30rem),
+        var(--bg);
+    }
+    .visual-scene:nth-child(even) {
+      background:
+        radial-gradient(circle at 22% 10%, rgba(12, 13, 14, .05), transparent 28rem),
+        radial-gradient(circle at 82% 28%, rgba(232, 201, 138, .20), transparent 30rem),
+        var(--bg2);
     }
     .visual-copy {
       position: relative;
@@ -586,12 +591,12 @@
     .visual-lead {
       max-width: 720px;
       margin: 22px auto 0;
-      color: rgba(255,255,255,.72);
+      color: rgba(12,13,14,.66);
       font-size: clamp(.98rem, 1.5vw, 1.16rem);
       line-height: 1.7;
       font-weight: 500;
     }
-    .light .visual-lead { color: rgba(17,19,21,.68); }
+    .light .visual-lead { color: rgba(12,13,14,.66); }
     .visual-cta {
       display: inline-flex;
       align-items: center;
@@ -600,13 +605,13 @@
       margin-top: 28px;
       padding: 0 22px;
       border-radius: 999px;
-      background: #fff;
-      color: #111315;
+      background: var(--black);
+      color: var(--bg);
       text-decoration: none;
       font-weight: 800;
       font-size: .85rem;
     }
-    .light .visual-cta { background: #111315; color: #fff; }
+    .light .visual-cta { background: var(--black); color: var(--bg); }
     .visual-stage {
       position: relative;
       z-index: 2;
@@ -675,7 +680,7 @@
       position: relative;
       z-index: 1;
       display: block;
-      color: rgba(255,255,255,.72);
+      color: rgba(12,13,14,.66);
       font-size: .68rem;
       line-height: 1.35;
     }
@@ -697,6 +702,9 @@
     }
     .credential-badge.c1 { background: linear-gradient(160deg,#6d28d9,#2563eb 52%,#070b14); transform: translate(-185%, -45%) rotateY(-34deg) rotateZ(-7deg) translateY(calc(var(--scene-p) * -34px)); }
     .credential-badge.c2 { background: linear-gradient(160deg,#f3f4f6,#737373 54%,#171717); color:#111; transform: translate(-65%, -55%) rotateY(-12deg) rotateZ(3deg) translateY(calc(var(--scene-p) * 18px)); }
+    .credential-badge.c1 span,
+    .credential-badge.c3 span,
+    .credential-badge.c4 span { color: rgba(255,255,255,.72); }
     .credential-badge.c2 span { color: rgba(0,0,0,.58); }
     .credential-badge.c2 .badge-seal { color:#111; background: rgba(0,0,0,.08); border-color: rgba(0,0,0,.12); }
     .credential-badge.c3 { background: linear-gradient(160deg,#1f2937,#020617 62%,#000); transform: translate(55%, -46%) rotateY(18deg) rotateZ(7deg) translateY(calc(var(--scene-p) * -22px)); }
@@ -1045,8 +1053,8 @@ nav.site-nav {
   <section class="visual-scene dark visual-credentials" data-visual-scene>
     <div class="visual-copy rv">
       <span class="visual-kicker">01 · LER Credential</span>
-      <h2 class="visual-title">검증 기록을<br><em>카드처럼</em> 소유하세요</h2>
-      <p class="visual-lead">프로젝트 완료, 리뷰, 스킬, 신뢰 이벤트가 위조 불가능한 커리어 크레덴셜로 시각화됩니다.</p>
+      <h2 class="visual-title">검증 기록을<br><em>배지처럼</em> 소유하세요</h2>
+      <p class="visual-lead">프로젝트 완료, 리뷰, 스킬, 신뢰 이벤트가 D-GIG 크레덴셜 배지로 시각화됩니다.</p>
       <a class="visual-cta" href="dgig-demo.html?view=crew">크레덴셜 체험하기</a>
     </div>
     <div class="visual-stage" aria-hidden="true">
