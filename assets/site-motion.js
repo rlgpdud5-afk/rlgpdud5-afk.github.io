@@ -44,6 +44,14 @@
         });
       }
 
+      document.querySelectorAll('[data-visual-scene]').forEach(function (scene) {
+        var rect = scene.getBoundingClientRect();
+        var vh = window.innerHeight || 1;
+        var progress = 1 - Math.max(-vh, Math.min(vh, rect.top)) / vh;
+        progress = Math.max(0, Math.min(1, progress));
+        scene.style.setProperty('--scene-p', progress.toFixed(3));
+      });
+
       ticking = false;
     });
   }
