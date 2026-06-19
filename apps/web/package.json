@@ -9,6 +9,8 @@
     "package:win": "electron-packager . \"D-GIG 프로그램\" --platform=win32 --arch=x64 --out ../../downloads/build --overwrite --asar --ignore=\"^src($|/)\" --ignore=\"^dist/assets/.*\\.map$\""
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2",
     "axios": "^1.7.9",
     "simple-git": "^3.27.0"
   },
