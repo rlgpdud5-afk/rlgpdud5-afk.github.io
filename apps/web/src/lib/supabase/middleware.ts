@@ -1,4 +1,5 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import type { User } from '@supabase/supabase-js';
 
 interface PublicSupabaseEnv {
   NEXT_PUBLIC_SUPABASE_URL?: string;
@@ -25,6 +26,7 @@ export interface MiddlewareResponse {
 
 export interface NextResponseFactory {
   next: (init?: { request?: MiddlewareRequest }) => MiddlewareResponse;
+  redirect: (url: URL | string, init?: number | ResponseInit) => MiddlewareResponse;
 }
 
 interface NextServerModule {
@@ -69,10 +71,15 @@ export const supabaseMiddlewareConfigured = Boolean(
     !NEXT_PUBLIC_SUPABASE_URL.includes('YOUR_PROJECT'),
 );
 
-export async function updateSession(
+export interface MiddlewareSessionResult {
+  response: MiddlewareResponse;
+  user: User | null;
+}
+
+export async function updateSessionAndGetUser(
   request: MiddlewareRequest,
   responseFactory?: NextResponseFactory,
-): Promise<MiddlewareResponse> {
+): Promise<MiddlewareSessionResult> {
   let supabaseResponse: MiddlewareResponse | null = null;
 
   try {
@@ -84,7 +91,7 @@ export async function updateSession(
       !NEXT_PUBLIC_SUPABASE_URL ||
       !NEXT_PUBLIC_SUPABASE_ANON_KEY
     ) {
-      return supabaseResponse;
+      return { response: supabaseResponse, user: null };
     }
 
     const supabase = createServerClient(
@@ -112,12 +119,36 @@ export async function updateSession(
       },
     );
 
-    await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-    return supabaseResponse;
+    if (error) {
+      console.error('Supabase 미들웨어 사용자를 확인하지 못했습니다.', error);
+    }
+
+    return { response: supabaseResponse, user: user ?? null };
   } catch (error) {
     console.error('Supabase 세션 갱신 중 오류가 발생했습니다.', error);
-    return supabaseResponse ?? { cookies: { set: () => undefined } };
+    return {
+      response: supabaseResponse ?? { cookies: { set: () => undefined } },
+      user: null,
+    };
+  }
+}
+
+export async function updateSession(
+  request: MiddlewareRequest,
+  responseFactory?: NextResponseFactory,
+): Promise<MiddlewareResponse> {
+  try {
+    const { response } = await updateSessionAndGetUser(request, responseFactory);
+
+    return response;
+  } catch (error) {
+    console.error('Supabase 세션 갱신 응답을 만들지 못했습니다.', error);
+    return { cookies: { set: () => undefined } };
   }
 }
 

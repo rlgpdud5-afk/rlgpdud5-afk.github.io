@@ -1,7 +1,8 @@
 import { createKillSwitchResponse } from './src/lib/security/killSwitch';
 import {
-  updateSession,
+  updateSessionAndGetUser,
   type MiddlewareRequest as SupabaseMiddlewareRequest,
+  type MiddlewareResponse,
   type NextResponseFactory,
 } from './src/lib/supabase/middleware';
 
@@ -12,6 +13,7 @@ interface MiddlewareHeaders {
 interface MiddlewareRequest extends SupabaseMiddlewareRequest {
   headers: MiddlewareHeaders;
   ip?: string;
+  url: string;
 }
 
 interface NextServerModule {
@@ -21,6 +23,16 @@ interface NextServerModule {
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 120;
 const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+const PROTECTED_PATH_PREFIXES = [
+  '/dashboard',
+  '/gig-match',
+  '/match',
+  '/profile',
+  '/account',
+  '/applications',
+  '/employer',
+];
+const AUTH_PATHS = new Set(['/login', '/signup']);
 
 async function getNextResponseFactory(): Promise<NextResponseFactory> {
   try {
@@ -90,6 +102,77 @@ function checkRateLimit(request: MiddlewareRequest) {
   }
 }
 
+function getRequestUrl(request: MiddlewareRequest) {
+  try {
+    return new URL(request.url);
+  } catch (error) {
+    console.error('미들웨어 요청 URL을 파싱하지 못했습니다.', error);
+    return new URL('http://localhost/');
+  }
+}
+
+function isProtectedPath(pathname: string) {
+  try {
+    return PROTECTED_PATH_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+    );
+  } catch (error) {
+    console.error('보호 경로 여부를 확인하지 못했습니다.', error);
+    return true;
+  }
+}
+
+function createRedirectResponse(
+  request: MiddlewareRequest,
+  nextResponse: NextResponseFactory,
+  pathname: string,
+  searchParams?: Record<string, string>,
+) {
+  try {
+    const redirectUrl = getRequestUrl(request);
+    redirectUrl.pathname = pathname;
+    redirectUrl.search = '';
+
+    if (searchParams) {
+      Object.entries(searchParams).forEach(([key, value]) => {
+        redirectUrl.searchParams.set(key, value);
+      });
+    }
+
+    return nextResponse.redirect(redirectUrl);
+  } catch (error) {
+    console.error('미들웨어 리다이렉트 응답을 만들지 못했습니다.', error);
+    return nextResponse.next({ request });
+  }
+}
+
+function applyRouteProtection(
+  request: MiddlewareRequest,
+  nextResponse: NextResponseFactory,
+  sessionResponse: MiddlewareResponse,
+  isAuthenticated: boolean,
+) {
+  try {
+    const requestUrl = getRequestUrl(request);
+    const pathname = requestUrl.pathname;
+
+    if (isProtectedPath(pathname) && !isAuthenticated) {
+      return createRedirectResponse(request, nextResponse, '/login', {
+        redirectedFrom: `${requestUrl.pathname}${requestUrl.search}`,
+      });
+    }
+
+    if (AUTH_PATHS.has(pathname) && isAuthenticated) {
+      return createRedirectResponse(request, nextResponse, '/dashboard');
+    }
+
+    return sessionResponse;
+  } catch (error) {
+    console.error('라우트 보호 처리 중 오류가 발생했습니다.', error);
+    return sessionResponse;
+  }
+}
+
 export async function middleware(request: MiddlewareRequest) {
   let nextResponse: NextResponseFactory | null = null;
 
@@ -101,14 +184,17 @@ export async function middleware(request: MiddlewareRequest) {
     }
 
     nextResponse = await getNextResponseFactory();
-    const sessionResponse = await updateSession(request, nextResponse);
+    const { response: sessionResponse, user } = await updateSessionAndGetUser(
+      request,
+      nextResponse,
+    );
     const rateLimitResponse = checkRateLimit(request);
 
     if (rateLimitResponse) {
       return rateLimitResponse;
     }
 
-    return sessionResponse;
+    return applyRouteProtection(request, nextResponse, sessionResponse, Boolean(user));
   } catch (error) {
     console.error('미들웨어 처리 중 오류가 발생했습니다.', error);
 

@@ -31,6 +31,18 @@ function getEmailRedirectTo() {
   }
 }
 
+async function clearServerAuthCookies() {
+  try {
+    await fetch('/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+      cache: 'no-store',
+    });
+  } catch (error) {
+    console.error('서버 인증 쿠키 정리 요청에 실패했습니다.', error);
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -143,9 +155,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signOut();
 
       if (error) {
-        throw error;
+        console.error('Supabase 로그아웃 중 오류가 발생했습니다.', error);
       }
 
+      await clearServerAuthCookies();
       setSession(null);
       setUser(null);
     } catch (error) {
