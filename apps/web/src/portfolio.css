@@ -32,6 +32,7 @@
   grid-template-columns: minmax(0, 340px) 1fr;
   gap: 20px;
   align-items: start;
+  min-height: 0;
 }
 
 @media (max-width: 1024px) {
@@ -111,6 +112,7 @@
 
 .port-preview-wrap {
   min-width: 0;
+  min-height: 0;
 }
 
 .port-preview-label {
@@ -139,8 +141,10 @@
   border-radius: 4px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
   overflow: hidden;
-  max-height: min(78vh, 920px);
+  max-height: min(72vh, 820px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .port-doc--project {
@@ -324,5 +328,5 @@
 }
 
 .port-ai-col .port-doc {
-  max-height: 70vh;
+  max-height: min(68vh, 760px);
 }
