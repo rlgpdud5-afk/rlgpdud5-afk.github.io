@@ -616,10 +616,32 @@
       position: relative;
       z-index: 2;
       width: min(980px, 92vw);
-      height: min(48vh, 430px);
+      height: min(58vh, 560px);
       margin-top: clamp(36px, 8vh, 72px);
       perspective: 1100px;
       transform: translateY(calc((var(--scene-p) - .5) * 70px));
+    }
+    .visual-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: translateY(calc((var(--scene-p) - .5) * -52px)) scale(calc(.96 + var(--scene-p) * .06));
+      filter: drop-shadow(0 34px 70px rgba(12,13,14,.28));
+      will-change: transform;
+    }
+    .visual-image--credential {
+      transform: translateY(calc((var(--scene-p) - .5) * -42px)) rotateX(calc((var(--scene-p) - .5) * 4deg)) scale(calc(.96 + var(--scene-p) * .055));
+    }
+    .visual-image--phone {
+      transform: translateY(calc((var(--scene-p) - .5) * -86px)) scale(calc(.94 + var(--scene-p) * .08));
+    }
+    .visual-image--shield {
+      transform: translateY(calc((var(--scene-p) - .5) * -46px)) rotateY(calc((var(--scene-p) - .5) * 10deg)) scale(calc(.96 + var(--scene-p) * .05));
+    }
+    .visual-image--chain {
+      transform: translateY(calc((var(--scene-p) - .5) * -58px)) rotate(calc((var(--scene-p) - .5) * 2deg)) scale(calc(.95 + var(--scene-p) * .07));
     }
     .credential-badge {
       position: absolute;
@@ -752,7 +774,7 @@
     .chain-line { position:absolute; left:14%; right:14%; top:52%; height:2px; background:linear-gradient(90deg,transparent,#e8c98a,transparent); transform:translateY(calc(var(--scene-p) * 40px)); }
     @media (max-width: 900px) {
       .visual-scene { padding-top: 72px; }
-      .visual-stage { height: 360px; }
+      .visual-stage { height: 380px; }
       .credential-badge { width: 132px; }
       .security-copy { text-align:center; margin:auto; }
       .shield-visual { opacity:.22; right:50%; transform:translate(50%,-50%); }
@@ -1058,10 +1080,7 @@ nav.site-nav {
       <a class="visual-cta" href="dgig-demo.html?view=crew">크레덴셜 체험하기</a>
     </div>
     <div class="visual-stage" aria-hidden="true">
-      <div class="credential-badge c1"><b>LER VC</b><div class="badge-seal">DG</div><span>Project verified</span></div>
-      <div class="credential-badge c2"><b>Trust Graph</b><div class="badge-seal">92</div><span>Re-selected record</span></div>
-      <div class="credential-badge c3"><b>Humanity</b><div class="badge-seal">H</div><span>Behavior proof</span></div>
-      <div class="credential-badge c4"><b>VRF Badge</b><div class="badge-seal">ZK</div><span>Blockchain ready</span></div>
+      <img class="visual-image visual-image--credential" src="../assets/visuals/dgig-credential-badge-stack.png" alt="">
     </div>
   </section>
 
@@ -1073,7 +1092,7 @@ nav.site-nav {
       <a class="visual-cta" href="dgig-demo.html?view=crew">포트폴리오 AI 보기</a>
     </div>
     <div class="visual-stage" aria-hidden="true">
-      <div class="phone-ai"><span class="ai-line"></span><span class="ai-line"></span><span class="ai-line"></span><span class="ai-line"></span></div>
+      <img class="visual-image visual-image--phone" src="../assets/visuals/dgig-ai-portfolio-phone.png" alt="">
     </div>
   </section>
 
@@ -1084,7 +1103,9 @@ nav.site-nav {
       <p class="visual-lead">로그인 실패, 새 기기 접근, 대량 다운로드, 권한 초과 시도를 실시간으로 감지하고 자동 분류합니다.</p>
       <a class="visual-cta" href="dgig-demo.html?view=workspace">보안 작업공간 보기</a>
     </div>
-    <div class="shield-visual" aria-hidden="true"></div>
+    <div class="visual-stage" aria-hidden="true">
+      <img class="visual-image visual-image--shield" src="../assets/visuals/dgig-security-shield.png" alt="">
+    </div>
   </section>
 
   <section class="visual-scene dark visual-blockchain" data-visual-scene>
@@ -1095,8 +1116,7 @@ nav.site-nav {
       <a class="visual-cta" href="dgig-demo.html?view=workspace">블록체인 인증 보기</a>
     </div>
     <div class="visual-stage" aria-hidden="true">
-      <div class="chain-line"></div>
-      <div class="coin-stack"><div class="coin">D</div><div class="coin">ID</div><div class="coin">VC</div><div class="coin">ZK</div></div>
+      <img class="visual-image visual-image--chain" src="../assets/visuals/dgig-blockchain-credential-network.png" alt="">
     </div>
   </section>
 </section>
